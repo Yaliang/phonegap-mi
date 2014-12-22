@@ -398,7 +398,7 @@ function addInterestEvent(eventId){
 	var displayFunction = function(object){
 		var eventId = object.id;
 		var interestNumber = object.get("interestNumber");
-		$("#interest-statistics-"+eventDd).html(interestNumber.toString()+" Interests");
+		$("#interest-statistics-"+eventId).html(interestNumber.toString()+" Interests");
 		$("#interest-button-"+eventId).removeClass("ui-icon-custom-favor-false");
 		$("#interest-button-"+eventId).addClass("ui-icon-custom-favor-true");
 		$("#interest-button-"+eventId).unbind("click");
