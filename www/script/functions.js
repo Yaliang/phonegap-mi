@@ -1,22 +1,3 @@
-$(document).ready(function (){
-	var currentUser = Parse.User.current();
-	$('#comment-content').on("blur",function(){
-		$('#comment-content').textinput('disable');
-	});
-	if (currentUser) {
-		var successFunction = function() {
-			window.location.hash = "page-event";
-			pullUserEvent();
-		};
-		var errorFunction = function() {
-			window.location.hash = "page-login";
-		};
-		ParseUpdateCurrentUser(successFunction, errorFunction);
-	} else {
-		window.location.hash = "page-login";
-	}
-});
-
 function signup(){
 	var name = $("#signup-name").val();
 	var email = $("#signup-email").val();
