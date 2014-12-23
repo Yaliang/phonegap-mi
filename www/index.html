@@ -22,6 +22,30 @@
 </head>
 
 <body>
+
+	<!-- Page for login -->
+	<div data-role="page" id="page-login" data-title="觅校缘">
+
+		<div data-role="header">
+			<h1>Log In</h1>
+			<a href="#page-signup" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all">Sign Up</a>
+		</div><!-- header -->
+
+		<div role="main" class="ui-content">
+			<form>
+				<label for="useremail">Email:</label>
+				<input type="email" data-clear-btn="true" name="useremail" id="login-email" value="">
+				<label for="userpassword">Password:</label>
+				<input type="password" data-clear-btn="ture" name="userpassword" id="login-password" value="" autocomplete="off">
+			</form>
+			<div id="login-error"></div>
+			<button class="ui-btn" onclick="login();">Log In</button>
+		</div><!-- /content -->
+
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		</div><!-- /footer -->
+	</div><!-- /page -->
+
 	<!-- Page for signup -->
 	<div data-role="page" id="page-signup" data-title="觅校缘">
 
@@ -47,28 +71,7 @@
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-	<!-- Page for login -->
-	<div data-role="page" id="page-login" data-title="觅校缘">
-
-		<div data-role="header">
-			<h1>Log In</h1>
-			<a href="#page-signup" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all">Sign Up</a>
-		</div><!-- header -->
-
-		<div role="main" class="ui-content">
-			<form>
-				<label for="useremail">Email:</label>
-				<input type="email" data-clear-btn="true" name="useremail" id="login-email" value="">
-				<label for="userpassword">Password:</label>
-				<input type="password" data-clear-btn="ture" name="userpassword" id="login-password" value="" autocomplete="off">
-			</form>
-			<div id="login-error"></div>
-			<button class="ui-btn" onclick="login();">Log In</button>
-		</div><!-- /content -->
-
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
-		</div><!-- /footer -->
-	</div><!-- /page -->
+	
 
 	<!-- Page for displaying the list of events -->
 	<div data-role="page" id="page-event" data-title="觅校缘">
