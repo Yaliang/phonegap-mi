@@ -17,34 +17,12 @@
 	<script src="./script/jquery/mobile/jquery.mobile-1.4.5.min.js"></script>
 	<script src="./script/parse/parse-1.3.2.min.js"></script>
 	<script src="./script/parse/query.js"></script>
+	<script src="./script/cache.js"></script>
 	<script src="./script/functions.js"></script>
 	<script src="./script/native-functions.js"></script>
 </head>
 
 <body>
-
-	<!-- Page for login -->
-	<div data-role="page" id="page-login" data-title="觅校缘">
-
-		<div data-role="header">
-			<h1>Log In</h1>
-			<a href="#page-signup" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all">Sign Up</a>
-		</div><!-- header -->
-
-		<div role="main" class="ui-content">
-			<form>
-				<label for="useremail">Email:</label>
-				<input type="email" data-clear-btn="true" name="useremail" id="login-email" value="">
-				<label for="userpassword">Password:</label>
-				<input type="password" data-clear-btn="ture" name="userpassword" id="login-password" value="" autocomplete="off">
-			</form>
-			<div id="login-error"></div>
-			<button class="ui-btn" onclick="login();">Log In</button>
-		</div><!-- /content -->
-
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
-		</div><!-- /footer -->
-	</div><!-- /page -->
 
 	<!-- Page for signup -->
 	<div data-role="page" id="page-signup" data-title="觅校缘">
@@ -55,31 +33,55 @@
 		</div><!-- header -->
 
 		<div role="main" class="ui-content">
-			<form>
+			<form style='padding: 1em '>
 				<label for="username">Name:</label>
 				<input type="text" data-clear-btn="true" name="username" id="signup-name" value="">
 				<label for="useremail">Email:</label>
 				<input type="email" data-clear-btn="true" name="useremail" id="signup-email" value="">
 				<label for="userpassword">Password:</label>
 				<input type="password" data-clear-btn="ture" name="userpassword" id="signup-password" value="" autocomplete="off">
+				<div id="signup-error"></div>
+				<button class="ui-btn" onclick="signup();">Sign Up</button>
 			</form>
-			<div id="signup-error"></div>
-			<button class="ui-btn" onclick="signup();">Sign Up</button>
 		</div><!-- /content -->
 
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-	
+	<!-- Page for login -->
+	<div data-role="page" id="page-login" data-title="觅校缘">
+
+		<div data-role="header">
+			<h1>Log In</h1>
+			<a href="#page-signup" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all">Sign Up</a>
+		</div><!-- header -->
+
+		<div role="main" class="ui-content">
+			<form style='padding: 1em '>
+				<label for="useremail">Email:</label>
+				<input type="email" data-clear-btn="true" name="useremail" id="login-email" value="">
+				<label for="userpassword">Password:</label>
+				<input type="password" data-clear-btn="ture" name="userpassword" id="login-password" value="" autocomplete="off">
+				<div id="login-error"></div>
+				<button class="ui-btn" onclick="login();">Log In</button>
+			</form>
+		</div><!-- /content -->
+
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		</div><!-- /footer -->
+	</div><!-- /page -->
 
 	<!-- Page for displaying the list of events -->
 	<div data-role="page" id="page-event" data-title="觅校缘">
 
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<h1>Events</h1>
-			<a href="#page-event-create" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" onclick="$('#event-create-button').bind('click',function(){createUserEvent();});">Create</a>
-			<a href="#page-event-my-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyEvent();">My Event</a>
+			<a href="#" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" id="ui-icon-custom-right-top-more" onclick="displayEventMoreOption();"></a>
+			<!--
+				<a href="#page-event-create" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" onclick="$('#event-create-button').bind('click',function(){createUserEvent();});">Create</a>
+				<a href="#page-event-my-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyEvent();">My Event</a>
+			-->
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" id="event-content">
@@ -89,12 +91,17 @@
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
 				<li><a href="#page-event" data-transition="none" class="event-active-custom" id="event" onclick="pullUserEvent();">Event</a></li>
-				<li><a href="#page-friend" data-transition="none" id="friend">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" id="chat">Chat</a></li>
+				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();">Friend</a></li>
+				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();">Chat</a></li>
 				<li><a href="#page-setting" data-transition="none" id="setting">Setting</a></li>
 			</ul>
 			</div>
 		</div><!-- /footer -->
+		<ul class='event-page-right-top-options' style='display: none;'>
+			<li><a href='#page-event-create' id='event-page-right-top-option-1'>Create</a></li>
+			<li><a href='#page-event-my-event' id='event-page-right-top-option-2' onclick='pullMyEvent();'>My Events</a></li>
+		</ul>
+		<div class='options-hidden-cover-layer' style='display: none;'></div>
 	</div><!-- /page -->
 
 	<!-- Page for displaying the list of my events -->
@@ -121,24 +128,20 @@
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<form>
+			<form style='padding: 1em '>
 				<label for="eventtitle">Title:</label>
 				<input type="text" data-clear-btn="true" name="eventtitle" id="event-create-title" value="">
 				<label for="eventlocation">Location:</label>
 				<input type="text" data-clear-btn="ture" name="eventlocation" id="event-create-location" value="">
-				<label for="eventtime">Time:</label>
-				<input type="text" data-clear-btn="ture" name="eventtime" id="event-create-time" value="">
+				<label for="eventstarttime">Start Time:</label>
+				<input type="datetime-local" data-clear-btn="ture" name="eventstarttime" id="event-create-start-time" value="">
+				<label for="eventendtime">End Time:</label>
+				<input type="datetime-local" data-clear-btn="ture" name="eventendtime" id="event-create-end-time" value="">
 				<label for="eventvisibility">Visibility:</label>
 				<select name="eventvisibility" id="event-create-visibility" data-role="flipswitch" data-wrapper-class="custom-size-flipswitch-event-create-visibility" checked="">
 					<option value="off">Friends</option>
 					<option value="on" selected="">Public</option>
 				</select>
-				<!-- flyer will comming later 
-					<label for="eventflyer">Flyer:</label>
-					<input type="file" name="eventflyer" accept="image/*" capture>
-				-->
-				<!-- label of event will comming later 
-				-->
 				<label for="eventdescription">Description:</label>
 				<textarea name="eventdescription" id="event-create-description"></textarea>
 			</form>
@@ -164,13 +167,15 @@
 
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" >
 			<div class="rwd-example">
-				<label id="event-id-label" class="ui-hidden-accessible"></label>
-				<div class="custom-block-a" onclick="sendToolbarActiveKeyboard()">
-					<input disabled="disabled" type="text" name="commentcontent" id="comment-content" value="">
-				</div>
-				<div class="custom-block-b">
-					<button id="send-comment-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendCommnet();">Send</button>
-				</div>
+				<form id="comment-form">
+					<label id="event-id-label" class="ui-hidden-accessible"></label>
+					<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('comment-content')">
+						<input disabled="disabled" type="text" name="commentcontent" id="comment-content" value="">
+					</div>
+					<div class="custom-block-b">
+						<button id="send-comment-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendCommnet();">Send</button>
+					</div>
+				</form>
 			</div>
 		</div><!-- /footer -->
 
@@ -181,21 +186,74 @@
 
 		<div data-role="header">
 			<h1>Friends</h1>
+			<a href="#page-people-near-by" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="listFriendNearBy()">Near By</a>
+			<a href="#page-people-search" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" onclick="bindSearchAutocomplete()">Search</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<p>Page content goes here.</p>
+			<a href="#page-my-friend-requests" id="new-friend-requests-btn" class="ui-btn" onclick="pullMyFriendRequests();">New Friend Requests<span id="new-friend-requests-number" class="ui-li-count"></span></a>
+			<ul id='friend-list' data-role='listview' data-inset='true' class='ui-listview ui-listview-inset ui-corner-all ui-shadow'>
+			</ul>
 		</div><!-- /content -->
 
 		<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
 				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();">Event</a></li>
-				<li><a href="#page-friend" data-transition="none" class="friend-active-custom" id="friend">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" id="chat">Chat</a></li>
+				<li><a href="#page-friend" data-transition="none" class="friend-active-custom" id="friend" onclick="pullMyFriendList();">Friend</a></li>
+				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();">Chat</a></li>
 				<li><a href="#page-setting" data-transition="none" id="setting">Setting</a></li>
 			</ul>
 			</div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+
+	<!-- Page for displaying the people near by -->
+	<div data-role="page" id="page-people-near-by" data-title="觅校缘">
+
+		<div data-role="header">
+			<h1>People</h1>
+			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="stopGeoWatch()">Back</a>
+		</div><!-- /header -->
+
+		<div role="main" class="ui-content">
+		</div><!-- /content -->
+
+		<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false">
+		</div><!-- /footer -->
+	</div><!-- /page -->
+
+	<!-- Page for searching user by email/name/maybe others -->
+	<div data-role="page" id="page-people-search" data-title="觅校缘">
+
+		<div data-role="header">
+			<h1>People</h1>
+			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="unbindSearchAutocomplete()">Back</a>
+		</div><!-- /header -->
+
+		<div role="main" class="ui-content">
+			<form class="ui-filterable">
+				<input id="user-autocomplete-input" data-type="search" placeholder="Email/Name">
+			</form>
+			<ul id="user-autocomplete-list" data-role="listview" data-inset="true" data-filter="true" data-input="#user-autocomplete-input"></ul>
+		</div><!-- /content -->
+
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		</div><!-- /footer -->
+	</div><!-- /page -->
+
+	<!-- Page for displaying all new friend requests -->
+	<div data-role="page" id="page-my-friend-requests" data-title="觅校缘">
+
+		<div data-role="header">
+			<h1>People</h1>
+			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyFriendList();">Back</a>
+		</div><!-- /header -->
+
+		<div role="main" class="ui-content">
+		</div><!-- /content -->
+
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
@@ -207,19 +265,45 @@
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<p>Page content goes here.</p>
 		</div><!-- /content -->
 
 		<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
 				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();">Event</a></li>
-				<li><a href="#page-friend" data-transition="none" id="friend">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" class="chat-active-custom" id="chat">Chat</a></li>
+				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();">Friend</a></li>
+				<li><a href="#page-chat" data-transition="none" class="chat-active-custom" id="chat" onclick="pullMyChat();">Chat</a></li>
 				<li><a href="#page-setting" data-transition="none" id="setting">Setting</a></li>
 			</ul>
 			</div>
 		</div><!-- /footer -->
+	</div><!-- /page -->
+
+	<!-- Page for displaying the messages of a chat -->
+	<div data-role="page" id="page-chat-messages" data-transition="none" data-title="觅校缘" data-add-back-btn="true">
+
+		<div data-role="header" data-position="fixed" data-tap-toggle="false" >
+			<h1 id='chat-messages-title'></h1>
+			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyChat();">Back</a>
+		</div><!-- /header -->
+
+		<div role="main" class="ui-content" style="margin-bottom:20px">
+		</div><!-- /content -->
+
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false" >
+			<div class="rwd-example">
+				<form id='message-chat-form'>
+					<label id="group-id-label" class="ui-hidden-accessible"></label>
+					<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('message-content')">
+						<input disabled="disabled" type="text" name="messagecontent" id="message-content" value="">
+					</div>
+					<div class="custom-block-b">
+						<button id="send-message-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendMessage();">Send</button>
+					</div>
+				</form>
+			</div>
+		</div><!-- /footer -->
+
 	</div><!-- /page -->
 
 	<!-- Page for displaying setting options -->
@@ -230,7 +314,7 @@
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<a href="#page-edit-my-profile" class="ui-btn" onclick="getMyProfile();">Edit My Profile</a>
+			<a href="#page-edit-my-profile" class="ui-btn" onclick="getMyProfile(); $('#profile-save-btn').on('click', function(){saveProfile()});">Edit My Profile</a>
 			<button class="ui-btn ui-custom-log-out" onclick="logout();">Logout</button>
 		</div><!-- /content -->
 
@@ -238,8 +322,8 @@
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
 				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();">Event</a></li>
-				<li><a href="#page-friend" data-transition="none" id="friend">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" id="chat">Chat</a></li>
+				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();">Friend</a></li>
+				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();">Chat</a></li>
 				<li><a href="#page-setting" data-transition="none" class="setting-active-custom" id="setting">Setting</a></li>
 			</ul>
 			</div>
@@ -251,13 +335,18 @@
 
 		<div data-role="header">
 			<h1>My Profile</h1>
-			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all">Back</a>
+			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="refreshPreviewPhoto = false;">Back</a>
 			<label id="saveprofile-id" class="ui-hidden-accessible"></label>
-			<button class="ui-btn" onclick="saveprofile();">Save</button>
+			<a data-rel="back" href="#page-event" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" id="profile-save-btn">Save</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" id="my-profile">
-			<form>
+			<div class="profile-photo-bar">
+				<label style='padding-left: 1em;' for="profilephoto">Photo:</label>
+				<canvas id="canvas-photo" class="profile-photo-preview" width="120px" height="120px"></canvas>
+				<input type="file" data-clear-btn="false" name="profilephoto" id="profile-edit-photo" onchange="profilePhotoCrop()" value="">
+			</div>
+			<form style='padding: 1em;'>
 				<label for="profileusername">Name:</label>
 				<input type="text" data-clear-btn="true" name="profilename" id="profile-edit-name" value="">
 				<label for="eventlocation">Gender:</label>
@@ -284,9 +373,9 @@
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-
 	<script type="text/javascript">
         app.initialize();
     </script>
+
 </body>
 </html>

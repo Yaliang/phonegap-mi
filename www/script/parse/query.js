@@ -10,7 +10,7 @@ function ParseSignup(username, password, email, name, errorObject, destID, custo
 	user.signUp(null, {
 		success: function(user) {
 			window.location.hash = destID;
-			customFunction();
+			customFunction(user);
 		},
 		error: function(user,error) {
 			errorObject.html("Error: " + error.code + " " + error.message);
@@ -18,16 +18,40 @@ function ParseSignup(username, password, email, name, errorObject, destID, custo
 	});
 }
 
+function ParseUpdateBridgeit(bridgeitId){
+	var current = Parse.User.current();
+
+	current.set("bridgeitId",bridgeitId);
+	current.save();
+}
+
+function ParseCreateProfilePhotoObject(userId){
+	var Photo = Parse.Object.extend("Photo");
+	var photo = new Photo;
+
+	photo.set("userId",userId);
+	photo.save();
+}
+
 function ParseLogin(username, password, errorObject, destID, customFunction) {
 	Parse.User.logIn(username,password,{
 		success: function(user){
 			window.location.hash = destID;
 			customFunction();
+			CacheUpdateUser(user);
 		},
 		error: function(user, error){
 			errorObject.html("Error: " + error.code + " " + error.message);
 		}
 	});
+}
+
+function ParseRemoveCurrentBridgeitId() {
+	var current = Parse.User.current();
+	var empty;
+
+	current.set("bridgeitId",empty);
+	current.save();
 }
 
 function ParseLogout(destID) {
@@ -38,10 +62,11 @@ function ParseLogout(destID) {
 function ParseUpdateCurrentUser(successFunction, errorFunction) {
 	var currentUser = Parse.User.current();
 	currentUser.fetch({
-		success: function(currentUser) {
+		success: function(object) {
 			successFunction();
+			CacheUpdateUser(object);
 		},
-		error: function(currentUser,error){
+		error: function(object,error){
 			errorFunction();
 		}
 	});
@@ -71,7 +96,7 @@ function ParseEventCreate(owner, title, location, time, visibility, description,
 	});
 }
 
-function ParsePullEvent(owner, limitNumber, descendingOrderKey, displayFunction) {
+function ParsePullEvent(owner, limitNumber, descendingOrderKey, accessibility, displayFunction) {
 	var UserEvent = Parse.Object.extend("UserEvent");
 	var query = new Parse.Query(UserEvent);
 	if (owner != null) {
@@ -79,6 +104,11 @@ function ParsePullEvent(owner, limitNumber, descendingOrderKey, displayFunction)
 	}
 	if (limitNumber != null) {
 		query.limit(limitNumber);
+	}
+	if (accessibility != null) {
+		if (accessibility == "public") {
+			query.equalTo("visibility",true);
+		}
 	}
 	query.descending(descendingOrderKey);
 	query.find({
@@ -229,6 +259,493 @@ function ParseDeleteEvent(eventId, displayFunction){
 	});
 }
 
+function ParseGetProfileByUsername(username, displayFunction, data){
+	var query = new Parse.Query(Parse.User);
+
+	query.equalTo("username", username);
+	query.first({
+		success: function(user) {
+			displayFunction(user, data);
+			CacheUpdateUser(user);
+		}
+	});
+}
+
+function ParseGetProfileByUserId(userId, displayFunction, data){
+	var query = new Parse.Query(Parse.User);
+
+	query.equalTo("objectId", userId);
+	query.first({
+		success: function(user) {
+			displayFunction(user, data);
+			CacheUpdateUser(user);
+		}
+	});
+}
+
+function ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction) {
+	var currentUser = Parse.User.current();
+	
+	currentUser.set("name",name);
+	currentUser.set("gender",gender);
+	currentUser.set("birthdate",birthdate);
+	currentUser.set("motto",motto);
+	currentUser.set("major",major);
+	currentUser.set("school",school);
+	currentUser.set("interest",interest);
+	currentUser.set("location",location);
+	currentUser.save(null,{
+		success: function(object){
+			displayFunction();
+			CacheUpdateUser(object);
+		}
+	});
+}
+
+function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
+	var Photo = Parse.Object.extend("Photo");
+	var query = new Parse.Query(Photo);
+
+	if (photo == null)
+		return;
+	query.equalTo("userId",id);
+	query.first({
+		success: function(photoObject) {
+			photoObject.set('profilePhoto120',photo120);
+			var parseFile = new Parse.File(photo.name, photo);
+			parseFile.save().then(function(object) {
+				photoObject.set("photo",object.url());
+				photoObject.save(null,{
+					success: function(object){
+						displayFunction(object);
+						CacheUpdatePhoto(object);
+					}
+				});
+			}, function(error) {
+				
+			});
+		}
+	})
+}
+
+function ParseGetProfilePhoto(userId, displayFunction, data) {
+	var Photo = Parse.Object.extend("Photo");
+	var query = new Parse.Query(Photo);
+
+	query.equalTo("userId",userId);
+	query.first({
+		success: function(object){
+			displayFunction(object, data);
+			CacheAddPhoto(object);
+		}
+	})
+}
+
+function ParsePullUserByGeolocation(latitude,longitude,latitudeLimit,longitudeLimit,descendingOrderKey,displayFunction){
+	var currentUser = Parse.User.current();
+	currentUser.set("latitude",latitude);
+	currentUser.set("longitude",longitude);
+	currentUser.save();
+
+	var query = new Parse.Query(Parse.User);
+	query.notEqualTo("username", currentUser.getUsername());
+	query.greaterThan("latitude",(latitude-latitudeLimit/2.0));
+	query.lessThan("latitude",(latitude+latitudeLimit/2.0));
+	query.greaterThan("longitude",(longitude-longitudeLimit/2.0));
+	query.lessThan("longitude",(longitude+longitudeLimit/2.0));
+	query.descending(descendingOrderKey);
+	query.find({
+		success: function(users){
+			displayFunction(latitude,longitude,users);
+		}
+	});
+}
+
+function ParseSendFriendRequest(ownerId, friendId, successFunction){
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	query.equalTo('owner', ownerId);
+	query.equalTo('friend',friendId);
+	query.first({
+		success: function(object){
+			if (typeof(object)=="undefined") {
+				var friend = new Friend;
+
+				friend.set('owner', ownerId);
+				friend.set('friend', friendId);
+				friend.set('valid',false);
+				friend.set('read',false);
+				friend.save(null, {
+					success: function(friend){
+						successFunction(friend);
+					}
+				})
+			} else {
+				successFunction(object);
+			}
+		}
+	})
+
+	
+}
+
+function ParseAcceptFriendRequest(objectId, ownerId, friendId, successFunction){
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	if (objectId != null) {
+		query.equalTo("objectId",objectId);
+	} else {
+		query.equalTo("owner",ownerId);
+		query.equalTo("friend",friendId);
+	}
+	query.first({
+		success:function(object){
+			// update current user's friend data
+			object.set('valid',true);
+			object.set('read',true);
+			object.save(null, {
+				success: function(object){
+					// try to update frient's data
+					var ownerId = object.get('friend');
+					var friendId = object.get('owner');
+					var query = new Parse.Query(Friend);
+
+					query.equalTo('owner',ownerId);
+					query.equalTo('friend',friendId);
+					query.first({
+						success: function(object){
+							if (typeof(object) == "undefined") {
+								// if friend's data doesn't exist
+								var friend = new Friend;
+
+								friend.set('owner',ownerId);
+								friend.set('friend',friendId);
+								friend.set('valid',true);
+								friend.set('read',true);
+								friend.save(null, {
+									success: function(object){
+										successFunction(object);
+									}
+								})
+							} else {
+								// if existed
+								object.set('valid',true);
+								object.set('read',true);
+								object.save(null,{
+									success: function(object){
+										successFunction(object);
+									}
+								})
+							}
+						}
+					})
+				}
+			});
+			
+		}
+	})
+}
+
+function ParseRejectFriendRequest(objectId, ownerId, friendId, successFunction){
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	if (objectId != null) {
+		query.equalTo("objectId",objectId);
+	} else {
+		query.equalTo("owner",ownerId);
+		query.equalTo("friend",friendId);
+	}
+
+	query.first({
+		success:function(object){
+			object.destroy({
+				success: function(object){
+					successFunction(friendId);
+				}
+			});
+		}
+	})
+}
+
+function ParsePullNewFriendRequest(userId, descendingOrderKey, displayFunction) {
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	query.equalTo("friend",userId);
+	query.equalTo("valid",false);
+	query.descending(descendingOrderKey);
+	query.find({
+		success: function(objects){
+			displayFunction(objects);
+		}
+	})
+}
+
+function ParsePullUnreadFriendRequest(userId, displayFunction) {
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	query.equalTo("friend",userId);
+	query.equalTo("read",false);
+	query.find({
+		success: function(objects){
+			displayFunction(objects);
+		}
+	})
+}
+
+
+function ParseCheckFriend(ownerId, friendId, displayFunction) {
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	query.equalTo('owner',ownerId);
+	query.equalTo('friend',friendId);
+
+	query.first({
+		success: function(object){
+			displayFunction(ownerId, friendId, object);
+		}
+	})
+
+}
+
+function ParsePullMyFriend(ownerId, descendingOrderKey, displayFunction) {
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	query.equalTo('owner',ownerId);
+	query.equalTo('valid',true);
+	query.descending(descendingOrderKey);
+
+	query.find({
+		success: function(objects){
+			displayFunction(objects);
+		}
+	})
+}
+
+function ParseSearchUserByEmailAndName(string, limitNumber, descendingOrderKey, displayFunction){
+	var queryByEmail = new Parse.Query(Parse.User);
+	var queryByName = new Parse.Query(Parse.User);
+	var currentUser = Parse.User.current();
+
+	queryByEmail.matches("username",".*"+string+".*");
+	queryByName.matches("name",".*"+string+".*");
+
+	var query = Parse.Query.or(queryByEmail, queryByName);
+	query.notEqualTo("username", currentUser.getUsername());
+	query.descending(descendingOrderKey);
+	if (limitNumber != null) {
+		query.limit(limitNumber);
+	}
+	query.find({
+		success: function(objects){
+			displayFunction(objects);
+		}
+	})
+}
+
+function ParseSetRequestRead(objectId){
+	var Friend = Parse.Object.extend("Friend");
+	var query = new Parse.Query(Friend);
+
+	query.get(objectId,{
+		success:function(object){
+			object.set("read",true);
+			object.save();
+		}
+	})
+}
+
+function ParseGetGroupId(memberId, successFunction){
+	var Group = Parse.Object.extend("Group");
+	var query = new Parse.Query(Group);
+
+	query.containsAll("memberId",memberId);
+	query.equalTo("memberNum",memberId.length);
+	query.first({
+		success: function(object){
+			if (typeof(object) == "undefined") {
+				var group = new Group;
+				group.set("memberId",memberId);
+				group.set("memberNum",memberId.length);
+				group.save(null,{
+					success: function(object){
+						successFunction(object);
+					}
+				})
+			} else {
+				successFunction(object);
+			}
+		}
+	})
+}
+
+function ParseGetGroupMember(groupId, successFunction, data){
+	var Group = Parse.Object.extend("Group");
+	var query = new Parse.Query(Group);
+
+	query.get(groupId,{
+		success: function(object){
+			successFunction(object, data);
+		}
+	});
+}
+
+function ParseSetChatObjectAsRead(ownerId, groupId, count, successFunction){
+	var Chat = Parse.Object.extend("Chat");
+	var query = new Parse.Query(Chat);
+
+	query.equalTo('ownerId',ownerId);
+	query.equalTo('groupId',groupId);
+	query.first({
+		success: function(object){
+			if (typeof(object) == "undefined") {
+				var chat = new Chat;
+				chat.set("ownerId",ownerId);
+				chat.set("groupId",groupId);
+				chat.set("hidden",false);
+				chat.set("unreadNum",0);
+				chat.save(null, {
+					success: function(object){
+						successFunction(object);
+					}
+				});
+			} else {
+				if (count == null) {
+					count = object.get("unreadNum");
+				}
+				if (count != 0) {
+					object.increment("unreadNum",-count);
+					object.save(null,{
+						success: function(object){
+							successFunction(object);
+						}
+					});
+				} else {
+					successFunction(object);
+				}
+			}
+		}
+	})
+}
+
+function ParsePullChatMessage(groupId, limitNum, descendingOrderKey, beforeAt, displayFunction) {
+	var Message = Parse.Object.extend("Message");
+	var query = new Parse.Query(Message);
+
+	query.equalTo('groupId',groupId);
+	query.descending(descendingOrderKey);
+	if (beforeAt != null) {
+		query.lessThan("createdAt", beforeAt);
+	}
+	query.limit(limitNum);
+	query.find({
+		success: function(objects){
+			displayFunction(objects);
+		}
+	})
+}
+
+function ParseAddChatMessage(senderId, groupId, text, displayFunction){
+	var Message = Parse.Object.extend("Message");
+	var message = new Message;
+
+	message.set("senderId",senderId);
+	message.set("groupId", groupId);
+	message.set("text", text);
+	message.save(null, {
+		success: function(object){
+			displayFunction(object);
+		}
+	})
+}
+
+function ParseSetGroupMemberChatObjectReadFalse(senderId, groupId, text, notificationFunction) {
+	var Group = Parse.Object.extend("Group");
+	var query = new Parse.Query(Group);
+
+	query.equalTo("objectId",groupId);
+	query.first({
+		success: function(object){
+			// get the group members' id
+			var memberId = object.get("memberId");
+			for (var i=0; i<memberId.length; i++) {
+				if (senderId != memberId[i]) {
+					// if the member of group isn't the sender
+					var Chat = Parse.Object.extend("Chat");
+					var query = new Parse.Query(Chat);
+					var ownerId = memberId[i];
+					query.equalTo("ownerId", memberId[i]);
+					query.equalTo("groupId", groupId);
+					query.first({
+						success:function(object){
+							if (typeof(object) == "undefined") {
+								// create new chat object for members of group
+								var chat = new Chat;
+								chat.set("ownerId", ownerId);
+								chat.set("groupId", groupId);
+								chat.set("hidden", false);
+								chat.set("unreadNum", 1);
+								chat.save(null,{
+									success: function(object) {
+										notificationFunction(text,object);
+									}
+								});
+							} else {
+								// set unread number plus 1 for chat object
+								object.increment("unreadNum", 1);
+								object.save(null, {
+									success: function(object) {
+										notificationFunction(text,object);
+									}
+								});
+							}
+						}
+					})
+
+				}
+			}
+		}
+	})
+}
+
+function ParsePullMyChat(ownerId,descendingOrderKey,displayFunction){
+	var Chat = Parse.Object.extend("Chat");
+	var query = new Parse.Query(Chat);
+
+	query.equalTo("ownerId",ownerId);
+	query.equalTo("hidden",false);
+	query.descending(descendingOrderKey);
+	query.find({
+		success: function(objects){
+			displayFunction(objects);
+		}
+	})
+}
+
+function ParsePullUnreadChat(ownerId, descendingOrderKey, displayFunction){
+	var Chat = Parse.Object.extend("Chat");
+	var query = new Parse.Query(Chat);
+
+	query.equalTo("ownerId",ownerId);
+	query.equalTo("hidden",false);
+	query.descending(descendingOrderKey);
+	query.greaterThan("unreadNum",0);
+	query.find({
+		success: function(objects){
+			displayFunction(objects);
+		}
+	})
+}
+
+// functions for database maintaining /never used in front-end script.
+
+
 function ParseUserNameFieldUpdate(i){
 	console.log(i);
 	var Comment = Parse.Object.extend("Comment");
@@ -282,35 +799,39 @@ function ParseRefreshComment(){
 	}, 5000);
 }
 
-function ParseGetProfile(owner, displayFunction){
+function ParsePhotoClassCreateBaseUserObject(i){
 	var query = new Parse.Query(Parse.User);
-
-	query.equalTo("username", owner);
+	query.descending("createdAt");
 	query.find({
-		success: function(myprofile) {
-			displayFunction(myprofile);
+		success: function(user) {
+			console.log(i);
+			var userId = user[i].id;
+			var profilePhoto = user[i].get("photo");
+			var profilePhoto120 = user[i].get("photo50");
+			console.log(userId);
+			console.log(profilePhoto);
+			console.log(profilePhoto120);
+			var Photo = Parse.Object.extend("Photo");
+			var photo = new Photo;
+
+			photo.set('userId',userId);
+			photo.set('profilePhoto',profilePhoto);
+			photo.set('profilePhoto120',profilePhoto120);
+			photo.save(null,{
+				success: function() {
+					console.log('success');
+				}
+			})
 		}
-	});
+	})
 }
 
-function ParseSaveProfile(id, name, gender, birthdate, motto, major, school, interest, location, displayFunction) {
-	var query = new Parse.Query(Parse.User);
-
-	query.get(id,{
-		success: function(userProfile){
-			userProfile.set("name",name);
-			userProfile.set("gender",gender);
-			userProfile.set("birthdate",birthdate);
-			userProfile.set("motto",motto);
-			userProfile.set("major",major);
-			userProfile.set("school",school);
-			userProfile.set("interest",interest);
-			userProfile.set("location",location);
-			userProfile.save(null,{
-				success: function(userProfile){
-					displayFunction();
-				}
-			});
-		}
-	});	
+function ParseRefreshUserProfilePhoto() {
+	ParsePhotoClassCreateBaseUserObject(refreshNumber);
+	refreshNumber = refreshNumber + 1;
+	if (refreshNumber == 16)
+		return
+	setTimeout(function(){
+		ParseRefreshUserProfilePhoto();
+	}, 5000);
 }

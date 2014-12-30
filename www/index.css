@@ -14,6 +14,16 @@
 	width: 1.875em;
 }
 
+.ui-li-count {
+	background-color: #f46f75;
+	border-color: #f46f75;
+	color: white;
+}
+
+.ui-content {
+	padding: 0!important;
+}
+
 .ui-bar-btn-custom {
 	margin: 0 0 0 16px!important;
 	border: 0px!important;
@@ -28,9 +38,37 @@
 	height: 34px!important;
 }
 
+.ui-user-photo img {
+	width:30px;
+}
+
 .ui-custom-float-left {
 	float: left!important;
 	height: 34px!important;
+}
+
+.custom-corners {
+	margin: 0.8em 0;
+	padding-bottom: 0.4em;
+	padding-top: 0.4em;
+	border-width: 0;
+	border-bottom-width: 1px;
+	border-style: solid;
+	border-color: #bbb;
+	-webkit-border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0;
+	-webkit-border-bottom-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.custom-corners-public {
+	padding-left: 4em;
+	background: 0.4em 0.4em no-repeat;
+	background-size: 50px 50px;
+}
+
+.custom-corners-detail {
+	border-bottom-width: 0px!important;
 }
 
 .custom-corners .ui-bar {
@@ -38,19 +76,18 @@
 	border-top-left-radius: inherit;
 	-webkit-border-top-right-radius: inherit;
 	border-top-right-radius: inherit;
+	border-width: 0;
+	background-color: #f9f9f9!important;
+	padding-top: 0px;
 }
-.custom-corners .ui-body {
 
+.custom-corners .ui-body {
+	border-left-width: 0;
+	border-right-width: 0;
 }
 
 .custom-corners .ui-footer {
-	border-top-width: 0;
-	border-right-width: 1px; 
-	-webkit-border-bottom-left-radius: 0!important;
-	border-bottom-left-radius: 0!important;
-	-webkit-border-bottom-right-radius: 0!important;
-	border-bottom-right-radius: 0!important;
-	margin-bottom: 1em;
+	border-width: 0;
 }
 
 .ui-mobile label {
@@ -108,6 +145,20 @@
 	box-shadow: 0 0 0!important;
 }
 
+.ui-input-search {
+	text-shadow: 0 0 0!important;
+	-webkit-box-shadow: 0 0 0!important;
+	-moz-box-shadow: 0 0 0!important;
+	box-shadow: 0 0 0!important;
+}
+
+a {
+	text-shadow: 0 0 0!important;
+	-webkit-box-shadow: 0 0 0!important;
+	-moz-box-shadow: 0 0 0!important;
+	box-shadow: 0 0 0!important;
+}
+
 .nav-glyphish-example .ui-btn {
 	padding-top: 36px!important;
 	padding-bottom: 2px!important;
@@ -136,6 +187,10 @@
 	background-size: 32px 32px;
 }
 
+.friend-notification-custom {
+	background-image: url("./content/material-design/png/user157-blank-with-big-dot-pink-192.png")!important;
+}
+
 .friend-active-custom {
 	background-image: url("./content/material-design/png/user157-solid-pink-192.png")!important;
 }
@@ -143,6 +198,10 @@
 #chat {
 	background: url("./content/material-design/png/sms5-blank-pink-192.png") 50% 30% no-repeat;
 	background-size: 32px 32px;
+}
+
+.chat-notification-custom {
+	background-image: url("./content/material-design/png/sms5-blank-with-big-dot-pink-192.png")!important;
 }
 
 .chat-active-custom {
@@ -196,6 +255,198 @@
 	background-size: 40px 40px;
 }
 
+#ui-icon-custom-right-top-more {
+	height: 16px;
+	width: 28px;
+	background: url('./content/material-design/png/ellipsis1-blank-pink-72.png') 50% 50% no-repeat!important;
+	background-size: 36px 36px!important;
+}
+
+#ui-icon-custom-right-top-more-active {
+	height: 16px;
+	width: 28px;
+	background: url('./content/material-design/png/ellipsis1-pink-72.png') 50% 50% no-repeat!important;
+	background-size: 36px 36px!important;
+}
+
+.event-page-right-top-options {
+	position: fixed;
+	right: 1.3em;
+	top: 0.3em;
+	font-family: "Open Sans";
+	font-weight: 300;
+	list-style-type: none;
+	padding: 2em 0em 0em 0ex;
+	background: url("./content/material-design/png/black400-pink-128.png") 50% 0 no-repeat;
+	background-size: 148px 130px;
+	text-shadow: 0 0 0;
+	z-index: 1002;
+}
+
+.event-page-right-top-options > li {
+	padding: 0.8em 1.1em 0.8em 1.1em;
+	font-size: 15px;
+	border-bottom: 1px solid #AEADAD;
+
+}
+
+.event-page-right-top-options > li:last-child {
+	border-bottom: 0px solid #AEADAD;
+}
+
+.event-page-right-top-options > li > a {
+	color: #333!important;
+	font-weight: 300!important;
+	text-shadow: 0 1px 0 #f3f3f3;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-decoration: none!important;
+	margin-left: 10px;
+	margin-right: 10px;  
+}
+
+.options-hidden-cover-layer {
+	opacity: 0;
+	z-index: 1001;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100vw;
+}
+
+.ui-icon-custom-gender {
+	margin-top: 0.4em;
+	margin-bottom: 0.1em;
+	margin-left:0;
+	margin-right: 0.3em;
+	-webkit-border-radius: .2125em;
+	border-radius: .2125em;
+	height: 16px;
+	width: 30px;
+	background: 20% 50% no-repeat;
+	background-size: 12px 12px;
+	float: left;
+}
+
+.ui-custom-event-title {
+	color: #A2A2A2;
+	font-weight: 400;
+	font-size: 14px;
+}
+.ui-custom-event-description-less-margin {
+}
+.ui-custom-event-description {
+	clear: both;
+	margin-top: 48px;
+}
+
+.ui-custom-event-location {
+	font-weight: 300;
+	font-size: 12px;
+	padding-left: 20px;
+	background: url("./content/material-design/png/compass106-solid-pink-20.png") 0 50% no-repeat;
+	background-size: 15px 15px;
+	float: left;
+	height: 15px;
+	margin: 0 15px 0 0;
+}
+
+.ui-custom-event-time {
+	font-weight: 300;
+	font-size: 12px;
+	padding-left: 20px;
+	background: url("./content/material-design/png/clock100-solid-pink-20.png") 0 50% no-repeat;
+	background-size: 15px 15px;
+	float: left;
+	height: 15px;
+	margin: 0 15px 0 0;
+}
+
+.ui-custom-message-right {
+	background: 100% 0 no-repeat;
+	background-size: 50px 50px;
+	float: right;
+	clear: both;
+	padding-right: 60px;
+	margin-top: 10px;
+	margin-right: 20px;
+	font-family: 'Open Sans';
+	font-weight: 300!important;
+	font-size: 13px;
+}
+
+.ui-custom-message-right p {
+	margin: 0px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 15px;
+	border: 1px solid #E5E5E5;
+	max-width: 50vw;
+	min-width: 5vw;
+	word-break: break-all;
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+	background-color: #F2F1DC;
+	text-shadow: 0 0 0;
+}
+
+.ui-custom-message-left {
+	background: 0 0 no-repeat;
+	background-size: 50px 50px;
+	float: left;
+	clear: both;
+	padding-left: 60px;
+	margin-top: 10px;
+	margin-left: 20px;
+	font-family: 'Open Sans';
+	font-weight: 300!important;
+	font-size: 13px;
+}
+
+.ui-custom-message-left p {
+	margin: 0px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 15px;
+	border: 1px solid #E5E5E5;
+	max-width: 50vw;
+	min-width: 5vw;
+	word-break: break-all;
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+	background-color: #FFFFFF;
+	text-shadow: 0 0 0;
+}
+
+.chat-list {
+	position: relative;
+	height: 83px;
+	font-family: 'Open Sans';
+	font-weight: 300!important;
+	padding-left: 95px;
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+	background: 0.8em 0.4em no-repeat;
+	background-size: 70px 70px;
+}
+
+.chat-list-title {
+	padding-top: 10px;
+}
+
+
+
 textarea {
 	resize: none!important;
 }
@@ -223,6 +474,91 @@ textarea {
 	float: left;
 	padding-right: 1em;
 }
+
+.profile-photo-preview {
+	-webkit-border-radius: .2125em;
+	border-radius: .2125em;
+	margin-left: 1em;
+	margin-top: 10px;
+	display: block;
+}
+
+.profile-photo-bar {
+	height: 120px;
+	padding-top: 10px;
+	padding-bottom: 40px;
+	border-bottom: 1px solid;
+	border-color: #bbb;
+}
+
+.profile-photo-bar > .ui-input-text {
+	opacity: 0;
+	margin: 0;
+	position: relative;
+	width: 120px;
+	height: 120px;
+	top: -120px;
+	margin-bottom: -120px;
+	margin-left: 1em;
+}
+
+#profile-edit-photo{
+	width: 120px;
+	height: 120px;
+}
+
+.people-near-by-list-distance {
+	clear: both;
+	font-size: .75em;
+	font-weight: 400;
+	display: block;
+	margin: .6em 0;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-top: 30px;
+}
+.custom-corners-people-near-by {
+	padding-left: 5em;
+	background: 0.8em 0.4em no-repeat;
+	background-size: 70px 70px;
+}
+
+.send-friend-request {
+	clear: both;
+	font-size: .75em;
+	font-weight: 400;
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-top: 5px;
+	border: 1px solid #9C94FF;
+	padding: 0.5em;
+	float: left;
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+	cursor: pointer;
+}
+
+.reject-friend-request {
+	font-size: .75em;
+	font-weight: 400;
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-top: 5px;
+	margin-left: 10px;
+	border: 1px solid #9C94FF;
+	padding: 0.5em;
+	float: left;
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+	cursor: pointer;
+}
+
+
 
 //custom grid
 
