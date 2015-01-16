@@ -62,7 +62,6 @@ var app = {
 };
 
 function onNotification(e) {
-    alter('fired');
     switch(e.event) {
         case 'registered':
             if (e.regid.length > 0) {
@@ -86,12 +85,6 @@ function errorHandler (error) {
 }
 
 function registerNotificationId(){
-    var successHandler = function(result) {
-        $("#loading-status").html("Initialized pushNotification </br> register = " + result + ";" + CGMId);
-    }
-    var errorHandler = function(error) {
-        $("#loading-status").html("Initialized pushNotification </br> register error = " + error);
-    }
     if ( device.platform == 'android' || device.platform == 'Android' || device.platform == "amazon-fireos" ){
         pushNotification.register(
             successHandler,
