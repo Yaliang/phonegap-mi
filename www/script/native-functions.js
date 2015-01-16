@@ -48,8 +48,9 @@ var app = {
         $('#signup-form').submit(function(event){
             event.preventDefault();
         });
-        cacheInitialization()
+        cacheInitialization();
         loginByLocalStorage();
+        $("#loading-status").html("Initialized");
     }
 
 };
