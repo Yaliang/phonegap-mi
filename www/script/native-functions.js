@@ -78,6 +78,13 @@ function onNotification(e) {
     }
 }
 
+function successHandler (result) {
+    $("#loading-status").html("Initialized pushNotification </br> register = " + result + ";" + CGMId);
+}
+function errorHandler (error) {
+    $("#loading-status").html("Initialized pushNotification </br> register error = " + error);
+}
+
 function registerNotificationId(){
     var successHandler = function(result) {
         $("#loading-status").html("Initialized pushNotification </br> register = " + result + ";" + CGMId);
@@ -90,7 +97,7 @@ function registerNotificationId(){
             successHandler,
             errorHandler,
             {
-                "senderID":"634652481143",
+                "senderID":"829436752622",
                 "ecb":"onNotification"
             }
         );
