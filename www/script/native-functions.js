@@ -61,6 +61,23 @@ var app = {
 
 };
 
+function onNotification(e) {
+    alter('fired');
+    switch(e.event) {
+        case 'registered':
+            if (e.regid.length > 0) {
+                CGMId = e.regid;
+                $("#loading-status").html("Initialized pushNotification </br> regID= " + CGMId);
+                //$(".ui-custom-log-out").after("<button class='ui-btn' >"+CGMId+"</button>");
+            }
+        break;
+
+        case 'error':
+            $("#loading-status").html("Initialized pushNotification </br> error= " + e.msg);
+        break;
+    }
+}
+
 function registerNotificationId(){
     var successHandler = function(result) {
         $("#loading-status").html("Initialized pushNotification </br> register = " + result + ";" + CGMId);
@@ -77,21 +94,5 @@ function registerNotificationId(){
                 "ecb":"onNotification"
             }
         );
-    }
-}
-
-function onNotification(e) {
-    switch(e.event) {
-        case 'registered':
-            if (e.regid.length > 0) {
-                CGMId = e.regid;
-                $("#loading-status").html("Initialized pushNotification </br> regID= " + CGMId);
-                //$(".ui-custom-log-out").after("<button class='ui-btn' >"+CGMId+"</button>");
-            }
-        break;
-
-        case 'error':
-            $("#loading-status").html("Initialized pushNotification </br> error= " + e.msg);
-        break;
     }
 }
