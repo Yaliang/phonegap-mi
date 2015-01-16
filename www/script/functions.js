@@ -1,22 +1,33 @@
-function checkBridgeitEnable(){
-	var currentBridgeitId = Parse.User.current().get("bridgeitId");
-	if (typeof(currentBridgeitId) == "undefined" && bridgeit.isIPhone() && !bridgeit.isRegistered()) {
-		//bridgeit.usePushService( window.pushHub, window.apiKey);
-		bridgeit.register('_reg', 'handlePushRegistration');
+function loginByLocalStorage(){
+	var currentUser = Parse.User.current();
+	if (currentUser) {
+		var successFunction = function() {
+			window.location.hash = "page-event";
+			pullUserEvent();
+			if (!pullNotificationRunning) {
+				pullNotification();
+			}
+			ParsePullAllFriendObjectById(Parse.User.current().id);
+			ParsePullMyChat(Parse.User.current().id,"updatedAt",function(){});
+		};
+		var errorFunction = function() {
+			window.location.hash = "page-login";
+		};
+		ParseUpdateCurrentUser(successFunction, errorFunction);
+	} else {
+		window.location.hash = "page-login";
 	}
 }
 
-function handlePushRegistration(event){
-	if (bridgeit.isRegistered()) {
-		ParseUpdateBridgeit(bridgeit.getId());
-	}
-}
-
+var pullNotificationRunning = false;
 function pullNotification(){
 	var currentUser = Parse.User.current();
+	pullNotificationRunning = true;
 
-	if (currentUser == null)
+	if (currentUser == null){
+		pullNotificationRunning = false
 		return
+	}
 	// check new friend request
 	var displayFunction = function(objects){
 		if ((typeof(objects)!="undefined")&&(objects.length > 0)) {
@@ -38,6 +49,9 @@ function pullNotification(){
 			jQuery("[id=chat]") .each(function(){
 				$(this).addClass("chat-notification-custom");
 			});
+			if ($( ":mobile-pagecontainer" ).pagecontainer( "getActivePage" )[0].id == "page-chat") {
+				pullMyChat();
+			}
 		} else {
 			jQuery("[id=chat]") .each(function(){
 				$(this).removeClass("chat-notification-custom");
@@ -51,14 +65,19 @@ function pullNotification(){
 				}
 			}
 		}
+
 	}
 
-	if ($( ":mobile-pagecontainer" ).pagecontainer( "getActivePage" )[0].id == "page-chat") {
-		pullMyChat();
-	} else {
-		ParsePullUnreadChat(currentUser.id, "updatedAt", displayFunction);
-	}
+	// if ($( ":mobile-pagecontainer" ).pagecontainer( "getActivePage" )[0].id == "page-chat") {
+	// 	pullMyChat();
+	// } else {
+	ParsePullUnreadChat(currentUser.id, "updatedAt", displayFunction);
+	// }
 
+	// auto redirect if stop at loading page
+	if ($( ":mobile-pagecontainer" ).pagecontainer( "getActivePage" )[0].id == "page-loading") {
+		loginByLocalStorage();
+	}	
 
 	setTimeout(function(){
 		pullNotification();
@@ -73,7 +92,9 @@ function signup(){
 	var destID = "page-event";
 	var customFunction = function(object){
 		pullUserEvent();
-		pullNotification();
+		if (!pullNotificationRunning) {
+			pullNotification();
+		}
 		ParseCreateProfilePhotoObject(object.id);
 	};
 	ParseSignup(email, password, email, name, errorObject, destID, customFunction);
@@ -81,13 +102,18 @@ function signup(){
 }
 
 function login(){
+	cacheInitialization();
 	var email = $("#login-email").val();
 	var password = $("#login-password").val();
 	var errorObject = $("#login-error");
 	var destID = "page-event";
 	var customFunction = function(){
 		pullUserEvent();
-		pullNotification();
+		if (!pullNotificationRunning) {
+			pullNotification();
+		}
+		ParsePullAllFriendObjectById(Parse.User.current().id);
+		ParsePullMyChat(Parse.User.current().id,"updatedAt",function(){});
 	};
 	ParseLogin(email, password, errorObject, destID, customFunction);
 	$("#login-password").val("");
@@ -100,6 +126,7 @@ function logout(){
 	$("#login-email").val(email);
 	$("#login-error").html("");
 	$("#signup-error").html("");
+	localStorage.clear();
 	var destID = "page-login";
 	ParseLogout(destID);
 
@@ -211,9 +238,9 @@ function pullUserEvent(){
 					newElement = newElement + "<p class='ui-custom-event-time'>" + time + "</p>";
 				}
 				if ((location.length == 0) && (time.length == 0)) {
-					newElement = newElement + "<p class='ui-custom-event-description-less-margin'>" + description.replace("\n","</br>") + "</p>";
+					newElement = newElement + "<p class='ui-custom-event-description-less-margin'>" + ((description.length == 0) ? "</br>" : description.replace("\n","</br>")) + "</p>";
 				} else {
-					newElement = newElement + "<p class='ui-custom-event-description'>" + description.replace("\n","</br>") + "</p>";
+					newElement = newElement + "<p class='ui-custom-event-description'>" + ((description.length == 0) ? "</br>" : description.replace("\n","</br>")) + "</p>";
 				}
 				newElement = newElement + "<div id='comment-statistics-"+id+"' class='event-statistics'>" + commentNumber + " Comments</div><div id='interest-statistics-"+id+"' class='event-statistics'>" + interestNumber + " Interests</div>";
 				newElement = newElement + "</div>";
@@ -310,6 +337,7 @@ function convertTime(rawTime){
 function updateEventDetail(id){
 	$("#event-detail-content").html("");
 	$("#event-id-label").html(id);
+	$("#send-comment-bar").fadeIn();
 	var descendingOrderKey = "createdAt";
 	var displayFunction = function(object){
 		var title = object[0].get("title");
@@ -593,10 +621,12 @@ function removeInterestEvent(eventId){
 
 function sendToolbarActiveKeyboard(id){
 	$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
-		duration: 150,
+		duration: 300,
         complete : function(){
-            $('#'+id).textinput('enable');
-			$('#'+id).focus();
+        	if (window.navigator.standalone == true) {
+        		$('#'+id).prop('disabled', false);
+				$('#'+id).focus();
+        	}
         }
     });
 }
@@ -672,7 +702,7 @@ function saveProfile(){
 	$("#profile-save-btn").unbind("click");
 	var currentUser = Parse.User.current();
 	var owner = currentUser.getUsername();
-	var id = $("#saveprofile-id").html();
+	var id = currentUser.id;
 	var fileUploadControl = $("#profile-edit-photo")[0];
 	if (fileUploadControl.files.length > 0) {
 		var canvas = document.getElementById('canvas-photo');
@@ -764,26 +794,32 @@ function buildUserListElement(object, liIdPrefix, lat, lng) {
 	var longitude = object.get('longitude');
 	var userId = object.id;
 	var updatedAt = object.updatedAt;
-	var newElement = "<li id='"+liIdPrefix+userId+"'>";
-	newElement = newElement + "<div class='custom-corners-people-near-by custom-corners'>"
-	newElement = newElement + "<div class='ui-bar ui-bar-a'>";
-	newElement = newElement + "<div><strong>"+name+"</strong></div>";
-	newElement = newElement + "<div class='ui-icon-custom-gender' style='";
+	var newElement = "";
+	if (liIdPrefix != null) {
+		newElement += "<li id='"+liIdPrefix+userId+"'>";
+	}
+	newElement += "<div class='custom-corners-people-near-by custom-corners'>"
+	newElement += "<div class='ui-bar ui-bar-a'>";
+	newElement += "<div><strong>"+name+"</strong></div>";
+	newElement += "<div class='ui-icon-custom-gender' style='";
 	if (typeof(gender) == 'undefined') {
 		//$("#"+eventId+"-owner-denger").html(gender.toString());
 	} else if (gender) {
-		newElement = newElement + "background-image:url("+"./content/customicondesign-line-user-black/png/male-white-20.png"+");";
-		newElement = newElement + "background-color:"+"#8970f1"+";";
+		newElement += "background-image:url("+"./content/customicondesign-line-user-black/png/male-white-20.png"+");";
+		newElement += "background-color:"+"#8970f1"+";";
 	} else {
-		newElement = newElement + "background-image:url("+"./content/customicondesign-line-user-black/png/female1-white-20.png"+");";
-		newElement = newElement + "background-color:"+"#f46f75"+";";
+		newElement += "background-image:url("+"./content/customicondesign-line-user-black/png/female1-white-20.png"+");";
+		newElement += "background-color:"+"#f46f75"+";";
 	};
-	newElement = newElement + "'></div>";
+	newElement += "'></div>";
 	if ((lat != null) && (lng != null)) {
-		newElement = newElement + "<div class='people-near-by-list-distance'>" + getDistance(latitude, longitude, lat, lng) + "km, "+convertTime(updatedAt)+"</div>";
+		newElement += "<div class='people-near-by-list-distance'>" + getDistance(latitude, longitude, lat, lng) + "km, "+convertTime(updatedAt)+"</div>";
 	}
-	newElement = newElement + "</div>";
-	newElement = newElement + "</div></li>";
+	newElement += "</div>";
+	newElement += "</div>";
+	if (liIdPrefix != null) {
+		newElement += "</li>";
+	}
 
 	return newElement;
 }
@@ -921,7 +957,7 @@ function getFriendOptionsButton(userId, option){
 					});
 				}
 			}
-			ParseCheckFriend(friendId, ownerId, displayFunction);
+			CacheCheckFriend(ownerId, friendId, displayFunction);
 		} else {
 			var valid = object.get('valid');
 			if (valid) {
@@ -933,7 +969,7 @@ function getFriendOptionsButton(userId, option){
 			}
 		}
 	}
-	ParseCheckFriend(Parse.User.current().id, userId, displayFunction);
+	CacheCheckFriend(userId, Parse.User.current().id, displayFunction);
 }
 
 function sendFriendRequest(friendId) {
@@ -984,9 +1020,16 @@ function unbindSearchAutocomplete(){
 }
 
 function pullMyFriendRequests() {
-	$("#page-my-friend-requests > .ui-content").html("<ul id='friend-requests-list' data-role='listview' data-inset='true' class='ui-listview ui-listview-inset ui-corner-all ui-shadow'></ul>");
+	$("#page-my-friend-requests > .ui-content").html("<ul id='friend-requests-list' class='ui-listview ui-listview-inset ui-corner-all ui-shadow'></ul>");
 	var descendingOrderKey = "createdAt";
 	var displayFunction = function(objects){
+		if (objects.length == 0) {
+			$("#page-my-friend-requests > .ui-content").addClass("ui-hidden-accessible");
+			$("#new-friend-requests-btn").addClass("ui-hidden-accessible");
+		} else {
+			$("#page-my-friend-requests > .ui-content").removeClass("ui-hidden-accessible");
+			$("#new-friend-requests-btn").removeClass("ui-hidden-accessible");
+		}
 		for (var i=0; i<objects.length; i++) {
 			var friendId = objects[i].get("owner");
 			var objectId = objects[i].id;
@@ -1010,21 +1053,37 @@ function pullMyFriendRequests() {
 			ParseSetRequestRead(objectId);
 		}
 	}
-	ParsePullNewFriendRequest(Parse.User.current().id, descendingOrderKey, displayFunction);
+	CachePullNewFriendRequest(Parse.User.current().id, descendingOrderKey, displayFunction);
 }
 
 function pullMyFriendList() {
 	$( "#friend-list" ).html("");
-	var descendingOrderKey = "updatedAt";
+	// check if there is new friend requests. If none, hide the button to transfer request list page
 	var displayFunction = function(objects){
+		if (objects.length == 0) {
+			$("#page-my-friend-requests > .ui-content").addClass("ui-hidden-accessible");
+			$("#new-friend-requests-btn").addClass("ui-hidden-accessible");
+		} else {
+			$("#page-my-friend-requests > .ui-content").removeClass("ui-hidden-accessible");
+			$("#new-friend-requests-btn").removeClass("ui-hidden-accessible");
+		}
+	}
+	CachePullNewFriendRequest(Parse.User.current().id, "updatedAt", displayFunction);
+
+	var descendingOrderKey = "createdAt";
+	var displayFunction = function(objects){
+		// sort user list
+
+		// display them
 		for (var i=0; i<objects.length; i++) {
 			var friendId = objects[i].get("friend");
 			var objectId = objects[i].id;
+			$( "#friend-list" ).append("<li id='friend-list-"+friendId+"'></li>");
 			var displayFunction = function(userObject, data) {
-				var newElement = buildUserListElement(userObject, "friend-list-", null, null);
+				var newElement = buildUserListElement(userObject, null, null, null);
 				var objectId = data.friendObject.id;
 				var friendId = data.friendObject.get('friend');
-				$( "#friend-list" ).append(newElement);
+				$( "#friend-list-"+userObject.id ).append(newElement);
 				var displayFunction = function(object, data){
 					var photo120 = object.get("profilePhoto120");
 					if (typeof(photo120) == "undefined") {
@@ -1039,7 +1098,7 @@ function pullMyFriendList() {
 			CacheGetProfileByUserId(friendId, displayFunction, {friendObject:objects[i]});
 		}
 	}
-	ParsePullMyFriend(Parse.User.current().id, descendingOrderKey, displayFunction);
+	CachePullMyFriend(Parse.User.current().id, descendingOrderKey, displayFunction);
 }
 
 function buildElementInChatMessagesPage(object){
@@ -1062,48 +1121,6 @@ function buildElementInChatMessagesPage(object){
 	return newElement;
 }
 
-/*var cashedPhoto120 = new Array;
-function getCashedPhoto120(userId, destSelector){
-	for (var i = cashedPhoto120.length-1; i >= 0; i--){
-		if (cashedPhoto120[i].id == userId) {
-			if (typeof(destSelector) != "undefined") {
-				$(destSelector).css("backgroundImage","url("+cashedPhoto120[i].photo120+")");
-				return;
-			} else {
-				return cashedPhoto120[i].photo120;
-			}
-		}
-	}
-	updateCashedPhoto120(userId, destSelector);
-	return "";
-}
-
-function updateCashedPhoto120(userId, destSelector){
-	var successFunction = function(data, object){
-		var userId = object[0].get("userId");
-		var photo120Data = object[0].get("profilePhoto120");
-		if (typeof(photo120Data)=="undefined") {
-			photo120Data = "./content/png/Taylor-Swift.png";
-		}
-		var existFlag = false;
-		for (var i = cashedPhoto120.length-1; i >=0; i--){
-			if (userId == cashedPhoto120[i].id) {
-				cashedPhoto120[i].photo120 = photo120Data;
-				existFlag = true;
-				break;
-			}
-		}
-		if (!existFlag) {
-			var newCashed = {id: userId, photo120: photo120Data};
-			cashedPhoto120.push(newCashed);
-		}
-		if (typeof(destSelector) != "undefined") {
-			$(destSelector).css("backgroundImage", "url("+photo120Data+")");
-		}
-	};
-	ParseGetProfilePhoto(null, userId, successFunction);
-}*/
-
 function sendMessage(){
 	var groupId = $("#group-id-label").html();
 	var senderId = Parse.User.current().id;
@@ -1120,15 +1137,8 @@ function sendMessage(){
 			var subject = $("#chat-messages-title").html+": "+text;
 			var data = {subject: subject};
 			var ownerId = object.get('ownerId');
-			var displayFunction = function(user){
-				var bridgeitId = user.get("bridgeitId");
-				/*bridgeit.push(bridgeitId, {
-					subject: data.subject
-				});*/
-			}
-			CacheGetProfileByUserId(ownerId, displayFunction);
 		}
-		ParseSetGroupMemberChatObjectReadFalse(senderId, groupId, text, notificationFunction);
+		CacheSetGroupMemberChatObjectReadFalse(senderId, groupId, text, notificationFunction);
 		var newElement = buildElementInChatMessagesPage(object);
 		$("#page-chat-messages > .ui-content").append(newElement);
 		var displayFunction = function(object, data){
@@ -1169,13 +1179,15 @@ function updateChatTitle(friendId, id, option){
 		}
 	}
 	// get the Friend object, in order to get alias of friend.
-	ParseCheckFriend(Parse.User.current().id, friendId, displayFunction);
+	CacheCheckFriend(friendId, Parse.User.current().id, displayFunction);
 }
 
 function startPrivateChat(friendId){
 	$("#page-chat-messages > .ui-content").html("");
 	$("#chat-messages-title").html("");
 	$("#message-content").val("");
+	$.mobile.changePage( "#page-chat-messages", { transition: "slide"});
+	$('#send-message-bar').fadeIn();
 	var memberId = new Array;
 	memberId.push(friendId);
 	memberId.push(Parse.User.current().id);
@@ -1200,19 +1212,20 @@ function startPrivateChat(friendId){
 					}
 					CacheGetProfilePhoto(objects[i].get('senderId'), displayFunction, {messageId: objects[i].id});
 				}
-				$.mobile.changePage( "#page-chat-messages", { transition: "slide"});
 				setTimeout(function(){
 					$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
-						duration: 150,
-						complete : function(){}
-					});
-				},575);
+						duration: 500,
+				        complete : function(){
+				        }
+				    });
+				},1);
 			}
+			//CachePullChatMessage(groupId, limitNum, null, displayFunction);
 			ParsePullChatMessage(groupId, limitNum, descendingOrderKey, null, displayFunction)
 		}
 		ParseSetChatObjectAsRead(currentId, groupId, null, successFunction);
 	}
-	ParseGetGroupId(memberId,successFunction);
+	CacheGetGroupId(memberId,successFunction);
 	//updateCashedPhoto120(friendId);
 	updateChatTitle(friendId, "chat-messages-title");
 }
@@ -1241,9 +1254,10 @@ function updateChatMessage(object){
 			}
 		}
 		$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
-			duration: 150,
-			complete : function(){}
-		});
+			duration: 750,
+	        complete : function(){
+	        }
+	    });
 	}
 	ParsePullChatMessage(groupId, limitNum, descendingOrderKey, beforeAt, displayFunction);
 
@@ -1266,7 +1280,6 @@ function buildElementInChatListPage(object){
 
 function pullMyChat(){
 	var ownerId = Parse.User.current().id;
-	var descendingOrderKey = "updatedAt";
 	var displayFunction = function(objects){
 		for (var i=objects.length-1; i>=0; i--) {
 			if ($("#chat-"+objects[i].id).length == 0) {
@@ -1296,16 +1309,17 @@ function pullMyChat(){
 						}
 					}
 				}
-				ParseGetGroupMember(groupId, successFunction, data);
+				CacheGetGroupMember(groupId, successFunction, data);
 			} else {
+				
 				var chatId = objects[i].id;
 				var data = {chatId: chatId};
 				var unreadNum = objects[i].get('unreadNum');
+				// move the element to top of the list
+				var element = $("#chat-"+data.chatId);
+				$("#page-chat > .ui-content").prepend(element);
 				// update unread number label
 				if (unreadNum > 0){
-					// when unread number positive, move the element to top of the list
-					var element = $("#chat-"+data.chatId);
-					$("#page-chat > .ui-content").prepend(element);
 					if ($("#chat-"+data.chatId+"> .ui-li-count").length > 0) {
 						$("#chat-"+data.chatId+"> .ui-li-count").html(unreadNum.toString());
 					} else {
@@ -1332,10 +1346,10 @@ function pullMyChat(){
 						}
 					}
 				}
-				ParseGetGroupMember(groupId, successFunction, data);*/
+				CacheGetGroupMember(groupId, successFunction, data);*/
 			}
 		}
 	}
-	ParsePullMyChat(ownerId,descendingOrderKey,displayFunction);
+	CachePullMyChat(ownerId,displayFunction);
 	
 }

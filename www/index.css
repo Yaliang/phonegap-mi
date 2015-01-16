@@ -1,3 +1,20 @@
+/*.in {
+	-webkit-animation-timing-function: ease-out;
+	-webkit-animation-duration: 0ms;
+	-moz-animation-timing-function: ease-out;
+	-moz-animation-duration: 0ms;
+	animation-timing-function: ease-out;
+	animation-duration: 0ms;
+}
+.out {
+	-webkit-animation-timing-function: ease-in;
+	-webkit-animation-duration: 0ms;
+	-moz-animation-timing-function: ease-in;
+	-moz-animation-duration: 0ms;
+	animation-timing-function: ease-in;
+	animation-duration: 0ms;
+}*/
+
 .custom-size-flipswitch-event-create-visibility.ui-flipswitch .ui-btn.ui-flipswitch-on {
 	text-indent: -3.8em;
 }
@@ -284,7 +301,7 @@ a {
 }
 
 .event-page-right-top-options > li {
-	padding: 0.8em 1.1em 0.8em 1.1em;
+	padding: 0.8em 0.65em 0.8em 0.65em;
 	font-size: 15px;
 	border-bottom: 1px solid #AEADAD;
 

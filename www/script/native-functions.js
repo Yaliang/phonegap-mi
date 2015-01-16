@@ -1,3 +1,5 @@
+// the variable for pushNotification;
+var pushNotification;
 var app = {
     // Application Constructor
     initialize: function() {
@@ -15,35 +17,43 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        pushNotification = window.plugins.pushNotification;
 
-        var currentUser = Parse.User.current();
-        $('#comment-content').on("blur",function(){
-            $('#comment-content').textinput('disable');
-        });
-        $('#message-content').on("blur",function(){
-            $('#message-content').textinput('disable');
-        });
+        if (window.navigator.standalone == true) {
+            $('#comment-content').on("blur",function(){
+                $('#comment-content').prop('disabled', true);
+            });
+            $('#message-content').on("blur",function(){
+                $('#message-content').prop('disabled', true);
+            });
+            $('#comment-content').prop('disabled', true);
+            $('#message-content').prop('disabled', true);
+        }
         $('#message-chat-form').submit(function(event){
-            $('#message-content').trigger('blur');
+            if (window.navigator.standalone == true) {
+                $('#message-content').trigger('blur');
+            } else {
+                sendToolbarActiveKeyboard('message-content');
+            }
             event.preventDefault();
         });
         $('#comment-form').submit(function(event){
-            $('#comment-content').trigger('blur');
+            sendToolbarActiveKeyboard('comment-content');
+            if (window.navigator.standalone == true) {
+                $('#comment-content').trigger('blur');
+            } else {
+                sendToolbarActiveKeyboard('message-content');
+            }
             event.preventDefault();
         });
-        if (currentUser) {
-            var successFunction = function() {
-                window.location.hash = "page-event";
-                pullUserEvent();
-                pullNotification();
-            };
-            var errorFunction = function() {
-                window.location.hash = "page-login";
-            };
-            ParseUpdateCurrentUser(successFunction, errorFunction);
-        } else {
-            window.location.hash = "page-login";
-        }
-
+        $('#login-form').submit(function(event){
+            event.preventDefault();
+        });
+        $('#signup-form').submit(function(event){
+            event.preventDefault();
+        });
+        cacheInitialization()
+        loginByLocalStorage();
     }
+
 };

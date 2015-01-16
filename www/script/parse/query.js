@@ -314,7 +314,7 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 			photoObject.set('profilePhoto120',photo120);
 			var parseFile = new Parse.File(photo.name, photo);
 			parseFile.save().then(function(object) {
-				photoObject.set("photo",object.url());
+				photoObject.set("profilePhoto",object.url());
 				photoObject.save(null,{
 					success: function(object){
 						displayFunction(object);
@@ -336,7 +336,7 @@ function ParseGetProfilePhoto(userId, displayFunction, data) {
 	query.first({
 		success: function(object){
 			displayFunction(object, data);
-			CacheAddPhoto(object);
+			CacheUpdatePhoto(object);
 		}
 	})
 }
@@ -379,13 +379,17 @@ function ParseSendFriendRequest(ownerId, friendId, successFunction){
 				friend.save(null, {
 					success: function(friend){
 						successFunction(friend);
+						CacheUpdateFriend(friend);
 					}
 				})
 			} else {
 				successFunction(object);
+				CacheUpdateFriend(object);
 			}
 		}
 	})
+
+	
 
 	
 }
@@ -407,6 +411,7 @@ function ParseAcceptFriendRequest(objectId, ownerId, friendId, successFunction){
 			object.set('read',true);
 			object.save(null, {
 				success: function(object){
+					CacheUpdateFriend(object);
 					// try to update frient's data
 					var ownerId = object.get('friend');
 					var friendId = object.get('owner');
@@ -427,6 +432,7 @@ function ParseAcceptFriendRequest(objectId, ownerId, friendId, successFunction){
 								friend.save(null, {
 									success: function(object){
 										successFunction(object);
+										CacheUpdateFriend(object);
 									}
 								})
 							} else {
@@ -436,6 +442,7 @@ function ParseAcceptFriendRequest(objectId, ownerId, friendId, successFunction){
 								object.save(null,{
 									success: function(object){
 										successFunction(object);
+										CacheUpdateFriend(object);
 									}
 								})
 							}
@@ -461,6 +468,7 @@ function ParseRejectFriendRequest(objectId, ownerId, friendId, successFunction){
 
 	query.first({
 		success:function(object){
+			CacheRemoveFriend(object);
 			object.destroy({
 				success: function(object){
 					successFunction(friendId);
@@ -480,6 +488,9 @@ function ParsePullNewFriendRequest(userId, descendingOrderKey, displayFunction) 
 	query.find({
 		success: function(objects){
 			displayFunction(objects);
+			for (var i = 0; i < objects.length; i++) {
+				CacheUpdateFriend(objects[i]);
+			}
 		}
 	})
 }
@@ -493,6 +504,9 @@ function ParsePullUnreadFriendRequest(userId, displayFunction) {
 	query.find({
 		success: function(objects){
 			displayFunction(objects);
+			for (var i = 0; i < objects.length; i++) {
+				CacheUpdateFriend(objects[i]);
+			}
 		}
 	})
 }
@@ -508,6 +522,7 @@ function ParseCheckFriend(ownerId, friendId, displayFunction) {
 	query.first({
 		success: function(object){
 			displayFunction(ownerId, friendId, object);
+			CacheUpdateFriend(object);
 		}
 	})
 
@@ -524,8 +539,29 @@ function ParsePullMyFriend(ownerId, descendingOrderKey, displayFunction) {
 	query.find({
 		success: function(objects){
 			displayFunction(objects);
+			for (var i = 0; i < objects.length; i++) {
+				CacheUpdateFriend(objects[i]);
+			}
 		}
 	})
+}
+
+function ParsePullAllFriendObjectById(ownerId){
+	var Friend = Parse.Object.extend("Friend");
+	var queryAsOwner = new Parse.Query(Friend);
+	queryAsOwner.equalTo("owner",ownerId);
+	var queryAsFriend = new Parse.Query(Friend);
+	queryAsFriend.equalTo("friend",ownerId);
+	var query = Parse.Query.or(queryAsOwner,queryAsFriend);
+
+	query.find({
+		success: function(objects){
+			for (var i = 0; i < objects.length; i++) {
+				CacheUpdateFriend(objects[i]);
+			}
+		}
+	})
+
 }
 
 function ParseSearchUserByEmailAndName(string, limitNumber, descendingOrderKey, displayFunction){
@@ -576,10 +612,12 @@ function ParseGetGroupId(memberId, successFunction){
 				group.save(null,{
 					success: function(object){
 						successFunction(object);
+						CacheUpdateGroup(object)
 					}
 				})
 			} else {
 				successFunction(object);
+				CacheUpdateGroup(object)
 			}
 		}
 	})
@@ -592,6 +630,7 @@ function ParseGetGroupMember(groupId, successFunction, data){
 	query.get(groupId,{
 		success: function(object){
 			successFunction(object, data);
+			CacheUpdateGroup(object);
 		}
 	});
 }
@@ -613,6 +652,7 @@ function ParseSetChatObjectAsRead(ownerId, groupId, count, successFunction){
 				chat.save(null, {
 					success: function(object){
 						successFunction(object);
+						CacheUpdateChat(object);
 					}
 				});
 			} else {
@@ -624,10 +664,12 @@ function ParseSetChatObjectAsRead(ownerId, groupId, count, successFunction){
 					object.save(null,{
 						success: function(object){
 							successFunction(object);
+							CacheUpdateChat(object);
 						}
 					});
 				} else {
 					successFunction(object);
+					CacheUpdateChat(object);
 				}
 			}
 		}
@@ -647,6 +689,24 @@ function ParsePullChatMessage(groupId, limitNum, descendingOrderKey, beforeAt, d
 	query.find({
 		success: function(objects){
 			displayFunction(objects);
+			for (var i = 0; i < objects.length; i++) {
+				CacheUpdateMessage(objects[i]);
+			}
+		}
+	})
+}
+
+function ParsePullAllMessageByGroupIdForCache(groupId, limitNum, beforeAt, displayFunction){
+	var Message = Parse.Object.extend("Message");
+	var query = new Parse.Query(Message);
+
+	query.equalTo('groupId',groupId);
+	query.find({
+		success: function(objects){
+			for (var i = 0; i < objects.length; i++) {
+				CacheUpdateMessage(objects[i]);
+			}
+			CachePullChatMessage(groupId, limitNum, beforeAt, displayFunction);
 		}
 	})
 }
@@ -661,8 +721,65 @@ function ParseAddChatMessage(senderId, groupId, text, displayFunction){
 	message.save(null, {
 		success: function(object){
 			displayFunction(object);
+			CacheUpdateMessage(object)
 		}
 	})
+}
+
+function ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId, currentIndex, groupId, text, notificationFunction) {
+	var Chat = Parse.Object.extend("Chat");
+	var query = new Parse.Query(Chat);
+	var ownerId = memberId[currentIndex];
+	query.equalTo("ownerId", ownerId);
+	query.equalTo("groupId", groupId);
+	if (senderId != ownerId) {
+		// if the member of group isn't the sender
+		query.first({
+			success:function(object){
+				if (typeof(object) == "undefined") {
+					// create new chat object for members of group
+					var chat = new Chat;
+					chat.set("ownerId", ownerId);
+					chat.set("groupId", groupId);
+					chat.set("hidden", false);
+					chat.set("unreadNum", 1);
+					chat.save(null,{
+						success: function(object) {
+							notificationFunction(text,object);
+							if (currentIndex + 1 < memberId.length) {
+								ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId, currentIndex+1, groupId, text, notificationFunction);
+							}
+						}
+					});
+				} else {
+					// set unread number plus 1 for chat object
+					object.increment("unreadNum", 1);
+					object.save(null, {
+						success: function(object) {
+							notificationFunction(text,object);
+							if (currentIndex + 1 < memberId.length) {
+								ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId, currentIndex+1, groupId, text, notificationFunction);
+							}
+						}
+					});
+				}
+			}
+		})
+	} else {
+		// if the member is the sender
+		query.first({
+			success: function(object){
+				object.save(null, {
+					success: function(object) {
+						CacheUpdateChat(object);
+						if (currentIndex + 1 < memberId.length) {
+							ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId, currentIndex+1, groupId, text, notificationFunction);
+						}
+					}
+				})
+			}
+		})
+	}
 }
 
 function ParseSetGroupMemberChatObjectReadFalse(senderId, groupId, text, notificationFunction) {
@@ -673,43 +790,9 @@ function ParseSetGroupMemberChatObjectReadFalse(senderId, groupId, text, notific
 	query.first({
 		success: function(object){
 			// get the group members' id
+			CacheUpdateGroup(object);
 			var memberId = object.get("memberId");
-			for (var i=0; i<memberId.length; i++) {
-				if (senderId != memberId[i]) {
-					// if the member of group isn't the sender
-					var Chat = Parse.Object.extend("Chat");
-					var query = new Parse.Query(Chat);
-					var ownerId = memberId[i];
-					query.equalTo("ownerId", memberId[i]);
-					query.equalTo("groupId", groupId);
-					query.first({
-						success:function(object){
-							if (typeof(object) == "undefined") {
-								// create new chat object for members of group
-								var chat = new Chat;
-								chat.set("ownerId", ownerId);
-								chat.set("groupId", groupId);
-								chat.set("hidden", false);
-								chat.set("unreadNum", 1);
-								chat.save(null,{
-									success: function(object) {
-										notificationFunction(text,object);
-									}
-								});
-							} else {
-								// set unread number plus 1 for chat object
-								object.increment("unreadNum", 1);
-								object.save(null, {
-									success: function(object) {
-										notificationFunction(text,object);
-									}
-								});
-							}
-						}
-					})
-
-				}
-			}
+			ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId, 0, groupId, text, notificationFunction);
 		}
 	})
 }
@@ -724,6 +807,9 @@ function ParsePullMyChat(ownerId,descendingOrderKey,displayFunction){
 	query.find({
 		success: function(objects){
 			displayFunction(objects);
+			for (var i=0; i<objects.length; i++) {
+				CacheUpdateChat(objects[i]);
+			}
 		}
 	})
 }
@@ -739,6 +825,47 @@ function ParsePullUnreadChat(ownerId, descendingOrderKey, displayFunction){
 	query.find({
 		success: function(objects){
 			displayFunction(objects);
+			for (var i=0; i<objects.length; i++) {
+				CacheUpdateChat(objects[i]);
+			}
+		}
+	})
+}
+
+// maintain cached array
+
+function ParseUpdateCache(className, updateIdList,lastUpdate){
+	var ClassObject = Parse.Object.extend(className);
+	var query = new Parse.Query(ClassObject);
+
+	query.containedIn("objectId",updateIdList);
+	query.greaterThan("updatedAt",lastUpdate);
+	query.find({
+		success: function(objects){
+			console.log(className+": "+lastUpdate.toJSON()+" "+objects.length);
+			for (var i = 0; i < objects.length; i++) {
+				switch(className) {
+					case "Photo":
+						CacheUpdatePhoto(objects[i]);
+						break;
+					case "User":
+						CacheUpdateUser(objects[i]);
+						break;
+					case "Friend":
+						CacheUpdateFriend(objects[i]);
+						break;
+					case "Chat":
+						CacheUpdateChat(objects[i]);
+						break;
+					case "Group":
+						CacheUpdateGroup(objects[i]);
+						break;
+					case "Message":
+						CacheUpdateMessage(objects[i]);
+						break;
+					default:
+				}
+			}
 		}
 	})
 }
