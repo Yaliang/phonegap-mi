@@ -63,7 +63,7 @@ var app = {
 
 function registerNotificationId(){
     var successHandler = function(result) {
-        $("#loading-status").html("Initialized pushNotification </br> register = " + result);
+        $("#loading-status").html("Initialized pushNotification </br> register = " + result + ";" + CGMId);
     }
     var errorHandler = function(error) {
         $("#loading-status").html("Initialized pushNotification </br> register error = " + error);
@@ -88,5 +88,10 @@ function onNotification(e) {
                 $("#loading-status").html("Initialized pushNotification </br> regID= " + CGMId);
                 //$(".ui-custom-log-out").after("<button class='ui-btn' >"+CGMId+"</button>");
             }
+        break;
+
+        case 'error':
+            $("#loading-status").html("Initialized pushNotification </br> error= " + e.msg);
+        break;
     }
 }
