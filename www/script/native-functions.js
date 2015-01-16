@@ -1,3 +1,5 @@
+// instant variable to handle pushNotification
+var pushNotification
 var app = {
     // Application Constructor
     initialize: function() {
@@ -51,6 +53,8 @@ var app = {
         cacheInitialization();
         loginByLocalStorage();
         $("#loading-status").html("Initialized");
+        pushNotification = window.plugins.pushNotification;
+        $("#loading-status").html("Initialized pushNotification");
     }
 
 };
