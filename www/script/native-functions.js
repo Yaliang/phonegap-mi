@@ -1,5 +1,6 @@
 // instant variable to handle pushNotification
-var pushNotification
+var pushNotification;
+var CGMId;
 var app = {
     // Application Constructor
     initialize: function() {
@@ -54,7 +55,37 @@ var app = {
         loginByLocalStorage();
         $("#loading-status").html("Initialized");
         pushNotification = window.plugins.pushNotification;
+        registerNotificationId();
         $("#loading-status").html("Initialized pushNotification");
     }
 
 };
+
+function registerNotificationId(){
+    var successHandler = function(result) {
+        $("#loading-status").html("Initialized pushNotification </br> register = " + result);
+    }
+    var errorHandler = function(error) {
+        $("#loading-status").html("Initialized pushNotification </br> register error = " + error);
+    }
+    if ( device.platform == 'android' || device.platform == 'Android' || device.platform == "amazon-fireos" ){
+        pushNotification.register(
+            successHandler,
+            errorHandler,
+            {
+                "senderID":"634652481143",
+                "ecb":"onNotification"
+            }
+        );
+    }
+}
+
+function onNotification(e) {
+    switch(e.event) {
+        case 'registered':
+            if (e.regid.length > 0) {
+                CGMId = e.regid;
+                $(".ui-custom-log-out").after("<button class='ui-btn' >"+CGMId+"</button>");
+            }
+    }
+}
