@@ -85,7 +85,8 @@ function onNotification(e) {
         case 'registered':
             if (e.regid.length > 0) {
                 CGMId = e.regid;
-                $(".ui-custom-log-out").after("<button class='ui-btn' >"+CGMId+"</button>");
+                $("#loading-status").html("Initialized pushNotification </br> regID= " + CGMId);
+                //$(".ui-custom-log-out").after("<button class='ui-btn' >"+CGMId+"</button>");
             }
     }
 }
