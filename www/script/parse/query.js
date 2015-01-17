@@ -900,10 +900,10 @@ function ParseUpdateCache(className, updateIdList,lastUpdate){
 }
 
 
-function ParseUpdateGCMId(displayFunction){
+function ParseUpdateGCMId(regid, displayFunction){
 	var currentUser = Parse.User.current();
 
-	currentUser.set("GCMId",GCMId);
+	currentUser.set("GCMId",regid.toString());
 	currentUser.save(null,{
 		success: function(object){
 			displayFunction();

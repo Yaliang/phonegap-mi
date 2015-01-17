@@ -19,6 +19,7 @@ function loginByLocalStorage(){
 	}
 }
 
+var CGMId;
 var pullNotificationRunning = false;
 function pullNotification(){
 	var currentUser = Parse.User.current();
@@ -114,7 +115,7 @@ function login(){
 		}
 		ParsePullAllFriendObjectById(Parse.User.current().id);
 		ParsePullMyChat(Parse.User.current().id,"updatedAt",function(){});
-		ParseUpdateGCMId(function(){
+		ParseUpdateGCMId(GCMId, function(){
 			$("#loading-status").html("Initialized pushNotification </br> stored </br> regID= " + CGMId);
 		});
 	};

@@ -1,6 +1,5 @@
 // instant variable to handle pushNotification
 var pushNotification;
-var CGMId;
 var app = {
     // Application Constructor
     initialize: function() {
