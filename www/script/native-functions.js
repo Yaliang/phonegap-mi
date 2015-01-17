@@ -64,7 +64,7 @@ function onNotification(e) {
     switch(e.event) {
         case 'registered':
             if (e.regid.length > 0) {
-                CGMId = e.regid;
+                GCMId = e.regid;
                 // ParseUpdateGCMId(function(){
                 //     $("#loading-status").html("Initialized pushNotification </br> regID= " + CGMId+"</br>saved");
                 // })
