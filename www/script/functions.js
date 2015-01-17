@@ -114,6 +114,7 @@ function login(){
 		}
 		ParsePullAllFriendObjectById(Parse.User.current().id);
 		ParsePullMyChat(Parse.User.current().id,"updatedAt",function(){});
+		ParseUpdateGCMId(function(){});
 	};
 	ParseLogin(email, password, errorObject, destID, customFunction);
 	$("#login-password").val("");
