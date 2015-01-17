@@ -109,6 +109,7 @@ function login(){
 	var errorObject = $("#login-error");
 	var destID = "page-event";
 	var customFunction = function(){
+		$("#loading-status").append("<span>login success</span>");
 		pullUserEvent();
 		if (!pullNotificationRunning) {
 			pullNotification();
