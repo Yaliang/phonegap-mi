@@ -116,12 +116,10 @@ function login(){
 		}
 		ParsePullAllFriendObjectById(Parse.User.current().id);
 		ParsePullMyChat(Parse.User.current().id,"updatedAt",function(){});
-		ParseUpdateGCMId(GCMId, function(){
-			$("#loading-status").html("Initialized pushNotification </br> stored </br> regID= " + CGMId);
-		});
 	};
 	ParseLogin(email, password, errorObject, destID, customFunction);
 	$("#login-password").val("");
+	registerNotificationId();
 }
 
 function logout(){
@@ -134,7 +132,7 @@ function logout(){
 	localStorage.clear();
 	var destID = "page-login";
 	ParseLogout(destID);
-
+	unregisterNotificationId();
 }
 
 function createUserEvent(){

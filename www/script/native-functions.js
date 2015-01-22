@@ -54,7 +54,6 @@ var app = {
         loginByLocalStorage();
         $("#loading-status").html("Initialized");
         pushNotification = window.plugins.pushNotification;
-        registerNotificationId();
         $("#loading-status").html("Initialized pushNotification");
     }
 
@@ -65,10 +64,10 @@ function onNotification(e) {
         case 'registered':
             if (e.regid.length > 0) {
                 GCMId = e.regid;
-                // ParseUpdateGCMId(function(){
-                //     $("#loading-status").html("Initialized pushNotification </br> regID= " + CGMId+"</br>saved");
-                // })
-                $("#loading-status").html("Initialized pushNotification </br> regID= " + CGMId);
+                ParseUpdateGCMId(GCMId, function(){
+                    $("#loading-status").html("Initialized pushNotification </br> stored </br> regID= " + CGMId);
+                    alter("GCM registered");
+                });
             }
         break;
 
@@ -87,30 +86,17 @@ function errorHandler (error) {
 
 function registerNotificationId(){
     if ( device.platform == 'android' || device.platform == 'Android' || device.platform == "amazon-fireos" ){
-        pushNotification.unregister(
-        function(e) {
-            //unRegister Success!!!
-            alert('unRegister Success');
-            pushNotification.register(
-                successHandler,
-                errorHandler,
-                {
-                    "senderID":"829436752622",
-                    "ecb":"onNotification"
-                }
-            );
-        }, 
-        function(e) {
-            //unRegister Failed!!!
-            alert('unRegister Failed');
-        });
-        // pushNotification.register(
-        //     successHandler,
-        //     errorHandler,
-        //     {
-        //         "senderID":"829436752622",
-        //         "ecb":"onNotification"
-        //     }
-        // );
+        pushNotification.register(
+            successHandler,
+            errorHandler,
+            {
+                "senderID":"829436752622",
+                "ecb":"onNotification"
+            }
+        );
     }
+}
+
+function unregisterNotificationId(){
+    pushNotification.unregister();
 }
