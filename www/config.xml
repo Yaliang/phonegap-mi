@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.phonegap.mi"
-        version   = "1.2.23">
+        version   = "1.2.24">
 
     <name>觅校缘</name>
 
@@ -16,7 +16,8 @@
         Mi Dev Team
     </author>
 
-
+    <feature name="http://api.phonegap.com/1.0/device" />
+    <feature name="http://api.phonegap.com/1.0/notification"/>
 
     <!--
         If you do not want any permissions to be added to your app, add the
