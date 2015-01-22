@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.phonegap.mi"
-        version   = "1.2.22">
+        version   = "1.2.23">
 
     <name>觅校缘</name>
 
@@ -23,7 +23,6 @@
         following tag to your config.xml; you will still have the INTERNET
         permission on your app, which PhoneGap requires.
     -->
-    <preference name="permissions"                value="none"/>
 
     <!-- Customize your app and platform with the preference element. -->
     <!-- <preference name="phonegap-version"           value="4.0.0" /> -->         <!-- all: current version of PhoneGap -->
@@ -64,13 +63,14 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
     <gap:plugin name="org.apache.cordova.vibration" />
 
-    <gap:plugin name="com.phonegap.plugins.pushplugin" />
+    
 
     <!-- Third party plugins -->
     <!-- A list of available plugins are available at https://build.phonegap.com/plugins -->
     <!--
         <gap:plugin name="com.phonegap.plugins.barcodescanner" />
     -->
+    <gap:plugin name="com.phonegap.plugins.pushplugin" />
 
     <!-- Define app icon for each platform. -->
     <icon src="icon.png" />
