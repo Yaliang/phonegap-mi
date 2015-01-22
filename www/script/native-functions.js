@@ -87,6 +87,15 @@ function errorHandler (error) {
 
 function registerNotificationId(){
     if ( device.platform == 'android' || device.platform == 'Android' || device.platform == "amazon-fireos" ){
+        pushNotification.unregister(
+        function(e) {
+            //unRegister Success!!!
+            alert('unRegister Success');
+        }, 
+        function(e) {
+            //unRegister Failed!!!
+            alert('unRegister Failed');
+        });
         pushNotification.register(
             successHandler,
             errorHandler,
