@@ -91,18 +91,26 @@ function registerNotificationId(){
         function(e) {
             //unRegister Success!!!
             alert('unRegister Success');
+            pushNotification.register(
+                successHandler,
+                errorHandler,
+                {
+                    "senderID":"829436752622",
+                    "ecb":"onNotification"
+                }
+            );
         }, 
         function(e) {
             //unRegister Failed!!!
             alert('unRegister Failed');
         });
-        pushNotification.register(
-            successHandler,
-            errorHandler,
-            {
-                "senderID":"829436752622",
-                "ecb":"onNotification"
-            }
-        );
+        // pushNotification.register(
+        //     successHandler,
+        //     errorHandler,
+        //     {
+        //         "senderID":"829436752622",
+        //         "ecb":"onNotification"
+        //     }
+        // );
     }
 }
