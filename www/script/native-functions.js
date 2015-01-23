@@ -73,7 +73,7 @@ function onNotification(e) {
 
         case 'message':
             if (e.foreground) {
-                alert(e.payload);
+                alert(e.payload.message);
             }
         break;
 
