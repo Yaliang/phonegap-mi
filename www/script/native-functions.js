@@ -62,8 +62,6 @@ var app = {
 function onNotification(e) {
     switch(e.event) {
         case 'registered':
-            if (typeof(GCMId) == "undefined")
-                GCMId = "set";
             if (e.regid.length > 0) {
                 GCMId = e.regid;
                 ParseUpdateGCMId(GCMId, function(){
@@ -74,8 +72,6 @@ function onNotification(e) {
         break;
 
         case 'message':
-            if (typeof(GCMId) == "undefined")
-                GCMId = "set";
             pullNotification();
             if (e.foreground) {
                 //alert(e.payload.message);
