@@ -3,6 +3,9 @@ function loginByLocalStorage(){
 	try {
 		currentUser = Parse.User.current();
 	}
+	catch (e) {
+		currentUser = null;
+	}
 	if (currentUser != null) {
 		var successFunction = function() {
 			window.location.hash = "page-event";
