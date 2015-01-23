@@ -66,10 +66,15 @@ function onNotification(e) {
                 GCMId = e.regid;
                 ParseUpdateGCMId(GCMId, function(){
                     $("#loading-status").html("Initialized pushNotification </br> stored </br> regID= " + CGMId);
-                    alter("GCM registered");
+                    alert("GCM registered");
                 });
             }
         break;
+
+        case 'message':
+            if (e.foreground) {
+                alert(e.payload.message);
+            }
 
         case 'error':
             $("#loading-status").html("Initialized pushNotification </br> error= " + e.msg);
@@ -98,5 +103,9 @@ function registerNotificationId(){
 }
 
 function unregisterNotificationId(){
-    pushNotification.unregister();
+    pushNotification.unregister(function(){
+        alert("unregister success");
+    }, function(){
+        alert("unregister fault");
+    });
 }
