@@ -22,6 +22,7 @@ function loginByLocalStorage(){
 		ParseUpdateCurrentUser(successFunction, errorFunction);
 	} else {
 		window.location.hash = "page-login";
+		$("#loading-status").html("page-login");
 	}
 }
 
