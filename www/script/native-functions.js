@@ -73,8 +73,9 @@ function onNotification(e) {
 
         case 'message':
             if (e.foreground) {
-                alert(e.payload.message);
+                alert(e.payload.content);
             }
+        break;
 
         case 'error':
             $("#loading-status").html("Initialized pushNotification </br> error= " + e.msg);
