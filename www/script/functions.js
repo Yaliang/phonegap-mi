@@ -1293,6 +1293,9 @@ function buildElementInChatListPage(object){
 }
 
 function pullMyChat(){
+	if (!pullNotificationRunning) {
+		pullNotification();
+	}
 	var ownerId = Parse.User.current().id;
 	var displayFunction = function(objects){
 		for (var i=objects.length-1; i>=0; i--) {
