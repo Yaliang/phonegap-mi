@@ -87,9 +87,13 @@ function pullNotification(){
 		loginByLocalStorage();
 	}	
 
-	setTimeout(function(){
-		pullNotification();
-	}, 2000)
+	if (typeof(GCMId) == "undefined") {
+		setTimeout(function(){
+			pullNotification();
+		}, 2000);
+	} else {
+		pullNotificationRunning = false;
+	}
 }
 
 function signup(){

@@ -62,18 +62,23 @@ var app = {
 function onNotification(e) {
     switch(e.event) {
         case 'registered':
+            if (typeof(GCMId) == "undefined")
+                GCMId = "set";
             if (e.regid.length > 0) {
                 GCMId = e.regid;
                 ParseUpdateGCMId(GCMId, function(){
                     $("#loading-status").html("Initialized pushNotification </br> stored </br> regID= " + CGMId);
-                    alert("GCM registered");
+                    //alert("GCM registered");
                 });
             }
         break;
 
         case 'message':
+            if (typeof(GCMId) == "undefined")
+                GCMId = "set";
+            pullNotification();
             if (e.foreground) {
-                alert(e.payload.message);
+                //alert(e.payload.message);
             }
         break;
 
@@ -105,8 +110,8 @@ function registerNotificationId(){
 
 function unregisterNotificationId(){
     pushNotification.unregister(function(){
-        alert("unregister success");
+        //alert("unregister success");
     }, function(){
-        alert("unregister fault");
+        //alert("unregister fault");
     });
 }
