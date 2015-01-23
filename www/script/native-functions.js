@@ -52,9 +52,7 @@ var app = {
         });
         cacheInitialization();
         loginByLocalStorage();
-        $("#loading-status").html("Initialized");
         pushNotification = window.plugins.pushNotification;
-        $("#loading-status").html("Initialized pushNotification");
     }
 
 };
@@ -65,8 +63,6 @@ function onNotification(e) {
             if (e.regid.length > 0) {
                 GCMId = e.regid;
                 ParseUpdateGCMId(GCMId, function(){
-                    $("#loading-status").html("Initialized pushNotification </br> stored </br> regID= " + CGMId);
-                    //alert("GCM registered");
                 });
             }
         break;
@@ -74,22 +70,16 @@ function onNotification(e) {
         case 'message':
             pullNotification();
             if (e.foreground) {
-                //alert(e.payload.message);
             }
         break;
 
         case 'error':
-            $("#loading-status").html("Initialized pushNotification </br> error= " + e.msg);
         break;
     }
 }
 
-function successHandler (result) {
-    $("#loading-status").html("Initialized pushNotification </br> register = " + result + ";" + CGMId);
-}
-function errorHandler (error) {
-    $("#loading-status").html("Initialized pushNotification </br> register error = " + error);
-}
+function successHandler (result) {}
+function errorHandler (error) {}
 
 function registerNotificationId(){
     if ( device.platform == 'android' || device.platform == 'Android' || device.platform == "amazon-fireos" ){

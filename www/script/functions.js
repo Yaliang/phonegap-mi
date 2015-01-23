@@ -22,7 +22,6 @@ function loginByLocalStorage(){
 		ParseUpdateCurrentUser(successFunction, errorFunction);
 	} else {
 		window.location.hash = "page-login";
-		$("#loading-status").html("page-login");
 	}
 }
 
@@ -120,7 +119,6 @@ function login(){
 	var errorObject = $("#login-error");
 	var destID = "page-event";
 	var customFunction = function(){
-		$("#loading-status").append("<span>login success</span>"+GCMId);
 		pullUserEvent();
 		if (!pullNotificationRunning) {
 			pullNotification();
