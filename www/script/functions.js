@@ -1145,10 +1145,20 @@ function sendMessage(){
 		var senderId = object.get("senderId");
 		var groupId = object.get("groupId");
 		var text = object.get('text');
-		var notificationFunction = function(text, object){
-			var subject = $("#chat-messages-title").html+": "+text;
-			var data = {subject: subject};
-			var ownerId = object.get('ownerId');
+		var notificationFunction = function(senderId,text,receiverId){
+			var displayFunction = function(object,data){
+				var regId = object.get("GCMId");
+				if (typeof(regId) != "undefined") {
+					data.regId = regId;
+					var displayFunction = function(object,data){
+						var message = object.get("name")+": " + data.message;
+						pushNotificationToDeviceByGCM(data.regId,message);
+					}
+					CacheGetProfileByUserId(data.senderId, displayFunction, data);
+				}
+			}
+			var data = {senderId : senderId, message: text};
+			CacheGetProfileByUserId(receiverId, displayFunction, data);
 		}
 		CacheSetGroupMemberChatObjectReadFalse(senderId, groupId, text, notificationFunction);
 		var newElement = buildElementInChatMessagesPage(object);
@@ -1198,7 +1208,6 @@ function startPrivateChat(friendId){
 	$("#page-chat-messages > .ui-content").html("");
 	$("#chat-messages-title").html("");
 	$("#message-content").val("");
-	$.mobile.changePage( "#page-chat-messages", { transition: "slide"});
 	$('#send-message-bar').fadeIn();
 	var memberId = new Array;
 	memberId.push(friendId);
@@ -1224,6 +1233,7 @@ function startPrivateChat(friendId){
 					}
 					CacheGetProfilePhoto(objects[i].get('senderId'), displayFunction, {messageId: objects[i].id});
 				}
+				$.mobile.changePage( "#page-chat-messages", { transition: "slide"});
 				setTimeout(function(){
 					$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
 						duration: 500,
@@ -1367,4 +1377,13 @@ function pullMyChat(){
 	}
 	CachePullMyChat(ownerId,displayFunction);
 	
+}
+
+function pushNotificationToDeviceByGCM(regId,message) {
+	var request="id="+regId+"&message="+message;//{id: regId, message: message};
+	//console.log(request);
+	$.post("https://yueme-push-server.herokuapp.com/",request)
+		.done(function(data) {
+			//console.log(data);
+		});
 }
