@@ -32,16 +32,9 @@ function loginByLocalStorage(){
 		};
 		ParseUpdateCurrentUser(successFunction, errorFunction);
 	} else {
-		window.location.hash = "page-login";
-		var window_width = $(window).width();
-		var window_height = $(window).height();
-		if (window_width/window_height > 1) {
-			$('.loading-page-image').append("<div class='loading-page-button-top'>Join Us.</div>");
-			$('.loading-page-button-top').css("marginLeft", Math.round(($(".loading-page-image").width()-93-44)/2).toString()+"px");
-		} else {
-			$('.loading-page-image').append("<div class='loading-page-button-bottom'>Join Us.</div>");			
-			$('.loading-page-button-bottom').css("marginLeft", Math.round(($(".loading-page-image").width()-93-44)/2).toString()+"px");
-		}
+		//window.location.hash = "page-login";
+		$('.loading-page-image').append("<div class='loading-page-button-bottom'>Join Us.</div>");			
+		$('.loading-page-button-bottom').css("marginLeft", Math.round(($(".loading-page-image").width()-93-44)/2).toString()+"px");
 		$('#page-loading').click(function(){
             setCurrLocationHash('#page-login');
 			$.mobile.changePage("#page-login"); //window.location.hash = "page-login";
@@ -141,7 +134,7 @@ function signup(){
 	var email = $("#signup-email").val();
 	var password = $("#signup-password").val();
 	var errorObject = $("#signup-error");
-	var destID = "page-event";
+	var destID = "#page-event";
 	var customFunction = function(object){
 		$("#signup-password").val("");
 		pullUserEvent();
@@ -159,7 +152,7 @@ function login(){
 	var email = $("#login-email").val();
 	var password = $("#login-password").val();
 	var errorObject = $("#login-error");
-	var destID = "page-event";
+	var destID = "#page-event";
 	var customFunction = function(){
 		$("#login-password").val("");
 		pullUserEvent();
@@ -184,7 +177,7 @@ function logout(){
 	$("#signup-error").html("");
 	localStorage.clear();
 	cacheClear();
-	var destID = "page-login";
+	var destID = "#page-login";
 	ParseLogout(destID);
 	unregisterNotificationId();
 }
