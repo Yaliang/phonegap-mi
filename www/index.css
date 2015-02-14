@@ -758,26 +758,11 @@ textarea {
 }
 
 .loading-page-image {
-	background: 0 -20px no-repeat;
-	height: 100vh;
-	width: 100vw;
-	background-image: url("./content/png/apple-touch-startup-image-320x460.png");
+	background: url("./content/png/apple-touch-startup-image-320x460.png") no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
 	background-size: cover;
-}
-
-.loading-page-button-top {
-	text-align: center;
-	margin-top: 20vh;
-	padding: 10px 20px;
-	padding-top: 6px;
-	float: left;
-	font-size: 25px;
-	font-weight: bold;
-	color: #f3f3f3;
-	font-family: "Open Sans";
-	border-radius: 5px;
-	background-color: rgba(0, 0, 0, 0.6);
-	border: 2px solid #F6A7AC;
 }
 
 .loading-page-button-bottom {
@@ -786,11 +771,11 @@ textarea {
 	padding: 10px 20px;	
 	padding-top: 6px;
 	float: left;
-	font-size: 25px;
+	font-size: 20px;
 	font-weight: bold;
 	color: #f3f3f3;
 	font-family: "Open Sans";
-	border-radius: 5px;
+	border-radius: 3px;
 	background-color: rgba(0, 0, 0, 0.6);
 	border: 2px solid #F6A7AC;
 }
