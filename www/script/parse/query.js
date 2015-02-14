@@ -9,18 +9,18 @@ function ParseSignup(username, password, email, name, errorObject, destID, custo
 
 	user.signUp(null, {
 		success: function(user) {
-			window.location.hash = destID;
+            setCurrLocationHash(destID);
+            $.mobile.changePage(destID);//			window.location.hash = destID;
 			customFunction(user);
 		},
 		error: function(user,error) {
+            $.mobile.loading("hide");
 			//errorObject.html("Error: " + error.code + " " + error.message);
 			errorObject.html(error.message);
-
+			$("#signup-password").val("");
 		}
 	});
 }
-
-
 
 function ParseUpdateBridgeit(bridgeitId){
 	var current = Parse.User.current();
@@ -40,27 +40,29 @@ function ParseCreateProfilePhotoObject(userId){
 function ParseLogin(username, password, errorObject, destID, customFunction) {
 	Parse.User.logIn(username,password,{
 		success: function(user){
-			window.location.hash = destID;
+            setCurrLocationHash(destID);
+
+			$.mobile.changePage(destID); //window.location.hash = destID;
 			customFunction();
 			CacheUpdateUser(user);
 		},
 		error: function(user, error){
+			$.mobile.loading("hide");
+			$("#login-password").val("");
 			var query = new Parse.Query(Parse.User);
-    		query.equalTo("username", username);  
+            query.equalTo("username", username);
 			query.find({
 	  			success: function(userlist) {
 	  				if(userlist.length == 0){
-	  					errorObject.html("Email does not exist");
+	  					errorObject.html("Email does not exist.");
 	  				}else{
-	   					errorObject.html("Wrong password");
+	   					errorObject.html("Password does not match your email.");
 	   				}
-	  				
 	  			},
 	  			error: function(){
-	  				errorObject.html("Failed to connect server, please try again");
-	  			},
+	  				errorObject.html("Failed to connect server, please try again.");
+	  			}
 			});
-			//errorObject.html("Error: " + error.code + " " + error.message);
 		}
 	});
 }
@@ -85,7 +87,8 @@ function ParseRemoveCurrentBridgeitId() {
 
 function ParseLogout(destID) {
 	Parse.User.logOut();
-	window.location.hash = destID;
+    setCurrLocationHash(destID);
+    $.mobile.changePage(destID); //	window.location.hash = destID;
 }
 
 function ParseUpdateCurrentUser(successFunction, errorFunction) {
@@ -113,11 +116,12 @@ function ParseEventCreate(owner, title, location, time, visibility, description,
 	userEvent.set("description",description);
 	userEvent.set("interestNumber",0);
 	userEvent.set("commentNumber",0);
+	userEvent.set("reportNum", 0);
 
 	userEvent.save(null, {
 		success: function(userEvent) {
 			clearFunction();
-			window.location.hash = destID;
+			$.mobile.changePage(destID); //			window.location.hash = destID;
 		},
 		error: function(userEvent, error){
 			errorObject.html("Error: " + error.code + " " + error.message);
@@ -125,11 +129,32 @@ function ParseEventCreate(owner, title, location, time, visibility, description,
 	});
 }
 
-function ParsePullEvent(owner, limitNumber, descendingOrderKey, accessibility, displayFunction) {
+
+function ParseUpdateReport(id, hiddenUserEvent){
+	var UserEvent = Parse.Object.extend("UserEvent");
+	var query = new Parse.Query(UserEvent);
+	query.get(id, {
+		success: function(userEvent){
+			userEvent.increment("reportNum",1);
+			userEvent.add("reportUserId", Parse.User.current().id);
+			userEvent.save(null, {
+				success: function(userEvent){
+					//hide the report event
+					hiddenUserEvent(userEvent);
+				}
+			});
+		}
+	});
+}
+
+function ParsePullEvent(owner, limitNumber, descendingOrderKey, accessibility, beforeAt, displayFunction) {
 	var UserEvent = Parse.Object.extend("UserEvent");
 	var query = new Parse.Query(UserEvent);
 	if (owner != null) {
 		query.equalTo("owner",owner);
+	}else{
+		query.lessThan("reportNum", 11);
+		query.notEqualTo("reportUserId", Parse.User.current().id);
 	}
 	if (limitNumber != null) {
 		query.limit(limitNumber);
@@ -140,6 +165,9 @@ function ParsePullEvent(owner, limitNumber, descendingOrderKey, accessibility, d
 		}
 	}
 	query.descending(descendingOrderKey);
+	if ((typeof(beforeAt) != "undefined")&&(beforeAt != null)) {
+		query.lessThan("createdAt",beforeAt);
+	}
 	query.find({
 		success: function(userEvents) {
 			displayFunction(userEvents);
@@ -366,6 +394,18 @@ function ParseGetProfilePhoto(userId, displayFunction, data) {
 		success: function(object){
 			displayFunction(object, data);
 			CacheUpdatePhoto(object);
+		}
+	})
+}
+
+function ParseGetProfilePhotoByUsername(username, displayFunction, data) {
+	var User = Parse.Object.extend("User");
+	var query = new Parse.Query(User);
+
+	query.equalTo("username",username);
+	query.first({
+		success: function(object){
+			ParseGetProfilePhoto(object.id, displayFunction, data);
 		}
 	})
 }
@@ -676,7 +716,7 @@ function ParseSetChatObjectAsRead(ownerId, groupId, count, successFunction){
 				var chat = new Chat;
 				chat.set("ownerId",ownerId);
 				chat.set("groupId",groupId);
-				chat.set("hidden",false);
+				chat.set("hidden",true);
 				chat.set("unreadNum",0);
 				chat.save(null, {
 					success: function(object){
@@ -690,6 +730,7 @@ function ParseSetChatObjectAsRead(ownerId, groupId, count, successFunction){
 				}
 				if (count != 0) {
 					object.increment("unreadNum",-count);
+					object.set("hidden",false);
 					object.save(null,{
 						success: function(object){
 							successFunction(object);
@@ -705,7 +746,7 @@ function ParseSetChatObjectAsRead(ownerId, groupId, count, successFunction){
 	})
 }
 
-function ParsePullChatMessage(groupId, limitNum, descendingOrderKey, beforeAt, displayFunction) {
+function ParsePullChatMessage(groupId, limitNum, descendingOrderKey, beforeAt, displayFunction, data) {
 	var Message = Parse.Object.extend("Message");
 	var query = new Parse.Query(Message);
 
@@ -717,7 +758,7 @@ function ParsePullChatMessage(groupId, limitNum, descendingOrderKey, beforeAt, d
 	query.limit(limitNum);
 	query.find({
 		success: function(objects){
-			displayFunction(objects);
+			displayFunction(objects, data);
 			for (var i = 0; i < objects.length; i++) {
 				CacheUpdateMessage(objects[i]);
 			}
@@ -774,7 +815,7 @@ function ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId,
 					chat.set("unreadNum", 1);
 					chat.save(null,{
 						success: function(object) {
-							notificationFunction(text,object);
+							notificationFunction(senderId,text,ownerId);
 							if (currentIndex + 1 < memberId.length) {
 								ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId, currentIndex+1, groupId, text, notificationFunction);
 							}
@@ -783,9 +824,10 @@ function ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId,
 				} else {
 					// set unread number plus 1 for chat object
 					object.increment("unreadNum", 1);
+					object.set("hidden", false);
 					object.save(null, {
 						success: function(object) {
-							notificationFunction(text,object);
+							notificationFunction(senderId,text,ownerId);
 							if (currentIndex + 1 < memberId.length) {
 								ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId, currentIndex+1, groupId, text, notificationFunction);
 							}
@@ -798,6 +840,7 @@ function ParseSetChatObjectReadFalseByCurrentIndexAndGroupId(senderId, memberId,
 		// if the member is the sender
 		query.first({
 			success: function(object){
+				object.set("hidden", false);
 				object.save(null, {
 					success: function(object) {
 						CacheUpdateChat(object);
@@ -871,7 +914,7 @@ function ParseUpdateCache(className, updateIdList,lastUpdate){
 	query.greaterThan("updatedAt",lastUpdate);
 	query.find({
 		success: function(objects){
-			console.log(className+": "+lastUpdate.toJSON()+" "+objects.length);
+			//console.log(className+": "+lastUpdate.toJSON()+" "+objects.length);
 			for (var i = 0; i < objects.length; i++) {
 				switch(className) {
 					case "Photo":
@@ -899,7 +942,6 @@ function ParseUpdateCache(className, updateIdList,lastUpdate){
 	})
 }
 
-
 function ParseUpdateGCMId(regid, displayFunction){
 	var currentUser = Parse.User.current();
 
@@ -914,9 +956,8 @@ function ParseUpdateGCMId(regid, displayFunction){
 
 // functions for database maintaining /never used in front-end script.
 
-
 function ParseUserNameFieldUpdate(i){
-	console.log(i);
+	//console.log(i);
 	var Comment = Parse.Object.extend("Comment");
 	var query = new Parse.Query(Comment);
 
@@ -926,31 +967,31 @@ function ParseUserNameFieldUpdate(i){
 				var query = new Parse.Query(Parse.User);
 				var email = comments[i].get("owner");
 				var objectId = comments[i].id;
-				console.log(email);
+				//console.log(email);
 				query.equalTo("username", email);
 				query.find({
 					success: function(user){
 						var ownerName = user[0].get("name");
-						console.log(ownerName);
+						//console.log(ownerName);
 						var Comment = Parse.Object.extend("Comment");
 						var query = new Parse.Query(Comment);
 						query.get(objectId,{
 							success: function(comment){
-								console.log(ownerName);
+								//console.log(ownerName);
 								comment.set("ownerName",ownerName);
 								comment.save(null, {
 									success: function(comments){
-										console.log("success");
+										//console.log("success");
 									}
 								});
 							},
 							error: function(comment, error){
-								console.log("Error: " + error.code + " " + error.message);
+								//console.log("Error: " + error.code + " " + error.message);
 							}
 						});
 					},
 					error: function(userEvent, error){
-						console.log("Error: " + error.code + " " + error.message);
+						//console.log("Error: " + error.code + " " + error.message);
 					}
 				})
 		}
@@ -958,6 +999,7 @@ function ParseUserNameFieldUpdate(i){
 }
 
 var refreshNumber=0;
+var ChatObjectSet;
 function ParseRefreshComment(){
 	ParseUserNameFieldUpdate(refreshNumber);
 	refreshNumber = refreshNumber+1;
@@ -973,13 +1015,13 @@ function ParsePhotoClassCreateBaseUserObject(i){
 	query.descending("createdAt");
 	query.find({
 		success: function(user) {
-			console.log(i);
+			//console.log(i);
 			var userId = user[i].id;
 			var profilePhoto = user[i].get("photo");
 			var profilePhoto120 = user[i].get("photo50");
-			console.log(userId);
-			console.log(profilePhoto);
-			console.log(profilePhoto120);
+			//console.log(userId);
+			//console.log(profilePhoto);
+			//console.log(profilePhoto120);
 			var Photo = Parse.Object.extend("Photo");
 			var photo = new Photo;
 
@@ -988,7 +1030,7 @@ function ParsePhotoClassCreateBaseUserObject(i){
 			photo.set('profilePhoto120',profilePhoto120);
 			photo.save(null,{
 				success: function() {
-					console.log('success');
+					//console.log('success');
 				}
 			})
 		}
@@ -1003,4 +1045,46 @@ function ParseRefreshUserProfilePhoto() {
 	setTimeout(function(){
 		ParseRefreshUserProfilePhoto();
 	}, 5000);
+}
+
+function ParseClearChatWithoutMessage() {
+	var Chat = Parse.Object.extend("Chat");
+	var query = new Parse.Query(Chat);
+
+	query.find({
+		success: function(objects) {
+			ChatObjectSet = objects;
+			ParseCheckChatObject();
+		}
+	})
+}
+
+function ParseCheckChatObject() {
+	var object = ChatObjectSet[refreshNumber];
+	var groupId = object.get("groupId");
+	var Message = Parse.Object.extend("Message");
+	var query = new Parse.Query(Message);
+
+	query.descending("createdAt");
+	query.equalTo("groupId",groupId);
+	query.first({
+		success: function(object){
+			if (typeof(object) == "undefined") {
+				ChatObjectSet[refreshNumber].set("hidden",true);
+				ChatObjectSet[refreshNumber].save({
+					success: function(){
+						//console.log("hidden:" + ChatObjectSet[refreshNumber].id)
+					}
+				})
+			}
+		}
+	})
+
+	if (refreshNumber == ChatObjectSet.length - 1)
+		return;
+	setTimeout(function(){
+		//console.log(ChatObjectSet[refreshNumber].id);
+		refreshNumber += 1;
+		ParseCheckChatObject();
+	},5000)
 }

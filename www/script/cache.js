@@ -4,6 +4,7 @@ var cacheFriend = new Array;
 var cacheChat = new Array;
 var cacheGroup = new Array;
 var cacheMessage = new Array;
+var cacheVersion = "1.0.1";
 
 function rawLocalToCache(object) {
 	var item = {
@@ -14,12 +15,21 @@ function rawLocalToCache(object) {
 	};
 	item['get'] = function(a) {
 		return this.attributes[a];
-	}
+	};
 	item['toJSON'] = function() {
 		return this.attributes;
-	}
+	};
 
 	return item;
+}
+
+function cacheClear() {
+	cachePhoto = new Array;
+	cacheUser = new Array;
+	cacheFriend = new Array;
+	cacheChat = new Array;
+	cacheGroup = new Array;
+	cacheMessage = new Array;
 }
 
 // reload from localStorage and update
@@ -35,6 +45,10 @@ function cacheInitialization() {
 	var lastUpdate;
 	var objectList;
 	var updateIdList;
+	if ((typeof(localStorage.cacheVersion) == "undefined") || (localStorage.cacheVersion != cacheVersion)) {
+		localStorage.clear();
+		localStorage.cacheVersion = cacheVersion;		
+	}
 	for (var n = 0; n< cachedList.length; n++) {
 		rawData = [];
 		lastUpdate = 0;
@@ -50,7 +64,7 @@ function cacheInitialization() {
 			default:
 		}
 		if (rawData.length == 0)  {
-			console.log("empty: "+cachedList[n]);
+			//console.log("empty: "+cachedList[n]);
 			continue;
 		}
 		for (var i=0; i < rawData.length; i++) {
@@ -61,7 +75,7 @@ function cacheInitialization() {
 				lastUpdate = Date.parse(rawObject.updatedAt);
 		}
 		lastUpdate = new Date(lastUpdate);
-		console.log(lastUpdate.toJSON());
+		//console.log(lastUpdate.toJSON());
 		switch (cachedList[n]){
 			case "Photo":   cachePhoto = objectList;   break;
 			case "User":    cacheUser = objectList;    break;
@@ -74,7 +88,6 @@ function cacheInitialization() {
 		ParseUpdateCache(cachedList[n], updateIdList, lastUpdate);
 	}
 }
-
 
 // functions of cachedPhoto
 function CacheGetProfilePhoto(userId, displayFunction, data) {
@@ -89,6 +102,30 @@ function CacheGetProfilePhoto(userId, displayFunction, data) {
 	if (!cached) {
 		console.log("Photo miss: "+userId);
 		ParseGetProfilePhoto(userId, displayFunction, data);
+	}
+}
+
+function CacheGetProfilePhotoByUsername(username, displayFunction, data) {
+	var cached = false;
+	var userId = null;
+	for (var i = 0; i < cacheUser.length; i++) {
+		if (cacheUser[i].get('username') == username) {
+			userId = cacheUser[i].id;
+			break;
+		}
+	}
+	if (userId != null) {
+		for (var i = 0; i < cachePhoto.length; i++) {
+			if (cachePhoto[i].get('userId') == userId) {
+				displayFunction(cachePhoto[i], data);
+				cached = true;
+				break;
+			}
+		}
+	}
+	if (!cached) {
+		console.log("Photo miss: "+username);
+		ParseGetProfilePhotoByUsername(username, displayFunction, data);
 	}
 }
 
@@ -109,7 +146,6 @@ function CacheUpdatePhoto(object){
 	}
 	localStorage.cachePhoto = JSON.stringify(cachePhoto);
 }
-
 
 // functions of cachedUser
 function CacheGetProfileByUsername(username, displayFunction, data){
@@ -195,6 +231,7 @@ function CachePullMyFriend(userId, descendingOrderKey, displayFunction) {
 			friends.push(cacheFriend[i]);
 		}
 	}
+	friends.sort(function(a, b){return a.get('name') - b.get('name')});
 
 	displayFunction(friends);
 }
@@ -353,6 +390,18 @@ function CachePullChatMessage(groupId, limitNum, beforeAt, displayFunction){
 		displayFunction(messages);
 	}
 	
+}
+
+function CacheGetLastestMessage(groupId, displayFunction,data){
+	var afterAt = null;
+	var message = null;
+	for (var i = 0; i < cacheMessage.length; i++) {
+		if ((cacheMessage[i].get('groupId') == groupId) && ((afterAt == null) || (Date.parse(cacheMessage[i].get("createdAt")) >= Date.parse(afterAt)))) {
+			message = cacheMessage[i];
+			afterAt = message.get("createdAt");
+		}
+	}
+	displayFunction(message,data);
 }
 
 function CacheUpdateMessage(object){

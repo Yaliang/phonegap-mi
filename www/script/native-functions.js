@@ -27,12 +27,18 @@ var app = {
             $('#comment-content').prop('disabled', true);
             $('#message-content').prop('disabled', true);
         }
+        $('#profile-edit-photo').on('blur change',function(){
+            profilePhotoCrop();
+        })
         $('#message-chat-form').submit(function(event){
             if (window.navigator.standalone == true) {
                 $('#message-content').trigger('blur');
             } else {
                 sendToolbarActiveKeyboard('message-content');
             }
+            event.preventDefault();
+        });
+        $('#event-create-form').submit(function(event) {
             event.preventDefault();
         });
         $('#comment-form').submit(function(event){
@@ -49,6 +55,24 @@ var app = {
         });
         $('#signup-form').submit(function(event){
             event.preventDefault();
+        });
+        $(window).hashchange(function(){
+            var preHash = currLocationHash;
+            var currHash = window.location.hash;
+            //console.log("currHash:" + currHash);
+            //console.log("preHash:" + preHash);
+
+            // in user session
+            if (currHash == "#page-login" && (preHash != "#page-loading" && preHash != "#page-login" && preHash != "#page-signup")) {
+                $.mobile.changePage("#page-event"); // window.location.hash = "#page-event";
+                currLocationHash = "#page-event";
+            }
+
+            // out of user session
+            if (currHash == "#page-setting" && (preHash == "#page-loading" || preHash == "#page-login" || preHash == "#page-signup")) {
+                $.mobile.changePage("#page-login"); // window.location.hash = "#page-login";
+                currLocationHash = "#page-login";
+            }
         });
         cacheInitialization();
         loginByLocalStorage();

@@ -39,10 +39,17 @@
 
 .ui-content {
 	padding: 0!important;
+	background-color: #F1F1F1;
 }
 
+/*#page-loading {
+    background-image: url("./content/material-design/png/m-192.png");
+    text-align: center;
+    color: cyan;
+}*/
+
 .ui-bar-btn-custom {
-	margin: 0 0 0 16px!important;
+	margin: 0 0 0 1em!important;
 	border: 0px!important;
 	background-color: inherit!important;
 	text-shadow: 0 0 0!important;
@@ -53,6 +60,7 @@
 
 .ui-bar-custom {
 	height: 34px!important;
+	padding: 0.3em 0;
 }
 
 .ui-user-photo img {
@@ -65,13 +73,13 @@
 }
 
 .custom-corners {
-	margin: 0.8em 0;
-	padding-bottom: 0.4em;
+	margin: 1em 0;
 	padding-top: 0.4em;
 	border-width: 0;
-	border-bottom-width: 1px;
+	border-top-width: 0;
+	border-bottom-width: 0;
 	border-style: solid;
-	border-color: #bbb;
+	border-color: #ddd;
 	-webkit-border-bottom-left-radius: 0;
 	border-bottom-left-radius: 0;
 	-webkit-border-bottom-right-radius: 0;
@@ -79,9 +87,9 @@
 }
 
 .custom-corners-public {
-	padding-left: 4em;
-	background: 0.4em 0.4em no-repeat;
-	background-size: 50px 50px;
+	background: 1em 1em no-repeat;
+	background-size: 40px 40px;
+	background-color: white;
 }
 
 .custom-corners-detail {
@@ -94,17 +102,39 @@
 	-webkit-border-top-right-radius: inherit;
 	border-top-right-radius: inherit;
 	border-width: 0;
-	background-color: #f9f9f9!important;
-	padding-top: 0px;
+	background-color: white!important;
+	margin-left: 4em;
+	padding-top: 0.6em!important;	
+	padding-left: 0.5em!important;
+}
+
+.custom-people-in-friend-list .ui-bar {
+	-webkit-border-top-left-radius: inherit;
+	border-top-left-radius: inherit;
+	-webkit-border-top-right-radius: inherit;
+	border-top-right-radius: inherit;
+	border-width: 0;
+	background-color: #f1f1f1!important;
+	margin-left: 4em;
+	padding-top: 0.6em!important;	
+	padding-left: 0.5em!important;
 }
 
 .custom-corners .ui-body {
-	border-left-width: 0;
-	border-right-width: 0;
+	border-width: 0;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+    font-family: "Open Sans";
+    padding-top: 0.5em;
+    margin-top: 0.6em;
 }
 
 .custom-corners .ui-footer {
 	border-width: 0;
+}
+
+.ui-page-theme-a {
+	background-color: #f1f1f1;
 }
 
 .ui-mobile label {
@@ -143,6 +173,7 @@
 .ui-bar {
 	font-family: 'Open Sans';
 	font-weight: 400;
+	font-size: 0.9em;
 }
 
 .ui-bar-inherit {
@@ -258,11 +289,17 @@ a {
 	width: 35px!important;
 }
 
+.ui-icon-custom-delete {
+	background: url("./content/material-design/png/rubbish-red-36.png") 0 50% no-repeat;
+	background-size: 18px 18px;
+	text-align: left!important;
+	padding-left: 25px!important;
+	width: 50px!important;
+}
+
 .ui-state-disabled {
 	opacity: 1!important;
 }
-
-
 
 .ui-icon-custom-more {
 	height: 40px;
@@ -353,37 +390,41 @@ a {
 }
 
 .ui-custom-event-title {
-	color: #A2A2A2;
+	color: #000000;
 	font-weight: 400;
-	font-size: 14px;
-}
-.ui-custom-event-description-less-margin {
-}
-.ui-custom-event-description {
-	clear: both;
-	margin-top: 48px;
+	font-size: 20px;
+    margin: 0 0 0.5em 0;
 }
 
 .ui-custom-event-location {
-	font-weight: 300;
-	font-size: 12px;
+	font-weight: 400;
+	font-size: 15px;
 	padding-left: 20px;
-	background: url("./content/material-design/png/compass106-solid-pink-20.png") 0 50% no-repeat;
+	background: url("./content/material-design/png/compass106-solid-pink-20.png") 0 0 no-repeat;
 	background-size: 15px 15px;
 	float: left;
-	height: 15px;
-	margin: 0 15px 0 0;
+	line-height: 15px;
+	margin: 0 15px 15px 0;
 }
 
 .ui-custom-event-time {
-	font-weight: 300;
-	font-size: 12px;
+	font-weight: 400;
+	font-size: 15px;
 	padding-left: 20px;
-	background: url("./content/material-design/png/clock100-solid-pink-20.png") 0 50% no-repeat;
+	background: url("./content/material-design/png/clock100-solid-pink-20.png") 0 0 no-repeat;
 	background-size: 15px 15px;
 	float: left;
-	height: 15px;
-	margin: 0 15px 0 0;
+	line-height: 15px;
+	margin: 0 15px 15px 0;
+}
+
+.ui-custom-event-description-less-margin {
+}
+
+.ui-custom-event-description {
+    font-weight: 400;
+    font-size: 18px;
+    clear: both;
 }
 
 .ui-custom-message-right {
@@ -395,8 +436,8 @@ a {
 	margin-top: 10px;
 	margin-right: 20px;
 	font-family: 'Open Sans';
-	font-weight: 300!important;
-	font-size: 13px;
+	font-weight: 400!important;
+	font-size: 15px;
 }
 
 .ui-custom-message-right p {
@@ -425,8 +466,8 @@ a {
 	margin-top: 10px;
 	margin-left: 20px;
 	font-family: 'Open Sans';
-	font-weight: 300!important;
-	font-size: 13px;
+	font-weight: 400!important;
+	font-size: 15px;
 }
 
 .ui-custom-message-left p {
@@ -446,23 +487,92 @@ a {
 	text-shadow: 0 0 0;
 }
 
-.chat-list {
-	position: relative;
-	height: 83px;
+.ui-custom-comment-container {
+	overflow: auto;
+	background-color: white;
+	margin-bottom: 5em;
+}
+
+.ui-custom-comment-left {
+	background: 0 0 no-repeat;
+	background-size: 30px 30px;
+	padding-left: 40px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: 1em;
 	font-family: 'Open Sans';
 	font-weight: 300!important;
-	padding-left: 95px;
+	font-size: 15px;
+	word-break: break-all;
+}
+
+.ui-comment-owner{
+	font-weight: 700;
+	font-size: 0.8em;
+	float: left;
+}
+
+.ui-comment-time{
+	float: right;
+	padding-right: 2em;
+	font-size: 0.6em;
+	text-shadow: 0 0 0;
+	color: #7B7B7B;
+}
+
+.ui-comment-content{
+	clear: both;
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+}
+
+.ui-load-more-activity {
+	font-family: "Open Sans";
+	font-weight: 300;
+	padding-bottom: 1em;
+	text-align: center;
+	cursor: pointer;
+}
+
+.chat-list {
+	position: relative;
+	height: 73px;
+	font-family: 'Open Sans';
+	font-weight: 300!important;
+	padding-left: 80px;
 	border-bottom: 1px solid #ddd;
 	cursor: pointer;
-	background: 0.8em 0.4em no-repeat;
-	background-size: 70px 70px;
+	background: 0.8em 0.65em no-repeat;
+	background-size: 55px 55px;
 }
 
 .chat-list-title {
-	padding-top: 10px;
+	padding-top: 0.8em;
+	font-weight: bold;
+	float: left;
 }
 
+.chat-last-time {
+	padding-top: 1em;
+	padding-right: 1em;
+	float: right;
+	font-size: 0.8em;
+}
 
+.chat-last-time-right-blank {
+	margin-right: 2em;
+}
+
+.chat-last-message {
+	padding-top: 0.4em;
+	float: left;
+	color: #828282;
+	clear: both;
+	overflow: hidden;
+	width: 90%;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
 textarea {
 	resize: none!important;
@@ -536,9 +646,35 @@ textarea {
 	margin-top: 30px;
 }
 .custom-corners-people-near-by {
-	padding-left: 5em;
-	background: 0.8em 0.4em no-repeat;
-	background-size: 70px 70px;
+	padding-left: 20px;
+	padding-top: 0em;
+	padding-bottom: 0.2em;
+	background: 0.8em 0.6em no-repeat;
+	background-size: 62px 62px;
+	margin: 0;
+	background-color: white;
+	border-bottom-width: 1px;
+}
+
+.custom-people-in-friend-list {
+	padding-left: 0em;
+	padding-top: 0em;
+	padding-bottom: 0.2em;
+	background: 0.8em 0.6em no-repeat;
+	background-size: 42px 42px;
+	margin: 0;
+	border-bottom-width: 1px;
+}
+
+.ui-custom-listview {
+	margin-top: 1em;
+	box-shadow: 0px 0px 0px;
+	border-top-width: 1px;
+	border-color: #ddd;
+	border-style: solid;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+	border-right-width: 0px;
 }
 
 .send-friend-request {
@@ -551,7 +687,7 @@ textarea {
 	white-space: nowrap;
 	margin-top: 5px;
 	border: 1px solid #9C94FF;
-	padding: 0.5em;
+	padding: 0.2em;
 	float: left;
 	-webkit-border-radius: .3125em;
 	border-radius: .3125em;
@@ -568,16 +704,12 @@ textarea {
 	margin-top: 5px;
 	margin-left: 10px;
 	border: 1px solid #9C94FF;
-	padding: 0.5em;
+	padding: 0.2em;
 	float: left;
 	-webkit-border-radius: .3125em;
 	border-radius: .3125em;
 	cursor: pointer;
 }
-
-
-
-//custom grid
 
 .rwd-example {
 	overflow: hidden;
@@ -605,4 +737,173 @@ textarea {
 .rwd-example .custom-block-b {
 	float: left;
 	width: 20%;
+}
+
+.ui-custom-event-create-focus {
+    border-color:red!important;
+}
+
+.event-create-alert {
+    font-family: "Open Sans"!important;
+    font-weight: 300;
+    font-size: 12px;
+    color: red;
+}
+
+.error-message {
+    font-family: "Open Sans"!important;
+    font-weight: 300;
+    font-size: 14px;
+    color: red;
+}
+
+.loading-page-image {
+	background: 0 -20px no-repeat;
+	height: 100vh;
+	width: 100vw;
+	background-image: url("./content/png/apple-touch-startup-image-1536x2008.png");
+	background-size: cover;
+}
+
+.loading-page-button-top {
+	text-align: center;
+	margin-top: 20vh;
+	padding: 10px 20px;
+	padding-top: 6px;
+	float: left;
+	font-size: 25px;
+	font-weight: bold;
+	color: #f3f3f3;
+	font-family: "Open Sans";
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.6);
+	border: 2px solid #F6A7AC;
+}
+
+.loading-page-button-bottom {
+	text-align: center;
+	margin-top: 80vh;
+	padding: 10px 20px;	
+	padding-top: 6px;
+	float: left;
+	font-size: 25px;
+	font-weight: bold;
+	color: #f3f3f3;
+	font-family: "Open Sans";
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.6);
+	border: 2px solid #F6A7AC;
+}
+
+.ui-custom-event-activityreport{
+	cursor: pointer;
+	font-size: 13px;
+	color: #a8a8a8!important;
+	text-decoration: initial;
+	font-weight: 300!important;
+	margin: 3em 0 0 0;
+	clear: both;
+	display: block;
+}
+
+ /*iPad retina portrait startup image */
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
+         
+ 
+/*<!-- iPad retina landscape startup image -->*/
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
+ 
+/*<!-- iPad non-retina portrait startup image -->*/
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: portrait) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
+ 
+/*<!-- iPad non-retina landscape startup image -->*/
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: landscape) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
+ 
+/*<!-- iPhone 6 Plus portrait startup image -->*/
+@media (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 414px 736px;
+		height: 736px;
+		width: 414px;
+	}
+}
+ 
+/*<!-- iPhone 6 Plus landscape startup image -->*/
+@media (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 414px 736px;
+		height: 736px;
+		width: 414px;
+	}
+}
+ 
+/*<!-- iPhone 6 startup image -->*/
+@media (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 375px 667px;
+		height: 667px;
+		width: 375px;
+	}
+}
+ 
+/*<!-- iPhone 5 startup image -->*/
+@media (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 320px 568px;
+		height: 568px;
+		width: 320px;
+	}
+}
+ 
+/*<!-- iPhone < 5 retina startup image -->*/
+@media (device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x920.png");
+		background-size: 320px 480px;
+		height: 480px;
+		width: 320px;
+	}
+}
+
+/*<!-- iPhone < 5 non-retina startup image -->*/
+    <link href="./content/png/apple-touch-startup-image-320x460.png"
+@media (device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-320x460.png");
+		background-size: 320px 480px;
+		height: 480px;
+		width: 320px;
+	}
 }

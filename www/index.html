@@ -3,20 +3,25 @@
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>觅校缘</title>
+    <title>Yueme</title>
     <link rel="icon" sizes="192x192" href="./content/material-design/png/m-192.png">
     <link rel="apple-touch-icon" href="./content/material-design/png/m-192.png">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="./script/jquery/mobile/jquery.mobile-1.4.5.min.css" />
 	<link rel="stylesheet" href="index.css" />
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="cordova_plugins.js"></script>
     <script type="text/javascript" src="./plugins/com.phonegap.plugins.PushPlugin/www/PushNotification.js"></script>
+    <script type="text/javascript">
+        window.location.hash = "#page-loading";
+    </script>
 	<script src="./script/jquery/jquery-1.11.1.min.js"></script>
 	<script src="./script/jquery/mobile/jquery.mobile-1.4.5.min.js"></script>
+	<script src="./script/exif/load-image.all.min.js"></script>
 	<script src="./script/parse/parse-1.3.2.min.js"></script>
 	<!--<script src="./script/parse/parse-1.3.2.js"></script>-->
 	<script src="./script/parse/query.js"></script>
@@ -26,13 +31,22 @@
 </head>
 
 <body>
+	<!--Page for loading -->
+	<div data-role="page" id="page-loading" data-title="Yueme">
+
+		<div role="main" class="ui-content">
+			<!-- <h1>loading</h1> -->
+			<div class="loading-page-image"></div>
+		</div>
+
+	</div><!-- /page -->
 
 	<!-- Page for signup -->
-	<div data-role="page" id="page-signup" data-title="觅校缘">
+	<div data-role="page" id="page-signup" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>Sign Up</h1>
-			<a href="#page-login" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all">Log In</a>
+			<a href="#page-login" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" onclick="$('#login-error').html('');setCurrLocationHash('#page-login')">Log In</a>
 		</div><!-- header -->
 
 		<div role="main" class="ui-content">
@@ -53,11 +67,11 @@
 	</div><!-- /page -->
 
 	<!-- Page for login -->
-	<div data-role="page" id="page-login" data-title="觅校缘">
+	<div data-role="page" id="page-login" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>Log In</h1>
-			<a href="#page-signup" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all">Sign Up</a>
+			<a href="#page-signup" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" onclick="$('#signup-error').html('');setCurrLocationHash('#page-signup')">Sign Up</a>
 		</div><!-- header -->
 
 		<div role="main" class="ui-content">
@@ -76,7 +90,7 @@
 	</div><!-- /page -->
 
 	<!-- Page for displaying the list of events -->
-	<div data-role="page" id="page-event" data-title="觅校缘">
+	<div data-role="page" id="page-event" data-title="Yueme">
 
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<h1>Activities</h1>
@@ -88,31 +102,32 @@
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" id="event-content">
+			<div class="ui-load-more-activity" onclick="pullUserEvent(currentLastEvent)">More Activities</div>
 		</div><!-- /content -->
 
 		<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
-				<li><a href="#page-event" data-transition="none" class="event-active-custom" id="event" onclick="pullUserEvent();">Activity</a></li>
-				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();">Chat</a></li>
-				<li><a href="#page-setting" data-transition="none" id="setting">Setting</a></li>
+				<li><a href="#page-event" data-transition="none" class="event-active-custom" id="event" onclick="pullUserEvent();setCurrLocationHash('#page-event')">Activities</a></li>
+				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();setCurrLocationHash('#page-friend')">Friends</a></li>
+				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();setCurrLocationHash('#page-chat')">Chats</a></li>
+				<li><a href="#page-setting" data-transition="none" id="setting" onclick="setCurrLocationHash('#page-setting')">Settings</a></li>
 			</ul>
 			</div>
 		</div><!-- /footer -->
 		<ul class='event-page-right-top-options' style='display: none;'>
-			<li><a href='#page-event-create' id='event-page-right-top-option-1'>Create</a></li>
-			<li><a href='#page-event-my-event' id='event-page-right-top-option-2' onclick='pullMyEvent();'>My Activities</a></li>
+			<li><a href='#page-event-create' id='event-page-right-top-option-1' onclick="setCurrLocationHash('#page-event-create')">Create</a></li>
+            <li><a href='#page-event-my-event' id='event-page-right-top-option-2' onclick="setCurrLocationHash('#page-event-my-event')">My Activities</a></li>
 		</ul>
 		<div class='options-hidden-cover-layer' style='display: none;'></div>
 	</div><!-- /page -->
 
 	<!-- Page for displaying the list of my events -->
-	<div data-role="page" id="page-event-my-event" data-title="觅校缘">
+	<div data-role="page" id="page-event-my-event" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>Activities</h1>
-			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all">Back</a>
+			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="setCurrLocationHash('#page-event')">Back</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" id="my-event-content">
@@ -123,11 +138,11 @@
 	</div><!-- /page -->
 
 	<!-- Page for creating a new event -->
-	<div data-role="page" id="page-event-create" data-title="觅校缘">
+	<div data-role="page" id="page-event-create" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>Create Activity</h1>
-			<a href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all">Cancel</a>
+			<a href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="setCurrLocationHash('#page-event')">Cancel</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
@@ -164,11 +179,11 @@
 	</div><!-- /page -->
 
 	<!-- Page for displaying the detail of an event -->
-	<div data-role="page" id="page-event-detail" data-title="觅校缘" data-add-back-btn="true">
+	<div data-role="page" id="page-event-detail" data-title="Yueme" data-add-back-btn="true">
 
 		<div data-role="header">
 			<h1>Activity Detail</h1>
-			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="$('#send-comment-bar').fadeOut()">Back</a>
+			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="$('#send-comment-bar').fadeOut(); setCurrLocationHash('#page-event')">Back</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" id="event-detail-content">
@@ -179,39 +194,72 @@
 
 	</div><!-- /page -->
 
+	<!-- page for report pop up  -->
+	<div data-role="page" id="page-event-report" data-title="Yueme">
+
+		<div data-role="header" data-theme="b">
+		<h1>Report Activity</h1>
+		</div>
+
+		<div role="main" class="ui-content">
+		<br>
+		<div align = "center" style="font-family: 'Open Sans';">Are you sure to report this activity?</br>You might not be able to cancel this action.</div>
+		<br>
+			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a ui-custom-report">Confirm</a>
+			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a" onclick="$('#send-comment-bar').fadeIn();">Cancel</a>
+		</div>
+		
+	</div><!-- /page -->
+
+	<!-- page for delete confirm pop up  -->
+	<div data-role="page" id="page-event-delete" data-title="Yueme">
+
+		<div data-role="header" data-theme="b">
+		<h1>Delete Activity</h1>
+		</div>
+
+		<div role="main" class="ui-content">
+		<br>
+		<div align = "center" style="font-family: 'Open Sans';">Are you sure to delete this activity?</br>You might not be able to undo this action.</div>
+		<br>
+			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a ui-custom-delete-confirm">Confirm</a>
+			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a" onclick="setCurrLocationHash('#page-event-detail');">Cancel</a>
+		</div>
+	</div><!-- /page -->
+
 	<!-- Page for displaying the friend list -->
-	<div data-role="page" id="page-friend" data-title="觅校缘">
+	<div data-role="page" id="page-friend" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>Friends</h1>
-			<a href="#page-people-near-by" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="listFriendNearBy()">Near By</a>
-			<a href="#page-people-search" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" onclick="bindSearchAutocomplete()">Search</a>
+			<a href="#page-people-near-by" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="listPeopleNearBy();setCurrLocationHash('#page-people-near-by')">Near By</a>
+			<a href="#page-people-search" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" onclick="bindSearchAutocomplete();setCurrLocationHash('#page-people-search')">Search</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<a href="#page-my-friend-requests" id="new-friend-requests-btn" class="ui-btn" onclick="pullMyFriendRequests();">New Friend Requests<span id="new-friend-requests-number" class="ui-li-count"></span></a>
-			<ul id='friend-list' class='ui-listview ui-listview-inset ui-corner-all ui-shadow'>
+			<a href="#page-my-friend-requests" id="new-friend-requests-btn" class="ui-btn" onclick="pullMyFriendRequests();setCurrLocationHash('#page-my-friend-requests')">New Friend Requests<span id="new-friend-requests-number" class="ui-li-count"></span></a>
+			<ul id='friend-list' class='ui-custom-listview ui-listview ui-listview-inset ui-corner-all ui-shadow'>
 			</ul>
 		</div><!-- /content -->
 
 		<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
-				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();">Activity</a></li>
-				<li><a href="#page-friend" data-transition="none" class="friend-active-custom" id="friend" onclick="pullMyFriendList();">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();">Chat</a></li>
-				<li><a href="#page-setting" data-transition="none" id="setting">Setting</a></li>
+				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();setCurrLocationHash('#page-event')">Activities</a></li>
+				<li><a href="#page-friend" data-transition="none" class="friend-active-custom" id="friend" onclick="pullMyFriendList();setCurrLocationHash('#page-friend')">Friends</a></li>
+				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();setCurrLocationHash('#page-chat')">Chats</a></li>
+				<li><a href="#page-setting" data-transition="none" id="setting" onclick="setCurrLocationHash('#page-setting')">Settings</a></li>
 			</ul>
 			</div>
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
 	<!-- Page for displaying the people near by -->
-	<div data-role="page" id="page-people-near-by" data-title="觅校缘">
+	<div data-role="page" id="page-people-near-by" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>People</h1>
-			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="stopGeoWatch()">Back</a>
+			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="stopGeoWatch();setCurrLocationHash('#page-friend')">Back</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
@@ -222,11 +270,11 @@
 	</div><!-- /page -->
 
 	<!-- Page for searching user by email/name/maybe others -->
-	<div data-role="page" id="page-people-search" data-title="觅校缘">
+	<div data-role="page" id="page-people-search" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>People</h1>
-			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="unbindSearchAutocomplete()">Back</a>
+			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="unbindSearchAutocomplete();setCurrLocationHash('#page-friend')">Back</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
@@ -241,11 +289,11 @@
 	</div><!-- /page -->
 
 	<!-- Page for displaying all new friend requests -->
-	<div data-role="page" id="page-my-friend-requests" data-title="觅校缘">
+	<div data-role="page" id="page-my-friend-requests" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>People</h1>
-			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyFriendList();">Back</a>
+			<a data-rel="back" href="#page-friend" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyFriendList();setCurrLocationHash('#page-friend')">Back</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
@@ -256,7 +304,7 @@
 	</div><!-- /page -->
 
 	<!-- Page for displaying the chat list -->
-	<div data-role="page" id="page-chat" data-title="觅校缘">
+	<div data-role="page" id="page-chat" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>Chats</h1>
@@ -268,21 +316,21 @@
 		<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
-				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();">Activity</a></li>
-				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" class="chat-active-custom" id="chat" onclick="pullMyChat();">Chat</a></li>
-				<li><a href="#page-setting" data-transition="none" id="setting">Setting</a></li>
+				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();setCurrLocationHash('#page-event')">Activities</a></li>
+				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();setCurrLocationHash('#page-friend')">Friends</a></li>
+				<li><a href="#page-chat" data-transition="none" class="chat-active-custom" id="chat" onclick="pullMyChat();setCurrLocationHash('#page-chat')">Chats</a></li>
+				<li><a href="#page-setting" data-transition="none" id="setting" onclick="setCurrLocationHash('#page-setting')">Settings</a></li>
 			</ul>
 			</div>
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
 	<!-- Page for displaying the messages of a chat -->
-	<div data-role="page" id="page-chat-messages" data-transition="none" data-title="觅校缘" data-add-back-btn="true">
+	<div data-role="page" id="page-chat-messages" data-title="Yueme" data-add-back-btn="true">
 
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" >
 			<h1 id='chat-messages-title'></h1>
-			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyChat(); $('#send-message-bar').fadeOut()">Back</a>
+			<a data-rel="back" href="#page-chat" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="pullMyChat(); $('#send-message-bar').fadeOut();setCurrLocationHash('#page-chat')">Back</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" style="margin-bottom:100px">
@@ -294,43 +342,44 @@
 	</div><!-- /page -->
 
 	<!-- Page for displaying setting options -->
-	<div data-role="page" id="page-setting" data-title="觅校缘">
+	<div data-role="page" id="page-setting" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>Setting</h1>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<a href="#page-edit-my-profile" class="ui-btn" onclick="getMyProfile(); $('#profile-save-btn').on('click', function(){saveProfile()});">Edit My Profile</a>
+			<a href="#page-edit-my-profile" class="ui-btn" onclick="getMyProfile(); $('#profile-save-btn').on('click', function(){saveProfile()});setCurrLocationHash('#page-edit-my-profile')">Edit My Profile</a>
 			<button class="ui-btn ui-custom-log-out" onclick="logout();">Logout</button>
 		</div><!-- /content -->
 
 		<div data-role="footer" class="nav-glyphish-example" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" class="nav-glyphish-example" data-grid="c">
 			<ul>
-				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();">Activity</a></li>
-				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();">Friend</a></li>
-				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();">Chat</a></li>
-				<li><a href="#page-setting" data-transition="none" class="setting-active-custom" id="setting">Setting</a></li>
+				<li><a href="#page-event" data-transition="none" id="event" onclick="pullUserEvent();setCurrLocationHash('#page-event')">Activities</a></li>
+				<li><a href="#page-friend" data-transition="none" id="friend" onclick="pullMyFriendList();setCurrLocationHash('#page-friend')">Friends</a></li>
+				<li><a href="#page-chat" data-transition="none" id="chat" onclick="pullMyChat();setCurrLocationHash('#page-chat')">Chats</a></li>
+				<li><a href="#page-setting" data-transition="none" class="setting-active-custom" id="setting" onclick="setCurrLocationHash('#page-setting')">Settings</a></li>
 			</ul>
 			</div>
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
 	<!-- Page for displaying edit my profile -->
-	<div data-role="page" id="page-edit-my-profile" data-title="觅校缘">
+	<div data-role="page" id="page-edit-my-profile" data-title="Yueme">
 
 		<div data-role="header">
 			<h1>My Profile</h1>
-			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="refreshPreviewPhoto = false;">Back</a>
-			<a data-rel="back" href="#page-event" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" id="profile-save-btn" onclick="saveProfile();">Save</a>
+			<a data-rel="back" href="#page-setting" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="refreshPreviewPhoto = false; setCurrLocationHash('#page-setting')">Back</a>
+			<a data-rel="back" href="#page-setting" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" id="profile-save-btn" onclick="saveProfile();setCurrLocationHash('#page-setting')">Save</a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" id="my-profile">
 			<div class="profile-photo-bar">
 				<label style='padding-left: 1em;' for="profilephoto">Photo:</label>
 				<canvas id="canvas-photo" class="profile-photo-preview" width="120px" height="120px"></canvas>
-				<input type="file" data-clear-btn="false" name="profilephoto" id="profile-edit-photo" onchange="profilePhotoCrop()" value="">
+				<input type="file" data-clear-btn="false" name="profilephoto" id="profile-edit-photo" value="">
+				<div id="photo-orientation" class="ui-hidden-accessible"></div>
 			</div>
 			<form style='padding: 1em;'>
 				<label for="profileusername">Name:</label>
@@ -361,37 +410,37 @@
 
 
 
-		<div id="send-comment-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:2; display:none">
-			<div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
-				<form id="comment-form">
-					<label id="event-id-label" class="ui-hidden-accessible"></label>
-					<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('comment-content')">
-						<div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
-							<input type="text" name="commentcontent" id="comment-content" value="">
-						</div>
+	<div id="send-comment-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:2; display:none">
+		<div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
+			<form id="comment-form">
+				<label id="event-id-label" class="ui-hidden-accessible"></label>
+				<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('comment-content')">
+					<div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
+						<input type="text" name="commentcontent" id="comment-content" value="">
 					</div>
-					<div class="custom-block-b">
-						<button id="send-comment-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendCommnet();">Send</button>
-					</div>
-				</form>
-			</div>
+				</div>
+				<div class="custom-block-b">
+					<button id="send-comment-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendCommnet();">Send</button>
+				</div>
+			</form>
 		</div>
+	</div>
 
-		<div id="send-message-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:3; display:none">
-			<div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
-				<form id='message-chat-form'>
-					<label id="group-id-label" class="ui-hidden-accessible"></label>
-					<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('message-content')">
-						<div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
-							<input type="text" name="messagecontent" id="message-content" value="">
-						</div>
+	<div id="send-message-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:3; display:none">
+		<div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
+			<form id='message-chat-form'>
+				<label id="group-id-label" class="ui-hidden-accessible"></label>
+				<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('message-content')">
+					<div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
+						<input type="text" name="messagecontent" id="message-content" value="">
 					</div>
-					<div class="custom-block-b">
-						<button id="send-message-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendMessage();">Send</button>
-					</div>
-				</form>
-			</div>
+				</div>
+				<div class="custom-block-b">
+					<button id="send-message-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendMessage();">Send</button>
+				</div>
+			</form>
 		</div>
+	</div>
 
 	<script type="text/javascript">
         app.initialize();
