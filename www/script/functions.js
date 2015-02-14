@@ -302,7 +302,7 @@ function pullUserEvent(beforeAt){
 	var descendingOrderKey = "createdAt";
 	//var ascendingOrderKey = "createdAt";
 	if (typeof(beforeAt) == "undefined") {
-		//$("#event-content").addClass("ui-hidden-accessible");
+		$("#event-content").addClass("ui-hidden-accessible");
 		setTimeout(function(){
 			if (pullLastItem > 0) {
 				$.mobile.loading("show");
@@ -671,8 +671,6 @@ function refreshPreviewCanvas(){
 }
 
 function getMyProfile(){
-	refreshPreviewPhoto = true;
-	refreshPreviewCanvas();
 	var currentUser = Parse.User.current();
 	var owner = currentUser.getUsername();
 	var userId = currentUser.id;
@@ -702,7 +700,7 @@ function getMyProfile(){
 		$("#profile-edit-location").val(location);
 	} 
 	ParseUpdateCurrentUser(displayFunction, function(){});
-	displayFunction = function(object){
+	displayFunction = function(object, data){
 		var photo120 = object.get('profilePhoto120');
 		if (typeof(photo120) == "undefined") {
 			photo120 = "./content/png/Taylor-Swift.png";
@@ -713,7 +711,7 @@ function getMyProfile(){
 		image.src = photo120;
 		context.drawImage(image, 0, 0);
 	}
-	CacheGetProfilePhoto(userId, displayFunction);
+	CacheGetProfilePhoto(userId, displayFunction,{});
 }
 
 function saveProfile(){
