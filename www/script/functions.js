@@ -300,9 +300,9 @@ function pullUserEvent(beforeAt){
 	currentLastEvent = new Date;
 	var limitNumber = 15;
 	var descendingOrderKey = "createdAt";
-	var ascendingOrderKey = "createdAt";
+	//var ascendingOrderKey = "createdAt";
 	if (typeof(beforeAt) == "undefined") {
-		$("#event-content").addClass("ui-hidden-accessible");
+		//$("#event-content").addClass("ui-hidden-accessible");
 		setTimeout(function(){
 			if (pullLastItem > 0) {
 				$.mobile.loading("show");
@@ -373,7 +373,7 @@ function pullUserEvent(beforeAt){
 						$("#event-content").removeClass("ui-hidden-accessible");
 						$.mobile.loading("hide");
 					}
-				}
+				};
 				ParseCheckInterest(owner, id, successFunction);
 			} else {
 				var commentNumber = objects[i].get("commentNumber");
