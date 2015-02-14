@@ -392,7 +392,7 @@ function pullUserEvent(beforeAt){
 			}
 		};
 	};
-	ParsePullEvent(null, limitNumber, descendingOrderKey, "public", displayFunction);
+	ParsePullEvent(null, limitNumber, descendingOrderKey, "public", beforeAt, displayFunction);
 }
 
 // convert ISO time format to relative time
