@@ -711,7 +711,9 @@ function getMyProfile(){
 		image.src = photo120;
 		context.drawImage(image, 0, 0);
 	}
-	CacheGetProfilePhoto(userId, displayFunction,{});
+	setTimeout(function(){
+		CacheGetProfilePhoto(userId, displayFunction,{});
+	},350);
 }
 
 function saveProfile(){

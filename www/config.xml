@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "tk.yuemeuni.yueme"
-        version   = "1.4.4">
+        version   = "1.4.5">
 
     <name>Yueme</name>
 
@@ -32,6 +32,7 @@
     <preference name="prerendered-icon"           value="true" />           <!-- ios: if icon is prerendered, iOS will not apply it's gloss to the app's icon on the user's home screen -->
     <preference name="stay-in-webview"            value="true" />          <!-- ios: external links should open in the default browser, 'true' would use the webview the app lives in -->
     <preference name="ios-statusbarstyle"         value="black-opaque" />   <!-- ios: black-translucent will appear black because the PhoneGap webview doesn't go beneath the status bar -->
+    <preference name="StatusBarOverlaysWebView"   value="false" />          <!--On iOS 7, make the statusbar overlay or not overlay the WebView at startup -->
     <preference name="detect-data-types"          value="false" />           <!-- ios: controls whether data types (such as phone no. and dates) are automatically turned into links by the system -->
     <preference name="exit-on-suspend"            value="false" />          <!-- ios: if set to true, app will terminate when home button is pressed -->
     <preference name="show-splash-screen-spinner" value="true" />           <!-- ios: if set to false, the spinner won't appear on the splash screen during app loading -->
@@ -71,6 +72,7 @@
     -->
     <gap:plugin name="com.phonegap.plugins.pushplugin" />
     <gap:plugin name="com.ionic.keyboard" version="1.0.3" />
+    <gap:plugin name="com.phonegap.plugin.statusbar" version="1.1.0" />
 
     <!-- Define app icon for each platform. -->
     <icon src="icon-192.png" />
