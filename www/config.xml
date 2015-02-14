@@ -70,6 +70,7 @@
         <gap:plugin name="com.phonegap.plugins.barcodescanner" />
     -->
     <gap:plugin name="com.phonegap.plugins.pushplugin" />
+    <gap:plugin name="com.ionic.keyboard" version="1.0.3" />
 
     <!-- Define app icon for each platform. -->
     <icon src="icon-192.png" />
