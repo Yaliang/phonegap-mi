@@ -24,7 +24,7 @@
     <preference name="permissions"                value="none"/>
 
     <!-- Customize your app and platform with the preference element. -->
-    <!-- <preference name="phonegap-version"           value="4.0.0" /> -->         <!-- all: current version of PhoneGap -->
+    <preference name="phonegap-version"           value="4.0.0" />         <!-- all: current version of PhoneGap -->
     <preference name="orientation"                value="portrait" />       <!-- all: default means both landscape and portrait are enabled -->
     <preference name="target-device"              value="universal" />      <!-- all: possible values handset, tablet, or universal -->
     <preference name="fullscreen"                 value="false" />          <!-- all: hides the status bar at the top of the screen -->
@@ -72,7 +72,7 @@
     <gap:plugin name="com.phonegap.plugins.pushplugin" />
 
     <!-- Define app icon for each platform. -->
-    <icon src="icon.png" />
+    <icon src="icon-192.png" />
     <!-- <icon src="res/icon/android/icon-36-ldpi.png"   gap:platform="android"    gap:qualifier="ldpi" />
     <icon src="res/icon/android/icon-48-mdpi.png"   gap:platform="android"    gap:qualifier="mdpi" />
     <icon src="res/icon/android/icon-72-hdpi.png"   gap:platform="android"    gap:qualifier="hdpi" />
