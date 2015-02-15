@@ -104,7 +104,7 @@ function ParseUpdateCurrentUser(successFunction, errorFunction) {
 	});
 }
 
-function ParseEventCreate(owner, title, location, time, visibility, description, errorObject, destID, clearFunction) {
+function ParseEventCreate(owner, title, location, time, visibility, description, errorObject, destID, displayFunction) {
 	var UserEvent = Parse.Object.extend("UserEvent");
 	var userEvent = new UserEvent();
 
@@ -120,7 +120,7 @@ function ParseEventCreate(owner, title, location, time, visibility, description,
 
 	userEvent.save(null, {
 		success: function(userEvent) {
-			clearFunction();
+			displayFunction(userEvent);
 			$.mobile.changePage(destID); //			window.location.hash = destID;
 		},
 		error: function(userEvent, error){
