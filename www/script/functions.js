@@ -997,7 +997,7 @@ function displayEventMoreOption(){
         $("#event-create-startTime").val(time);
         $("#event-create-endTime").val(time);
 
-		$('#event-create-button').bind('click',function(){
+		$('#event-create-button').on('click',function(){
 			createUserEvent();
 		});
 		hiddenEventMoreOption();
