@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "tk.yuemeuni.yueme"
-        version   = "1.4.8">
+        version   = "1.4.9">
 
     <name>Yueme</name>
 

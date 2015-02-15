@@ -954,6 +954,18 @@ function ParseUpdateGCMId(regid, displayFunction){
 	})
 }
 
+function ParseUpdateAPNId(regid, displayFunction){
+	var currentUser = Parse.User.current();
+
+	currentUser.set("APNId",regid.toString());
+	currentUser.save(null,{
+		success: function(object){
+			displayFunction();
+			CacheUpdateUser(object);
+		}
+	})
+}
+
 // functions for database maintaining /never used in front-end script.
 
 function ParseUserNameFieldUpdate(i){
