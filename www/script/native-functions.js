@@ -147,6 +147,7 @@ function registerNotificationId(){
         );
     }
     if ( device.platform == 'iOS') {
+        alert('iOS detect, next register notification');
         pushNotification.register(
         tokenHandler,
         errorHandler,
