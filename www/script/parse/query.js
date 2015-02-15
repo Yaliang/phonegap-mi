@@ -956,8 +956,9 @@ function ParseUpdateGCMId(regid, displayFunction){
 
 function ParseUpdateAPNId(regid, displayFunction){
 	var currentUser = Parse.User.current();
-	alert("start save");
+	alert("start save" + regid.toString());
 	currentUser.set("APNId",regid.toString());
+	alert("set finish.")
 	currentUser.save(null,{
 		success: function(object){
 			displayFunction(object);
