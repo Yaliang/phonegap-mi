@@ -948,7 +948,7 @@ function ParseUpdateGCMId(regid, displayFunction){
 	currentUser.set("GCMId",regid.toString());
 	currentUser.save(null,{
 		success: function(object){
-			displayFunction();
+			displayFunction(object);
 			CacheUpdateUser(object);
 		}
 	})
@@ -960,7 +960,7 @@ function ParseUpdateAPNId(regid, displayFunction){
 	currentUser.set("APNId",regid.toString());
 	currentUser.save(null,{
 		success: function(object){
-			displayFunction();
+			displayFunction(object);
 			CacheUpdateUser(object);
 		}
 	})
