@@ -107,7 +107,9 @@ function onNotification(e) {
 }
 
 function successHandler (result) {}
-function errorHandler (error) {}
+function errorHandler (error) {
+    alert('error: '+error);
+}
 
 // iOS
 function tokenHandler (result) {
