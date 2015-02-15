@@ -8,6 +8,7 @@ function loginByLocalStorage(){
 	var currentUser = Parse.User.current();
 	if (currentUser) {
 		var successFunction = function() {
+			registerNotificationId();
             setCurrLocationHash('#page-event');
 			$.mobile.changePage("#page-event"); // window.location.hash = "#page-event";
 			$.mobile.loading("show");
@@ -60,7 +61,6 @@ function loginByLocalStorage(){
 	}
 }
 
-var GCMId;
 var pullNotificationRunning = false;
 function pullNotification(){
 	var currentUser = Parse.User.current();
@@ -120,7 +120,7 @@ function pullNotification(){
 		loginByLocalStorage();
 	}	
 
-	if (typeof(GCMId) == "undefined") {
+	if (pullNotificationEnable == true) {
 		setTimeout(function(){
 			pullNotification();
 		}, 2000);
@@ -1254,15 +1254,20 @@ function sendMessage(){
 		var text = object.get('text');
 		var notificationFunction = function(senderId,text,receiverId){
 			var displayFunction = function(object,data){
-				var regId = object.get("GCMId");
-				if (typeof(regId) != "undefined") {
-					data.regId = regId;
-					var displayFunction = function(object,data){
-						var message = object.get("name")+": " + data.message;
-						pushNotificationToDeviceByGCM(data.regId,message);
-					}
-					CacheGetProfileByUserId(data.senderId, displayFunction, data);
+				if (typeof(object.get("GCMId")) != "undefined") {
+					data.GCMId = object.get("GCMId");
 				}
+				if (typeof(object.get("APNId")) != "undefined") {
+					data.APNId = object.get("APNId");
+				}
+				var displayFunction = function(object,data){
+					var message = object.get("name")+": " + data.message;
+					if ('GCMId' in data)
+						pushNotificationToDevice('gcm',data.GCMId,message);
+					if ('APNId' in data)
+						pushNotificationToDevice('apn',data.APNId,message);
+				}
+				CacheGetProfileByUserId(data.senderId, displayFunction, data);
 			}
 			var data = {senderId : senderId, message: text};
 			CacheGetProfileByUserId(receiverId, displayFunction, data);
@@ -1560,10 +1565,10 @@ function reportActivity(id){
 
 
 
-function pushNotificationToDeviceByGCM(regId,message) {
+function pushNotificationToDevice(platform,regId,message) {
 	var request="id="+regId+"&message="+message;//{id: regId, message: message};
 	//console.log(request);
-	$.post("https://yueme-push-server.herokuapp.com/",request)
+	$.post("https://yueme-push-server.herokuapp.com/"+platform,request)
 		.done(function(data) {
 			//console.log(data);
 		});
