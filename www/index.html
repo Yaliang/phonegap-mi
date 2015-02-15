@@ -41,7 +41,7 @@
 
 	</div><!-- /page -->
 
-	<!-- Page for signup -->
+	 <!--Page for signup -->
 	<div data-role="page" id="page-signup" data-title="Yueme">
 
 		<div data-role="header">
@@ -57,8 +57,8 @@
 				<input type="email" data-clear-btn="true" name="useremail" id="signup-email" value="">
 				<label for="userpassword">Password:</label>
 				<input type="password" data-clear-btn="ture" name="userpassword" id="signup-password" value="" autocomplete="off">
-				<div id="signup-error"></div>
-				<button class="ui-btn" onclick="signup();">Sign Up</button>
+				<div id="signup-error" class="error-message"></div>
+				<button class="ui-btn" onclick="signup()">Sign Up</button>
 			</form>
 		</div><!-- /content -->
 
@@ -66,7 +66,7 @@
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-	<!-- Page for login -->
+	 <!--Page for login -->
 	<div data-role="page" id="page-login" data-title="Yueme">
 
 		<div data-role="header">
@@ -80,7 +80,7 @@
 				<input type="email" data-clear-btn="true" name="useremail" id="login-email" value="">
 				<label for="userpassword">Password:</label>
 				<input type="password" data-clear-btn="ture" name="userpassword" id="login-password" value="" autocomplete="off">
-				<div id="login-error"></div>
+				<div id="login-error" class="error-message"></div>
 				<button class="ui-btn" onclick="login();">Log In</button>
 			</form>
 		</div><!-- /content -->
@@ -92,7 +92,7 @@
 	<!-- Page for displaying the list of events -->
 	<div data-role="page" id="page-event" data-title="Yueme">
 
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+		<div data-role="header" data-position="fixed" data-tap-toggle="false" >
 			<h1>Activities</h1>
 			<a href="#" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" id="ui-icon-custom-right-top-more" onclick="displayEventMoreOption();"></a>
 			<!--
@@ -115,17 +115,20 @@
 			</ul>
 			</div>
 		</div><!-- /footer -->
-		<ul class='event-page-right-top-options' style='display: none;'>
-			<li><a href='#page-event-create' id='event-page-right-top-option-1' onclick="setCurrLocationHash('#page-event-create')">Create</a></li>
+
+        <ul class='event-page-right-top-options' style='display: none;'>
+            <li><a href='#page-event-create' id='event-page-right-top-option-1' onclick="setCurrLocationHash('#page-event-create')">Create</a></li>
             <li><a href='#page-event-my-event' id='event-page-right-top-option-2' onclick="setCurrLocationHash('#page-event-my-event')">My Activities</a></li>
-		</ul>
-		<div class='options-hidden-cover-layer' style='display: none;'></div>
+        </ul>
+
+        <div class='options-hidden-cover-layer' style='display: none;'></div>
+
 	</div><!-- /page -->
 
 	<!-- Page for displaying the list of my events -->
 	<div data-role="page" id="page-event-my-event" data-title="Yueme">
 
-		<div data-role="header">
+		<div data-role="header" data-position="fixed" data-tap-toggle="false" >
 			<h1>Activities</h1>
 			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="setCurrLocationHash('#page-event')">Back</a>
 		</div><!-- /header -->
@@ -146,15 +149,15 @@
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<form style='padding: 1em '>
+			<form id="event-create-form" style='padding: 1em '>
 				<label for="eventtitle">Title:</label>
 				<input type="text" data-clear-btn="true" name="eventtitle" id="event-create-title" value="">
 				<label for="eventlocation">Location:</label>
 				<input type="text" data-clear-btn="ture" name="eventlocation" id="event-create-location" value="">
 				<label for="eventstarttime">Start Time:</label>
-				<input type="datetime-local" data-clear-btn="ture" name="eventstarttime" id="event-create-start-time" value="">
+				<input type="datetime-local" data-clear-btn="ture" name="eventstarttime" id="event-create-startTime" value="">
 				<label for="eventendtime">End Time:</label>
-				<input type="datetime-local" data-clear-btn="ture" name="eventendtime" id="event-create-end-time" value="">
+				<input type="datetime-local" data-clear-btn="ture" name="eventendtime" id="event-create-endTime" value="">
 				<label for="eventvisibility">Visibility:</label>
 				<select name="eventvisibility" id="event-create-visibility" data-role="flipswitch" data-wrapper-class="custom-size-flipswitch-event-create-visibility" checked="">
 					<option value="off">Friends</option>
@@ -169,9 +172,12 @@
 				<label for="eventdescription">Description:</label>
 				<textarea name="eventdescription" id="event-create-description"></textarea>
 			</form>
+
 			<div id="event-create-preview"></div>
 			<div id="event-create-error"></div>
-			<button id="event-create-button" class="ui-btn">Create</button>
+
+            <button id="event-create-button" class="ui-btn">Create</button>
+
 		</div><!-- /content -->
 
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
@@ -203,12 +209,12 @@
 
 		<div role="main" class="ui-content">
 		<br>
-		<div align = "center" style="font-family: 'Open Sans';">Are you sure to report this activity?</br>You might not be able to cancel this action.</div>
+		<div align = "center" style="font-family: 'Open Sans';">Are you sure to report this activity? You might not be able to cancel this action.</div>
 		<br>
 			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a ui-custom-report">Confirm</a>
 			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a" onclick="$('#send-comment-bar').fadeIn();">Cancel</a>
 		</div>
-		
+
 	</div><!-- /page -->
 
 	<!-- page for delete confirm pop up  -->
@@ -220,7 +226,7 @@
 
 		<div role="main" class="ui-content">
 		<br>
-		<div align = "center" style="font-family: 'Open Sans';">Are you sure to delete this activity?</br>You might not be able to undo this action.</div>
+		<div align = "center" style="font-family: 'Open Sans';">Are you sure to delete this activity? You might not be able to undo this action.</div>
 		<br>
 			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a ui-custom-delete-confirm">Confirm</a>
 			<a  data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-a" onclick="setCurrLocationHash('#page-event-detail');">Cancel</a>
@@ -306,7 +312,7 @@
 	<!-- Page for displaying the chat list -->
 	<div data-role="page" id="page-chat" data-title="Yueme">
 
-		<div data-role="header">
+		<div data-role="header" data-position="fixed" data-tap-toggle="false" >
 			<h1>Chats</h1>
 		</div><!-- /header -->
 
@@ -350,9 +356,6 @@
 
 		<div role="main" class="ui-content">
 			<a href="#page-edit-my-profile" class="ui-btn" onclick="getMyProfile(); $('#profile-save-btn').on('click', function(){saveProfile()});setCurrLocationHash('#page-edit-my-profile')">Edit My Profile</a>
-
-			<a href="https://build.phonegap.com/apps/1239477/install" class="ui-btn">Update</a>
-
 			<button class="ui-btn ui-custom-log-out" onclick="logout();">Logout</button>
 		</div><!-- /content -->
 
@@ -411,23 +414,21 @@
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-
-
 	<div id="send-comment-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:2; display:none">
-		<div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
-			<form id="comment-form">
-				<label id="event-id-label" class="ui-hidden-accessible"></label>
-				<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('comment-content')">
-					<div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
-						<input type="text" name="commentcontent" id="comment-content" value="">
-					</div>
-				</div>
-				<div class="custom-block-b">
-					<button id="send-comment-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendCommnet();">Send</button>
-				</div>
-			</form>
-		</div>
-	</div>
+        <div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
+            <form id="comment-form">
+                <label id="event-id-label" class="ui-hidden-accessible"></label>
+                <div class="custom-block-a" onclick="sendToolbarActiveKeyboard('comment-content')">
+                    <div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
+                        <input type="text" name="commentcontent" id="comment-content" value="">
+                    </div>
+                </div>
+                <div class="custom-block-b">
+                    <button id="send-comment-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendComment();">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 	<div id="send-message-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:3; display:none">
 		<div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">

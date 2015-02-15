@@ -76,7 +76,10 @@ var app = {
         });
         cacheInitialization();
         loginByLocalStorage();
+        // set up push notification
         pushNotification = window.plugins.pushNotification;
+        // add update button
+        $(".ui-custom-log-out").before("<a href='https://build.phonegap.com/apps/1239477/install' class='ui-btn'>Update</a>");
     }
 
 };
