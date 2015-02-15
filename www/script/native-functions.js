@@ -84,6 +84,7 @@ var app = {
 
 };
 
+// Android
 function onNotification(e) {
     switch(e.event) {
         case 'registered':
@@ -108,6 +109,30 @@ function onNotification(e) {
 function successHandler (result) {}
 function errorHandler (error) {}
 
+// iOS
+function tokenHandler (result) {
+    // Your iOS push server needs to know the token before it can push to this device
+    // here is where you might want to send it the token for later use.
+    alert('device token = ' + result);
+}
+function onNotificationAPN (event) {
+    if ( event.alert )
+    {
+        navigator.notification.alert(event.alert);
+    }
+
+    if ( event.sound )
+    {
+        var snd = new Media(event.sound);
+        snd.play();
+    }
+
+    if ( event.badge )
+    {
+        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+    }
+}
+
 function registerNotificationId(){
     if ( device.platform == 'android' || device.platform == 'Android' || device.platform == "amazon-fireos" ){
         pushNotification.register(
@@ -118,6 +143,17 @@ function registerNotificationId(){
                 "ecb":"onNotification"
             }
         );
+    }
+    if ( device.platform == 'iOS') {
+        pushNotification.register(
+        tokenHandler,
+        errorHandler,
+        {
+            "badge":"true",
+            "sound":"true",
+            "alert":"true",
+            "ecb":"onNotificationAPN"
+        });
     }
 }
 
