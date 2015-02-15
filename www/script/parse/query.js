@@ -956,12 +956,15 @@ function ParseUpdateGCMId(regid, displayFunction){
 
 function ParseUpdateAPNId(regid, displayFunction){
 	var currentUser = Parse.User.current();
-
+	alert("start save");
 	currentUser.set("APNId",regid.toString());
 	currentUser.save(null,{
 		success: function(object){
 			displayFunction(object);
 			CacheUpdateUser(object);
+		},
+		error: function(object, error){
+			alert("Error: " + error.code + " " + error.message);
 		}
 	})
 }
