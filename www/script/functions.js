@@ -156,6 +156,7 @@ function login(){
 	var errorObject = $("#login-error");
 	var destID = "#page-event";
 	var customFunction = function(){
+		registerNotificationId();
 		$("#login-password").val("");
 		pullUserEvent();
 		if (!pullNotificationRunning) {
@@ -167,8 +168,6 @@ function login(){
 
     $.mobile.loading("show");
 	ParseLogin(email, password, errorObject, destID, customFunction);
-	
-	registerNotificationId();
 }
 
 function logout(){
