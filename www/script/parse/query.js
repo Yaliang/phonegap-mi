@@ -129,6 +129,38 @@ function ParseEventCreate(owner, title, location, time, visibility, description,
 	});
 }
 
+function ParseEventEditSave(owner, title, location, time, visibility, description, errorObject, destID, displayFunction, eventId) {
+	var UserEvent = Parse.Object.extend("UserEvent");
+	var query = new Parse.Query(UserEvent);
+	
+	query.get(eventId, {
+		success: function(userEvent){
+			userEvent.set("owner",owner);
+			userEvent.set("title",title);
+			userEvent.set("location",location);
+			userEvent.set("time",time);
+			userEvent.set("visibility",visibility);
+			userEvent.set("description",description);
+			userEvent.set("interestNumber",0);
+			userEvent.set("commentNumber",0);
+			userEvent.set("reportNum", 0);
+
+			userEvent.save(null, {
+				success: function(userEvent) {
+					displayFunction(userEvent);
+					window.location.hash = "page-event-my-event";
+					window.location.reload();
+					// console.log(destID + "   " + window.location.hash);
+					// $.mobile.changePage(destID); //			window.location.hash = destID;
+				},
+				error: function(userEvent, error){
+					errorObject.html("Error: " + error.code + " " + error.message);
+				}
+			});
+
+		}
+	});
+}
 
 function ParseUpdateReport(id, hiddenUserEvent){
 	var UserEvent = Parse.Object.extend("UserEvent");
@@ -147,30 +179,37 @@ function ParseUpdateReport(id, hiddenUserEvent){
 	});
 }
 
-function ParsePullEvent(owner, limitNumber, descendingOrderKey, accessibility, beforeAt, displayFunction) {
+function ParsePullEvent(obj) {
+	//owner, limitNumber, descendingOrderKey, accessibility, beforeAt, displayFunction
 	var UserEvent = Parse.Object.extend("UserEvent");
 	var query = new Parse.Query(UserEvent);
-	if (owner != null) {
-		query.equalTo("owner",owner);
+	if (("owner" in obj) && (obj.owner != null)) {
+		query.equalTo("owner",obj.owner);
 	}else{
 		query.lessThan("reportNum", 11);
 		query.notEqualTo("reportUserId", Parse.User.current().id);
 	}
-	if (limitNumber != null) {
-		query.limit(limitNumber);
+	if (("limitNumber" in obj) && (obj.limitNumber != null)) {
+		query.limit(obj.limitNumber);
 	}
-	if (accessibility != null) {
-		if (accessibility == "public") {
+	if (("accessibility" in obj) && (obj.accessibility != null)) {
+		if (obj.accessibility == "public") {
 			query.equalTo("visibility",true);
 		}
 	}
-	query.descending(descendingOrderKey);
-	if ((typeof(beforeAt) != "undefined")&&(beforeAt != null)) {
-		query.lessThan("createdAt",beforeAt);
+	if (("descendingOrderKey" in obj) && (obj.descendingOrderKey != null)) {
+		query.descending(obj.descendingOrderKey);
+	}
+	
+	if (("beforeAt" in obj) && (typeof(obj.beforeAt) != "undefined") && (obj.beforeAt != null)) {
+		query.lessThan("createdAt",obj.beforeAt);
+	}
+	if(("eventId" in obj) && obj.eventId != null){
+		query.equalTo("objectId", obj.eventId);
 	}
 	query.find({
 		success: function(userEvents) {
-			displayFunction(userEvents);
+			obj.displayFunction(userEvents);
 		}
 	});
 }
