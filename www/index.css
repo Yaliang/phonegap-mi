@@ -297,6 +297,14 @@ a {
 	width: 50px!important;
 }
 
+.ui-icon-custom-edit {
+	background: url("./content/material-design/png/my_event_edit.png") 0 50% no-repeat;
+	background-size: 18px 18px;
+	text-align: left!important;
+	padding-left: 25px!important;
+	width: 35px!important;
+}
+
 .ui-state-disabled {
 	opacity: 1!important;
 }
@@ -758,11 +766,26 @@ textarea {
 }
 
 .loading-page-image {
-	background: url("./content/png/apple-touch-startup-image-320x460.png") no-repeat center center fixed; 
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
+	background: 0 -20px no-repeat;
+	height: 100vh;
+	width: 100vw;
+	background-image: url("./content/png/apple-touch-startup-image-1536x2008.png");
 	background-size: cover;
+}
+
+.loading-page-button-top {
+	text-align: center;
+	margin-top: 20vh;
+	padding: 10px 20px;
+	padding-top: 6px;
+	float: left;
+	font-size: 25px;
+	font-weight: bold;
+	color: #f3f3f3;
+	font-family: "Open Sans";
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.6);
+	border: 2px solid #F6A7AC;
 }
 
 .loading-page-button-bottom {
@@ -771,11 +794,11 @@ textarea {
 	padding: 10px 20px;	
 	padding-top: 6px;
 	float: left;
-	font-size: 20px;
+	font-size: 25px;
 	font-weight: bold;
 	color: #f3f3f3;
 	font-family: "Open Sans";
-	border-radius: 3px;
+	border-radius: 5px;
 	background-color: rgba(0, 0, 0, 0.6);
 	border: 2px solid #F6A7AC;
 }
@@ -789,4 +812,76 @@ textarea {
 	margin: 3em 0 0 0;
 	clear: both;
 	display: block;
+}
+
+ /*iPad retina portrait startup image */
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
+ 
+/*<!-- iPad non-retina portrait startup image -->*/
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: portrait) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
+ 
+/*<!-- iPhone 6 Plus portrait startup image -->*/
+@media (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 414px 736px;
+		height: 736px;
+		width: 414px;
+	}
+}
+ 
+ 
+/*<!-- iPhone 6 startup image -->*/
+@media (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 375px 667px;
+		height: 667px;
+		width: 375px;
+	}
+}
+ 
+/*<!-- iPhone 5 startup image -->*/
+@media (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 320px 568px;
+		height: 568px;
+		width: 320px;
+	}
+}
+ 
+/*<!-- iPhone < 5 retina startup image -->*/
+@media (device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x920.png");
+		background-size: 320px 480px;
+		height: 480px;
+		width: 320px;
+	}
+}
+
+/*<!-- iPhone < 5 non-retina startup image -->*/
+    <link href="./content/png/apple-touch-startup-image-320x460.png"
+@media (device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-320x460.png");
+		background-size: 320px 480px;
+		height: 480px;
+		width: 320px;
+	}
 }

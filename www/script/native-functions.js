@@ -18,45 +18,55 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        if (window.navigator.standalone == true) {
-            $('#comment-content').on("blur",function(){
-                $('#comment-content').prop('disabled', true);
-            });
-            $('#message-content').on("blur",function(){
-                $('#message-content').prop('disabled', true);
-            });
+        // set comment and message send bar diable
+        $('#comment-content').on("blur",function(){
             $('#comment-content').prop('disabled', true);
-            $('#message-content').prop('disabled', true);
-        }
-        $('#profile-edit-photo').on('blur change',function(){
-            profilePhotoCrop();
-        })
-        $('#message-chat-form').submit(function(event){
-            if (window.navigator.standalone == true) {
-                $('#message-content').trigger('blur');
-            } else {
-                sendToolbarActiveKeyboard('message-content');
-            }
-            event.preventDefault();
+            $('#send-comment-bar').css("position",'fixed');
+            $('#send-comment-bar').css("bottom","0");
         });
-        $('#event-create-form').submit(function(event) {
+        $('#message-content').on("blur",function(){
+            $('#message-content').prop('disabled', true);
+            $('#send-message-bar').css("position",'fixed');
+            $('#send-message-bar').css("bottom","0");
+        });
+        $('#comment-content').prop('disabled', true);
+        $('#message-content').prop('disabled', true);
+        $('#message-chat-form').submit(function(event){
+            // sendToolbarActiveKeyboard({
+            //  id:'#message-content',
+            //  bar:'#send-message-bar',
+            //  base:'#page-chat-messages'
+            // });
             event.preventDefault();
         });
         $('#comment-form').submit(function(event){
-            sendToolbarActiveKeyboard('comment-content');
-            if (window.navigator.standalone == true) {
-                $('#comment-content').trigger('blur');
-            } else {
-                sendToolbarActiveKeyboard('message-content');
-            }
+            // sendToolbarActiveKeyboard({
+            //  id:'#comment-content',
+            //  bar:'#send-comment-bar',
+            //  base:'#page-event-detail'
+            // });
             event.preventDefault();
         });
+        // finish
+
+        $('#profile-edit-photo').on('blur change',function(){
+            profilePhotoCrop();
+        })
+
+
+        $('#event-create-form').submit(function(event) {
+            event.preventDefault();
+        });
+
+        
         $('#login-form').submit(function(event){
             event.preventDefault();
         });
         $('#signup-form').submit(function(event){
             event.preventDefault();
         });
+        
+
         $(window).hashchange(function(){
             var preHash = currLocationHash;
             var currHash = window.location.hash;
@@ -74,6 +84,23 @@ var app = {
                 $.mobile.changePage("#page-login"); // window.location.hash = "#page-login";
                 currLocationHash = "#page-login";
             }
+        });
+        // add function when the page #page-chat-messages completed.
+        $(document).on("pageshow","#page-chat-messages",function(){
+            $("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
+                duration: 500,
+                complete : function(){
+                    $("#send-message-bar").css("position","fixed");
+                    $("#send-message-bar").css("bottom","0");
+                    $("#send-message-bar").fadeIn("fast");
+                }
+            });
+        });
+        $(document).on("pagehide","#page-chat-messages",function(){
+            console.log("scroll:remove");
+            $(window).unbind("scroll");
+            console.log("resize:remove");
+            $(window).unbind("resize");
         });
         cacheInitialization();
         loginByLocalStorage();

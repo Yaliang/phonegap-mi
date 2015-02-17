@@ -418,7 +418,17 @@ function pullUserEvent(beforeAt){
 			}
 		}
 	};
-	ParsePullEvent(null, limitNumber, descendingOrderKey, "public", beforeAt, displayFunction);
+
+	ParsePullEvent({
+		// owner: owner,
+		limitNumber: limitNumber,
+		descendingOrderKey:descendingOrderKey,
+		accessibility: "public",
+		beforeAt: beforeAt,
+		displayFunction: displayFunction
+		// eventId: null
+	});
+	// ParsePullEvent(null, limitNumber, descendingOrderKey, "public", beforeAt, displayFunction);
 }
 
 // convert ISO time format to relative time
@@ -607,6 +617,8 @@ function pullMyEvent(beforeAt){
 				newElement = newElement + "<div class='ui-footer ui-bar-custom'>"
 				newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='my-comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Detail"+"</a></div>";
 				newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-delete' data-transition='slideup' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-delete' id='my-comment-button-"+id+"' onclick=\"deleteMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Delete"+"</a></div>";
+				newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-update' data-transition='slideup' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-edit' id='my-comment-button-"+id+"' onclick=\"editMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Edit"+"</a></div>";
+
 				//newElement = newElement + "<div class='ui-block-c'><a href='#' class='ui-btn ui-mini ui-btn-icon-left' id='my-delete-button-"+id+"' onclick=\"deleteMyEvent('"+id+"')\">"+'delete'+"</a></div>";
 				newElement = newElement + "</div>";
 				newElement = newElement + "</div>";
@@ -621,7 +633,16 @@ function pullMyEvent(beforeAt){
 			}
 		};
 	};
-	ParsePullEvent(owner, null, descendingOrderKey, null, beforeAt, displayFunction);
+	ParsePullEvent({
+		owner: owner,
+		// limitNumber: null,
+		descendingOrderKey:descendingOrderKey,
+		// accessibility: null,
+		beforeAt: beforeAt,
+		displayFunction: displayFunction
+		// eventId: null
+	});
+	// ParsePullEvent(owner, null, descendingOrderKey, null, beforeAt, displayFunction);
 }
 
 function addInterestEvent(eventId){
@@ -665,14 +686,19 @@ function removeInterestEvent(eventId){
 	ParseRemoveInterest(null, owner, eventId, displayFunction);
 }
 
-function sendToolbarActiveKeyboard(id){
+function sendToolbarActiveKeyboard(object){
 	$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
 		duration: 300,
         complete : function(){
-        	if (window.navigator.standalone == true) {
-        		$('#'+id).prop('disabled', false);
-				$('#'+id).focus();
-        	}
+	    	$(object.id).prop('disabled', false);
+			// $(window).scroll(function(){
+			// 	$(object.id).trigger("blur");
+			// 	console.log("scroll happen");
+			// });
+			$(object.bar).css("position","absolute");
+			$(object.bar).css("bottom",($("body").height()-$(object.base).height()-44).toString()+"px");
+			
+			$(object.id).trigger("focus");
         }
     });
 }
@@ -688,6 +714,108 @@ function deleteMyEvent(eventId){
 		ParseDeleteEvent(eventId, displayFunction);
 	});
 }
+
+function editMyEvent(eventId){
+	var display = function(objs){
+		$("#event-edit-title").val(objs[0].get("title"));
+		$("#event-edit-location").val(objs[0].get("location"));
+		var time = objs[0].get("time").split(" -- ");
+		$("#event-edit-startTime").val(time[0].replace(" ", "T"));
+		$("#event-edit-endTime").val(time[1].replace(" ", "T"));
+		if(objs[0].get("visibility") == false){
+			$("#event-edit-visibility").val("Friends");
+		}
+		$("#event-edit-description").val(objs[0].get("description"));
+		setCurrLocationHash('#page-event-edit');
+		$.mobile.changePage("#page-event-edit"); // window.location.hash = "#page-event";
+		$('#event-editsave-button').on('click',function(){
+			editSaveUserEvent(eventId);
+		});
+	}
+	ParsePullEvent({eventId: eventId, displayFunction: display});
+}
+
+function editSaveUserEvent(eventId){
+	var currentUser = Parse.User.current();
+	var owner = currentUser.getUsername();
+
+	var title = $("#event-edit-title").val();
+	var location = $("#event-edit-location").val();
+	var startTime = $("#event-edit-startTime").val().replace("T", ' ');
+    var endTime = $("#event-edit-endTime").val().replace('T', ' ');
+
+    var errorHandler = function(item) {
+        $("#event-edit-" + item).focus().parent().addClass("ui-custom-event-edit-focus");
+        if ($("#event-edit-" + item + "-alert").length == 0) {
+            $("#event-edit-" + item).parent().after("<p id='event-edit-" + item + "-alert' class='event-edit-alert'>*Field required</p>");
+        }
+
+        setTimeout(function(){
+            $("#event-edit-" + item).focus().parent().removeClass("ui-custom-event-edit-focus");
+        }, 500);
+
+        $("#event-edit-" + item).change(function(){
+            $("#event-edit-" + item + "-alert").remove();
+            $("#event-edit-" + item).unbind("change");
+        });
+    };
+
+    if (title.length == 0) {
+        errorHandler("title");
+        return;
+    }
+
+    if (location.length == 0) {
+        errorHandler("location");
+        return;
+    }
+
+    if (startTime.length == 0) {
+        errorHandler("startTime");
+        return;
+    }
+
+    if (endTime.length == 0) {
+        errorHandler("endTime");
+        return;
+    }
+
+    $('#event-edit-button').unbind("click");
+
+    var index1 = startTime.indexOf(":");
+    var index2 = startTime.lastIndexOf(":");
+    if (index1 != index2) {
+        startTime = startTime.substring(0, index2);
+    }
+
+    index1 = endTime.indexOf(":");
+    index2 = endTime.lastIndexOf(":");
+    if (index1 != index2) {
+        endTime = endTime.substring(0, index2);
+    }
+
+    var time = startTime + " -- " + endTime;
+
+	var visibility = $("#event-edit-visibility").val()=="on" ? true : false ;
+	var description = $("#event-edit-description").val();
+	var errorObject = $("#event-error");
+	var destID = "#page-event-my-event";
+	var displayFunction = function(object){
+		$("#event-edit-title").val("");
+		$("#event-edit-location").val("");
+		$("#event-edit-start-time").val("");
+		$("#event-edit-end-time").val("");
+		$("#event-edit-description").val("");
+		$("#event-edit-visibility").val("on").flipswitch('refresh');
+		$("#event-edit-error").html("");
+		var id = object.id;
+		var holder = object.get("owner");
+		var newElement = buildUserEventElement(object);
+		$("#event-content").prepend(newElement);
+	};
+	ParseEventEditSave(owner, title, location, time, visibility, description, errorObject, destID, displayFunction, eventId);
+}
+
 
 var refreshPreviewPhoto = false;
 function refreshPreviewCanvas(){
@@ -849,7 +977,6 @@ function profilePhotoCrop(){
 		}
 	},{});
 }
-
 
 var geoWatchId;
 function listPeopleNearBy(){
@@ -1245,6 +1372,7 @@ function sendMessage(){
 	var text = $("#message-content").val();
 	if (text == "") 
 		return;
+	// $(window).unbind("scroll");
 	$("#message-content").val("");
 	var displayFunction= function(object){
 		var messageId = object.id;
@@ -1282,10 +1410,17 @@ function sendMessage(){
 			$("#message-"+data.messageId).css("backgroundImage","url('"+photo120+"')");
 		};
 		CacheGetProfilePhoto(senderId, displayFunction, {messageId : messageId});
+		//$('#send-message-bar').css("bottom",($("body").height()-$("#page-chat-messages").height()-44).toString()+"px");
+		
 		$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
-			duration: 150,
-			complete : function(){}
+			duration: 750,
+			complete : function(){
+			}
 		});
+		if ($("#send-message-bar").css("position") == "absolute") {
+			$('#send-message-bar').css("bottom", ($("body").height()-$("#page-chat-messages").height()-44).toString()+"px");
+		}
+		
 	};
 
 	ParseAddChatMessage(senderId, groupId, text, displayFunction);
@@ -1318,8 +1453,8 @@ function updateChatTitle(friendId, id, option){
 function startPrivateChat(friendId){
 	$("#page-chat-messages > .ui-content").html("");
 	$("#chat-messages-title").html("");
-	$("#message-content").val("");
-	$('#send-message-bar').fadeIn();
+	$("#message-content").val("");	
+	
 	var memberId = new Array;
 	memberId.push(friendId);
 	memberId.push(Parse.User.current().id);
@@ -1345,13 +1480,7 @@ function startPrivateChat(friendId){
 					CacheGetProfilePhoto(objects[i].get('senderId'), displayFunction, {messageId: objects[i].id});
 				}
 				$.mobile.changePage( "#page-chat-messages");
-				setTimeout(function(){
-					$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
-						duration: 500,
-				        complete : function(){
-				        }
-				    });
-				},1);
+				
 			};
 			//CachePullChatMessage(groupId, limitNum, null, displayFunction);
 			ParsePullChatMessage(groupId, limitNum, descendingOrderKey, null, displayFunction, null)
@@ -1391,26 +1520,12 @@ function updateChatMessage(object){
 	        complete : function(){
 	        }
 	    });
+	    if ($("#send-message-bar").css("position") == "absolute") {
+			$('#send-message-bar').css("bottom", ($("body").height()-$("#page-chat-messages").height()-44).toString()+"px");
+		}
 	}
 	ParsePullChatMessage(groupId, limitNum, descendingOrderKey, beforeAt, displayFunction, null);
 
-}
-
-function buildElementInChatListPage(object){
-	var chatId = object.id;
-	var groupId = object.get('groupId');
-	var unreadNum = object.get("unreadNum");
-	var newElement = "";
-	newElement += "<div id='chat-"+chatId+"' class='chat-list'>";
-	newElement += "<div class='chat-list-title'></div>";
-	newElement += "<div class='chat-last-time'></div>";
-	newElement += "<div class='chat-last-message'></div>";
-	if (unreadNum > 0) {
-		newElement += "<span class='ui-li-count'>"+unreadNum+"</span>";
-	}
-	newElement += "</div>";
-
-	return newElement;
 }
 
 function buildElementInChatListPage(object){
@@ -1561,8 +1676,6 @@ function reportActivity(id){
 	}
 	ParseUpdateReport(id, hiddenUserEvent);	
 }
-
-
 
 function pushNotificationToDevice(platform,regId,message) {
 	var request="id="+regId+"&message="+message;//{id: regId, message: message};

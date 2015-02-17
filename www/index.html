@@ -129,7 +129,7 @@
 	<div data-role="page" id="page-event-my-event" data-title="Yueme">
 
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" >
-			<h1>Activities</h1>
+			<h1>My Activities</h1>
 			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="setCurrLocationHash('#page-event')">Back</a>
 		</div><!-- /header -->
 
@@ -183,6 +183,55 @@
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 		</div><!-- /footer -->
 	</div><!-- /page -->
+
+
+	<!-- edit event -->
+	<div data-role="page" id="page-event-edit" data-title="Yueme">
+
+		<div data-role="header">
+			<h1>Edit Activity</h1>
+			<a href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="setCurrLocationHash('#page-event')">Cancel</a>
+		</div><!-- /header -->
+
+		<div role="main" class="ui-content">
+			<form id="event-create-form" style='padding: 1em '>
+				<label for="eventtitle">Title:</label>
+				<input type="text" data-clear-btn="true" name="eventtitle" id="event-edit-title" value="">
+				<label for="eventlocation">Location:</label>
+				<input type="text" data-clear-btn="ture" name="eventlocation" id="event-edit-location" value="">
+				<label for="eventstarttime">Start Time:</label>
+				<input type="datetime-local" data-clear-btn="ture" name="eventstarttime" id="event-edit-startTime" value="">
+				<label for="eventendtime">End Time:</label>
+				<input type="datetime-local" data-clear-btn="ture" name="eventendtime" id="event-edit-endTime" value="">
+				<label for="eventvisibility">Visibility:</label>
+				<select name="eventvisibility" id="event-edit-visibility" data-role="flipswitch" data-wrapper-class="custom-size-flipswitch-event-create-visibility" checked="">
+					<option value="off">Friends</option>
+					<option value="on" selected="">Public</option>
+				</select>
+				<!-- flyer will comming later 
+					<label for="eventflyer">Flyer:</label>
+					<input type="file" name="eventflyer" accept="image/*" capture>
+				-->
+				<!-- label of event will comming later 
+				-->
+				<label for="eventdescription">Description:</label>
+				<textarea name="eventdescription" id="event-edit-description"></textarea>
+			</form>
+
+			<div id="event-create-preview"></div>
+			<div id="event-create-error"></div>
+
+            <button id="event-editsave-button" class="ui-btn">Save</button>
+
+		</div><!-- /content -->
+
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		</div><!-- /footer -->
+	</div><!-- /page -->
+
+
+
+
 
 	<!-- Page for displaying the detail of an event -->
 	<div data-role="page" id="page-event-detail" data-title="Yueme" data-add-back-btn="true">
@@ -342,9 +391,6 @@
 		<div role="main" class="ui-content" style="margin-bottom:100px">
 		</div><!-- /content -->
 
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false" >
-		</div><!-- /footer -->
-
 	</div><!-- /page -->
 
 	<!-- Page for displaying setting options -->
@@ -414,11 +460,11 @@
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-	<div id="send-comment-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:2; display:none">
+	<div id="send-comment-bar" class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:3; display:none; position:absolute; background-color: #e9e9e9; border-color: #ddd;">
         <div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
             <form id="comment-form">
                 <label id="event-id-label" class="ui-hidden-accessible"></label>
-                <div class="custom-block-a" onclick="sendToolbarActiveKeyboard('comment-content')">
+                <div class="custom-block-a" onclick="sendToolbarActiveKeyboard({id:'#comment-content',bar:'#send-comment-bar',base:'#page-event-detail'});">
                     <div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
                         <input type="text" name="commentcontent" id="comment-content" value="">
                     </div>
@@ -430,20 +476,18 @@
         </div>
     </div>
 
-	<div id="send-message-bar" class="ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:3; display:none">
-		<div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup" style="position:fixed; bottom:0px">
-			<form id='message-chat-form'>
-				<label id="group-id-label" class="ui-hidden-accessible"></label>
-				<div class="custom-block-a" onclick="sendToolbarActiveKeyboard('message-content')">
-					<div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
-						<input type="text" name="messagecontent" id="message-content" value="">
-					</div>
+	<div id="send-message-bar" class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" style="z-index:3; display:none; position:absolute; background-color: #e9e9e9; border-color: #ddd;">
+		<form id='message-chat-form'>
+			<label id="group-id-label" class="ui-hidden-accessible"></label>
+			<div class="custom-block-a" onclick="sendToolbarActiveKeyboard({id:'#message-content',bar:'#send-message-bar',base:'#page-chat-messages'});">
+				<div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
+					<input type="text" name="messagecontent" id="message-content" value="">
 				</div>
-				<div class="custom-block-b">
-					<button id="send-message-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendMessage();">Send</button>
-				</div>
-			</form>
-		</div>
+			</div>
+			<div class="custom-block-b">
+				<button id="send-message-button" class="ui-btn ui-corner-all custom-send-button" onclick="sendMessage();">Send</button>
+			</div>
+		</form>
 	</div>
 
 	<script type="text/javascript">
