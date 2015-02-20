@@ -162,7 +162,7 @@ function ParseUpdateReport(id, hiddenUserEvent){
 	query.get(id, {
 		success: function(userEvent){
 			userEvent.increment("reportNum",1);
-			userEvent.add("reportUserId", Parse.User.current().id);
+			userEvent.addUnique("reportUserId", Parse.User.current().id);
 			userEvent.save(null, {
 				success: function(userEvent){
 					//hide the report event
@@ -251,21 +251,7 @@ function ParseAddEventComment(eventId, owner, content, errorFunction, successFun
 	});
 }
 
-function ParseUpdateEventInterestNumber(count, eventId, displayFunction){
-	var UserEvent = Parse.Object.extend("UserEvent");
-	var query = new Parse.Query(UserEvent);
-	
-	query.get(eventId, {
-		success: function(userEvent){
-			userEvent.increment("interestNumber",count);
-			userEvent.save(null, {
-				success: function(userEvent){
-					displayFunction(userEvent);
-				}
-			});
-		}
-	});
-}
+
 
 function ParseUpdateEventCommentNumber(count, eventId, displayFunction){
 	var UserEvent = Parse.Object.extend("UserEvent");
@@ -333,6 +319,54 @@ function ParseRemoveInterest(objectId, owner, eventId, displayFunction){
 			}
 		});
 	}
+}
+
+function ParseUpdateEventInterestNumber(count, eventId, displayFunction){
+	var UserEvent = Parse.Object.extend("UserEvent");
+	var query = new Parse.Query(UserEvent);
+	
+	query.get(eventId, {
+		success: function(userEvent){
+			userEvent.increment("interestNumber",count);
+			userEvent.save(null, {
+				success: function(userEvent){
+					displayFunction(userEvent);
+				}
+			});
+		}
+	});
+}
+
+function ParseAddGoing(eventId, displayFunction){
+	var UserEvent = Parse.Object.extend("UserEvent");
+	var query = new Parse.Query(UserEvent);
+
+	query.get(eventId, {
+		success: function(object){
+			object.addUnique("goingId",Parse.User.current().id);
+			object.save(null, {
+				success: function(object){
+					displayFunction(object);
+				}
+			});
+		}
+	});
+}
+
+function ParseRemoveGoing(eventId, displayFunction){
+	var UserEvent = Parse.Object.extend("UserEvent");
+	var query = new Parse.Query(UserEvent);
+
+	query.get(eventId, {
+		success: function(object){
+			object.remove("goingId",Parse.User.current().id);
+			object.save(null, {
+				success: function(object){
+					displayFunction(object);
+				}
+			});
+		}
+	});
 }
 
 function ParseDeleteEvent(eventId, displayFunction){
