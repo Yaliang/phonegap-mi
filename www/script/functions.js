@@ -289,6 +289,8 @@ function initialElementEventSetting(){
 			var image = new Image();
 			image.src = photo120;
 			alert('read image done');
+			alert(context);
+			alert(image);
 			context.drawImage(image, 0, 0);
 			alert('drawImage done');
 		}
