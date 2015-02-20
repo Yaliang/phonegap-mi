@@ -16,7 +16,6 @@ function addInterestEvent(eventId){
         });
     };
     ParseAddInterest(owner, eventId, displayFunction);
-
 }
 
 function removeInterestEvent(eventId){
@@ -42,6 +41,42 @@ function removeInterestEvent(eventId){
         }
     };
     ParseRemoveInterest(null, owner, eventId, displayFunction);
+}
+
+function addGoingEvent(eventId){
+    console.log("going fired: "+eventId);
+    var currentUser = Parse.User.current();
+    var displayFunction = function(object){
+        console.log("display fired");
+        var eventId = object.id;
+        var goingNum = object.get("goingId").length;
+        $(".going-statistics-"+eventId).each(function(){$(this).html(goingNum.toString()+" Goings");});
+        $(".going-button-"+eventId).each(function(){
+            var id = eventId;
+            var oldElement = $(this);
+            var newElement = "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-true going-button-"+id+"' onclick='removeGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>"
+            oldElement.before(newElement);
+            oldElement.remove();
+        });
+    };
+    ParseAddGoing(eventId, displayFunction);
+}
+
+function removeGoingEvent(eventId){
+    var currentUser = Parse.User.current();
+    var displayFunction = function(object){
+        var eventId = object.id;
+        var goingNum = object.get("goingId").length;
+        $(".going-statistics-"+eventId).each(function(){$(this).html(goingNum.toString()+" Goings");});
+        $(".going-button-"+eventId).each(function(){
+            var id = eventId;
+            var oldElement = $(this);
+            var newElement = "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-false going-button-"+id+"' onclick='addGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>"
+            oldElement.before(newElement);
+            oldElement.remove();
+        });
+    };
+    ParseRemoveGoing(eventId, displayFunction);
 }
 
 // #page-event functions
@@ -99,6 +134,11 @@ function buildUserEventElement(object){
     var commentNumber = object.get("commentNumber");
     var holder = object.get("owner");
     var id = object.id;
+    var goingId = object.get("goingId");
+    if (typeof(goingId) == "undefined") {
+        goingId = new Array;
+    }
+    var goingNumber = goingId.length;
     var newElement = "";
     newElement = newElement + "<div id=\'"+id+"\'>";
     newElement = newElement + "<div class='custom-corners-public custom-corners'>";
@@ -115,11 +155,16 @@ function buildUserEventElement(object){
     }
     newElement = newElement + "<p class='ui-custom-event-location'>" + location + "</p>";
     newElement = newElement + "<p class='ui-custom-event-time'>" + time + "</p>";
-    newElement = newElement + "<div class='event-statistics comment-statistics-"+id+"' style='clear:both'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div>";
+    newElement = newElement + "<div class='event-statistics comment-statistics-"+id+"' style='clear:both'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div><div class='event-statistics going-statistics-"+id+"'>" + goingNumber + " Goings</div>";
     newElement = newElement + "</div>";
     newElement = newElement + "<div class='ui-footer ui-bar-custom'>";
     newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"')\">"+"Detail"+"</a></div>";
     newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' >"+"Interest"+"</a></div>";
+    if (goingId.indexOf(Parse.User.current().id) < 0) {
+        newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-false going-button-"+id+"' onclick='addGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>";
+    } else {
+        newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-true going-button-"+id+"' onclick='removeGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>";
+    }
     newElement = newElement + "</div>";
     newElement = newElement + "</div>";
     newElement = newElement + "</div>";
@@ -367,6 +412,11 @@ function buildEventDetailElement(object){
     var interestNumber = object.get("interestNumber");
     var commentNumber = object.get("commentNumber");
     var holder = object.get("owner");
+    var goingId = object.get("goingId");
+    if (typeof(goingId) == "undefined") {
+        goingId = new Array;
+    }
+    var goingNumber = goingId.length;
     var id = object.id;
     var newElement = "";
     newElement = newElement + "<div id=\'event-detail-"+id+"\'>";
@@ -384,10 +434,15 @@ function buildEventDetailElement(object){
     }
     newElement = newElement + "<p class='ui-custom-event-location'>" + location + "</p>";
     newElement = newElement + "<p class='ui-custom-event-time'>" + time + "</p>";
-    newElement = newElement + "<div class='event-statistics comment-statistics-"+id+"' style='clear:both'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div>";
+    newElement = newElement + "<div class='event-statistics comment-statistics-"+id+"' style='clear:both'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div><div class='event-statistics going-statistics-"+id+"'>" + goingNumber + " Goings</div>";
     newElement = newElement + "</div>";
     newElement = newElement + "<div class='ui-footer ui-bar-custom'>";
     newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' >"+"Interest"+"</a></div>";
+    if (goingId.indexOf(Parse.User.current().id) < 0) {
+        newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-false going-button-"+id+"' onclick='addGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>";
+    } else {
+        newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-true going-button-"+id+"' onclick='removeGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>";
+    }
     newElement = newElement + "</div>";
     newElement = newElement + "</div>";
     newElement = newElement + "</div>";

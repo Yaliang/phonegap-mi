@@ -260,39 +260,30 @@ function initialElementEventSetting(){
 	        	$("#send-message-bar").css("position","fixed");
 	        	$("#send-message-bar").css("bottom","0");
 	        	$("#send-message-bar").show();
+	        	$(window).on("swiperight",function(){
+					window.history.back();
+					setCurrLocationHash('#page-event');
+					$(window).unbind("swiperight");
+				})
 	        }
 	    });
 	});
 	$(document).on("pagehide","#page-chat-messages",function(){
-		$("#send-message-bar").fadeOut("fast");
+		$("#send-message-bar").hide();
 	});
 	// add function when the page #page-event-detail completed.
     $(document).on("pageshow","#page-event-detail",function(){
 		$("#send-comment-bar").css("position","fixed");
 		$("#send-comment-bar").css("bottom","0");
-		$("#send-comment-bar").fadeIn("fast");
+		$("#send-comment-bar").show();
+		$(window).on("swiperight",function(){
+			window.history.back();
+			setCurrLocationHash('#page-event');
+			$(window).unbind("swiperight");
+		})
 	});
 	$(document).on("pagehide","#page-event-detail",function(){
-		$("#send-comment-bar").fadeOut("fast");
-	});
-	// add function after page-edit-my-profile fired
-	$(document).on("pageshow","#page-edit-my-profile",function(){
-		var currentUser = Parse.User.current();
-		var userId = currentUser.id;
-		displayFunction = function(object, data){
-			var photo120 = object.get('profilePhoto120');
-			if (typeof(photo120) == "undefined") {
-				photo120 = "./content/png/Taylor-Swift.png";
-			}
-			var canvas = document.getElementById('canvas-photo');
-			var context = canvas.getContext('2d');
-			var image = new Image;
-			image.onload = function(){
-				context.drawImage(image, 0, 0);
-			}
-			image.src = photo120;
-		}
-		CacheGetProfilePhoto(userId, displayFunction, {});
+		$("#send-comment-bar").hide();
 	});
 }
 
