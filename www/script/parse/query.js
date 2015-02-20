@@ -141,17 +141,11 @@ function ParseEventEditSave(owner, title, location, time, visibility, descriptio
 			userEvent.set("time",time);
 			userEvent.set("visibility",visibility);
 			userEvent.set("description",description);
-			userEvent.set("interestNumber",0);
-			userEvent.set("commentNumber",0);
-			userEvent.set("reportNum", 0);
 
 			userEvent.save(null, {
 				success: function(userEvent) {
 					displayFunction(userEvent);
-					window.location.hash = "page-event-my-event";
-					window.location.reload();
-					// console.log(destID + "   " + window.location.hash);
-					// $.mobile.changePage(destID); //			window.location.hash = destID;
+					$.mobile.changePage(destID); //			window.location.hash = destID;
 				},
 				error: function(userEvent, error){
 					errorObject.html("Error: " + error.code + " " + error.message);

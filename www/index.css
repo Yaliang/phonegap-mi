@@ -142,7 +142,7 @@
 	font-weight: 300!important;
 }
 
-.ui-input-text input, .ui-input-search input {
+.ui-input-text textarea, .ui-input-text input, .ui-input-search input {
 	font-family: 'Open Sans'!important;
 	font-weight: 400!important;
 }
@@ -294,11 +294,11 @@ a {
 	background-size: 18px 18px;
 	text-align: left!important;
 	padding-left: 25px!important;
-	width: 50px!important;
+	width: 40px!important;
 }
 
 .ui-icon-custom-edit {
-	background: url("./content/material-design/png/my_event_edit.png") 0 50% no-repeat;
+	background: url("./content/material-design/png/underline6-red-36.png") 0 50% no-repeat;
 	background-size: 18px 18px;
 	text-align: left!important;
 	padding-left: 25px!important;
@@ -823,9 +823,30 @@ textarea {
 		width: 768px;
 	}
 }
+         
+ 
+/*<!-- iPad retina landscape startup image -->*/
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
  
 /*<!-- iPad non-retina portrait startup image -->*/
 @media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: portrait) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
+		background-size: 768px 1024px;
+		height: 1024px;
+		width: 768px;
+	}
+}
+ 
+/*<!-- iPad non-retina landscape startup image -->*/
+@media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: landscape) {
 	.loading-page-image {
 		background-image: url("./content/png/apple-touch-startup-image-748x1024.png");
 		background-size: 768px 1024px;
@@ -844,6 +865,15 @@ textarea {
 	}
 }
  
+/*<!-- iPhone 6 Plus landscape startup image -->*/
+@media (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape) {
+	.loading-page-image {
+		background-image: url("./content/png/apple-touch-startup-image-640x1096.png");
+		background-size: 414px 736px;
+		height: 736px;
+		width: 414px;
+	}
+}
  
 /*<!-- iPhone 6 startup image -->*/
 @media (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) {

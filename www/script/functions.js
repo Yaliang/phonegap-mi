@@ -184,6 +184,99 @@ function logout(){
 	unregisterNotificationId();
 }
 
+function initialElementEventSetting(){
+	// set comment and message send bar diable
+	$('#comment-content').on("blur",function(){
+		$('#comment-content').prop('disabled', true);
+		$('#send-comment-bar').css("position",'fixed');
+		$('#send-comment-bar').css("bottom","0");
+	});
+	$('#message-content').on("blur",function(){
+		$('#message-content').prop('disabled', true);
+		$('#send-message-bar').css("position",'fixed');
+		$('#send-message-bar').css("bottom","0");
+	});
+	$('#comment-content').prop('disabled', true);
+	$('#message-content').prop('disabled', true);
+	$('#message-chat-form').submit(function(event){
+		// sendToolbarActiveKeyboard({
+		// 	id:'#message-content',
+		// 	bar:'#send-message-bar',
+		// 	base:'#page-chat-messages'
+		// });
+		event.preventDefault();
+	});
+	$('#comment-form').submit(function(event){
+		// sendToolbarActiveKeyboard({
+		// 	id:'#comment-content',
+		// 	bar:'#send-comment-bar',
+		// 	base:'#page-event-detail'
+		// });
+		event.preventDefault();
+	});
+	// finish
+
+	$('#profile-edit-photo').on('blur change',function(){
+		profilePhotoCrop();
+	})
+
+
+    $('#event-create-form').submit(function(event) {
+        event.preventDefault();
+    });
+
+	
+	$('#login-form').submit(function(event){
+		event.preventDefault();
+	});
+	$('#signup-form').submit(function(event){
+		event.preventDefault();
+	});
+	
+
+    $(window).hashchange(function(){
+        var preHash = currLocationHash;
+        var currHash = window.location.hash;
+        //console.log("currHash:" + currHash);
+        //console.log("preHash:" + preHash);
+
+        // in user session
+        if (currHash == "#page-login" && (preHash != "#page-loading" && preHash != "#page-login" && preHash != "#page-signup")) {
+            $.mobile.changePage("#page-event"); // window.location.hash = "#page-event";
+            currLocationHash = "#page-event";
+        }
+
+        // out of user session
+        if (currHash == "#page-setting" && (preHash == "#page-loading" || preHash == "#page-login" || preHash == "#page-signup")) {
+            $.mobile.changePage("#page-login"); // window.location.hash = "#page-login";
+            currLocationHash = "#page-login";
+        }
+    });
+    // add function when the page #page-chat-messages completed.
+    $(document).on("pageshow","#page-chat-messages",function(){
+		$("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
+			duration: 500,
+	        complete : function(){
+	        	$("#send-message-bar").css("position","fixed");
+	        	$("#send-message-bar").css("bottom","0");
+	        	$("#send-message-bar").show();
+	        }
+	    });
+	});
+	$(document).on("pagehide","#page-chat-messages",function(){
+		$("#send-message-bar").fadeOut("fast");
+	});
+	// add function when the page #page-event-detail completed.
+    $(document).on("pageshow","#page-event-detail",function(){
+		$("#send-comment-bar").css("position","fixed");
+		$("#send-comment-bar").css("bottom","0");
+		$("#send-comment-bar").fadeIn("fast");
+	});
+	$(document).on("pagehide","#page-event-detail",function(){
+		$("#send-comment-bar").fadeOut("fast");
+	});
+}
+
 function createUserEvent(){
 	var currentUser = Parse.User.current();
 	var owner = currentUser.getUsername();
@@ -247,7 +340,7 @@ function createUserEvent(){
 
 	var visibility = $("#event-create-visibility").val()=="on" ? true : false ;
 	var description = $("#event-create-description").val();
-	var errorObject = $("#event-error");
+	var errorObject = $("#event-create-error");
 	var destID = "#page-event";
 	var displayFunction = function(object){
 		$("#event-create-title").val("");
@@ -270,22 +363,22 @@ function createUserEvent(){
 
 var pullLastItem=0;
 
-function pullUserEventHolderInfo(holder, eventId){
+function pullUserEventHolderInfo(holder, elementIdBase){
 	var displayFunction = function(object, data) {
 		var name = object.get("name");
 		var gender = object.get("gender");
 		var userId = object.id;
-		var eventId = data.eventId;
+		var elementIdBase = data.elementIdBase;
 
-		$("#"+eventId+"-owner-name").html(name);
+		$("#"+elementIdBase+"-owner-name").html(name);
 		if (typeof(gender) == 'undefined') {
 			//$("#"+eventId+"-owner-gender").html(gender.toString());
 		} else if (gender) {
-			$("#"+eventId+"-owner-gender").css("backgroundImage","url('./content/customicondesign-line-user-black/png/male-white-20.png')");
-			$("#"+eventId+"-owner-gender").css("backgroundColor","#8970f1");
+			$("#"+elementIdBase+"-owner-gender").css("backgroundImage","url('./content/customicondesign-line-user-black/png/male-white-20.png')");
+			$("#"+elementIdBase+"-owner-gender").css("backgroundColor","#8970f1");
 		} else {
-			$("#"+eventId+"-owner-gender").css("backgroundImage","url('./content/customicondesign-line-user-black/png/female1-white-20.png')");
-			$("#"+eventId+"-owner-gender").css("backgroundColor","#f46f75");
+			$("#"+elementIdBase+"-owner-gender").css("backgroundImage","url('./content/customicondesign-line-user-black/png/female1-white-20.png')");
+			$("#"+elementIdBase+"-owner-gender").css("backgroundColor","#f46f75");
 		}
 		
 		pullLastItem = pullLastItem - 1;
@@ -299,7 +392,7 @@ function pullUserEventHolderInfo(holder, eventId){
 			if (typeof(photo120) == "undefined") {
 				photo120 = "./content/png/Taylor-Swift.png";
 			}
-			$("#"+data.eventId+" > .custom-corners").css("backgroundImage","url('"+photo120+"')");
+			$("#"+data.elementIdBase+" > .custom-corners").css("backgroundImage","url('"+photo120+"')");
 			pullLastItem = pullLastItem - 1;
 			if (pullLastItem == 0) {
 				$("#event-content").removeClass("ui-hidden-accessible");
@@ -308,7 +401,7 @@ function pullUserEventHolderInfo(holder, eventId){
 		};
 		CacheGetProfilePhoto(userId, displayFunction, data);
 	};
-	CacheGetProfileByUsername(holder, displayFunction, {eventId : eventId});
+	CacheGetProfileByUsername(holder, displayFunction, {elementIdBase : elementIdBase});
 	//ParseGetProfile(holder, displayFunction, eventId);
 }
 
@@ -338,11 +431,11 @@ function buildUserEventElement(object){
 	}
 	newElement = newElement + "<p class='ui-custom-event-location'>" + location + "</p>";
 	newElement = newElement + "<p class='ui-custom-event-time'>" + time + "</p>";
-	newElement = newElement + "<div id='comment-statistics-"+id+"' class='event-statistics' style='clear:both'>" + commentNumber + " Comments</div><div id='interest-statistics-"+id+"' class='event-statistics'>" + interestNumber + " Interests</div>";
+	newElement = newElement + "<div class='event-statistics comment-statistics-"+id+"' style='clear:both'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div>";
 	newElement = newElement + "</div>";
 	newElement = newElement + "<div class='ui-footer ui-bar-custom'>";
 	newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"')\">"+"Detail"+"</a></div>";
-	newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false' id='interest-button-"+id+"' >"+"Interest"+"</a></div>";
+	newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' >"+"Interest"+"</a></div>";
 	newElement = newElement + "</div>";
 	newElement = newElement + "</div>";
 	newElement = newElement + "</div>";
@@ -372,9 +465,9 @@ function pullUserEvent(beforeAt){
 		if (objects.length < limitNumber)
 			$(".ui-load-more-activity").html("No More Activities");
 		for (var i=0; i <= objects.length-1; i++) {
+			if (Date.parse(currentLastEvent) > Date.parse(objects[i].createdAt))
+				currentLastEvent = objects[i].createdAt
 			if ($("#"+objects[i].id).length == 0) {
-				if (Date.parse(currentLastEvent) > Date.parse(objects[i].createdAt))
-					currentLastEvent = objects[i].createdAt
 				var id = objects[i].id;
 				var holder = objects[i].get("owner");
 				var newElement = buildUserEventElement(objects[i]);
@@ -384,14 +477,20 @@ function pullUserEvent(beforeAt){
 				// check if owner has interested this event
 				var successFunction = function(eventId, interest){
 					if (interest.length == 0){
-						$("#interest-button-"+eventId).bind("click", function() {
-							addInterestEvent(eventId);
+						$(".interest-button-"+eventId).each(function(){
+							$(this).unbind("click");
+							$(this).bind("click", function() {
+								addInterestEvent(eventId);
+							});
 						});
 					} else {
-						$("#interest-button-"+eventId).removeClass("ui-icon-custom-favor-false");
-						$("#interest-button-"+eventId).addClass("ui-icon-custom-favor-true");
-						$("#interest-button-"+eventId).bind("click", function() {
-							removeInterestEvent(eventId);
+						$(".interest-button-"+eventId).each(function(){
+							$(this).removeClass("ui-icon-custom-favor-false");
+							$(this).addClass("ui-icon-custom-favor-true");
+							$(this).unbind("click");
+							$(this).bind("click", function() {
+								removeInterestEvent(eventId);
+							});
 						});
 					};
 					pullLastItem = pullLastItem - 1;
@@ -406,7 +505,9 @@ function pullUserEvent(beforeAt){
 				var interestNumber = objects[i].get("interestNumber");
 				var holder = objects[i].get("owner");
 				var id = objects[i].id;
-				$("#comment-statistics-"+id).html(commentNumber.toString()+" Comments");
+				$(".comment-statistics-"+id).each(function(){
+					$(this).html(commentNumber.toString()+" Comments");
+				});
 				$("#interest-statistics-"+id).html(interestNumber.toString()+" Interests");
 				pullLastItem = pullLastItem - 1;
 				if (pullLastItem == 0) {
@@ -488,40 +589,113 @@ function buildCommentInEventDetail(object){
 	return newElement;
 }
 
+function buildEventDetailElement(object){
+
+
+	var title = object.get("title");
+	var location = object.get("location");
+	var time = object.get("time");
+	var visibility = object.get("visibility");
+	var description = object.get("description");
+	var interestNumber = object.get("interestNumber");
+	var commentNumber = object.get("commentNumber");
+	var holder = object.get("owner");
+	var id = object.id;
+	var newElement = "";
+	newElement = newElement + "<div id=\'event-detail-"+id+"\'>";
+	newElement = newElement + "<div class='custom-corners-public custom-corners'>";
+	newElement = newElement + "<div class='ui-bar ui-bar-a'>";
+	newElement = newElement + "<div><strong id=\'event-detail-"+id+"-owner-name\'></strong></div>";
+	newElement = newElement + "<div id=\'event-detail-"+id+"-owner-gender\' class=\'ui-icon-custom-gender\'></div>";
+	newElement = newElement + "</div>";
+	newElement = newElement + "<div class='ui-body ui-body-a'>";
+	newElement = newElement + "<p class='ui-custom-event-title'>" + title + "</p>";
+	if (description.length == 0) {
+		newElement = newElement + "<p class='ui-custom-event-description-less-margin'></br></p>";
+	} else {
+		newElement = newElement + "<p class='ui-custom-event-description'>" +  description.replace("\n","</br>") + "</p>";
+	}
+	newElement = newElement + "<p class='ui-custom-event-location'>" + location + "</p>";
+	newElement = newElement + "<p class='ui-custom-event-time'>" + time + "</p>";
+	newElement = newElement + "<div class='event-statistics comment-statistics-"+id+"' style='clear:both'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div>";
+	newElement = newElement + "</div>";
+	newElement = newElement + "<div class='ui-footer ui-bar-custom'>";
+	newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' >"+"Interest"+"</a></div>";
+	newElement = newElement + "</div>";
+	newElement = newElement + "</div>";
+	newElement = newElement + "</div>";
+
+	return newElement;
+
+
+
+	// var title = object.get("title");
+	// var location = object.get("location");
+	// var time = object.get("time");
+	// var visibility = object.get("visibility");
+	// var description = object.get("description");
+ //    var holder = object.get("owner");
+	// var id = object.id;
+
+	// var newElement = "";
+	// newElement += "<div id=event-detail-'"+id+"'>";
+ //    newElement += "<div class='ui-corner-all custom-corners custom-corners-detail'>";
+	// newElement += "<div class='ui-body ui-body-a'>";
+	// newElement += "<p class='ui-custom-event-title'>" + title + "</p>";
+ //    if (description.length == 0) {
+ //        newElement += "<p class='ui-custom-event-description-less-margin'>" + description.replace("\n","</br>") + "</p>";
+ //    } else {
+ //        newElement += "<p class='ui-custom-event-description'>" + description.replace("\n","</br>") + "</p>";
+ //    }
+	// newElement += "<p class='ui-custom-event-location'>" + location + "</p>";
+	// newElement += "<p class='ui-custom-event-time'>" + time + "</p>";
+	// //newElement += "<br><p class = 'ui-custom-event-activityreport' onclick ='$(\".ui-custom-report\").click(reportActivity(\""+id+"\"))'>Report</p>";
+	// newElement += "<a href='#page-event-report' role='button' class='ui-custom-event-activityreport' data-transition='slideup' onclick='$(\"#send-comment-bar\").fadeOut();'>Report</a>";
+	// newElement += "</div>";
+	// newElement += "</div>";
+	// newElement += "</div>";
+
+	// return newElement;
+}
+
 // update the detail of event when the user clicked to the page-event-detail
 function updateEventDetail(id){
 	$("#event-detail-content").html("");
 	$("#event-id-label").html(id);
-	$("#send-comment-bar").fadeIn();
 	var descendingOrderKey = "createdAt";
 	var displayFunction = function(object){
-		var title = object[0].get("title");
-		var location = object[0].get("location");
-		var time = object[0].get("time");
-		var visibility = object[0].get("visibility");
-		var description = object[0].get("description");
-        var holder = object[0].get("owner");
 		var id = object[0].id;
+		var holder = object[0].get("owner");
+		$("#event-detail-content").prepend(buildEventDetailElement(object[0]));
+		// display event holder's name | not the email one
+		pullUserEventHolderInfo(holder, 'event-detail-'+id);
+		// check if currentUser has interested this event
+		var successFunction = function(eventId, interest){
+			if (interest.length == 0){
+				$(".interest-button-"+eventId).each(function(){
+					$( this ).unbind("click");
+					$( this ).bind("click", function() {
+						addInterestEvent(eventId);
+					});
+				});
+			} else {
+				$(".interest-button-"+eventId).each(function(){
+					console.log($(this));
+					$(this).removeClass("ui-icon-custom-favor-false");
+					$(this).addClass("ui-icon-custom-favor-true");
+					$(this).unbind("click");
+					$(this).bind("click", function() {
+						removeInterestEvent(eventId);
+					});
+				});
+			};
+		};
+		var currentUser = Parse.User.current();
+		var owner = currentUser.getUsername();
+		ParseCheckInterest(owner, id, successFunction);
 
-		var newElement = "";
-		newElement = newElement + "<div id=event-detail-'"+id+"'>";
-        newElement = newElement + "<div class='ui-corner-all custom-corners custom-corners-detail'>";
-		newElement = newElement + "<div class='ui-body ui-body-a'>";
-		newElement = newElement + "<p class='ui-custom-event-title'>" + title + "</p>";
-        if (description.length == 0) {
-            newElement = newElement + "<p class='ui-custom-event-description-less-margin'>" + description.replace("\n","</br>") + "</p>";
-        } else {
-            newElement = newElement + "<p class='ui-custom-event-description'>" + description.replace("\n","</br>") + "</p>";
-        }
-		newElement = newElement + "<p class='ui-custom-event-location'>" + location + "</p>";
-		newElement = newElement + "<p class='ui-custom-event-time'>" + time + "</p>";
-		//newElement += "<br><p class = 'ui-custom-event-activityreport' onclick ='$(\".ui-custom-report\").click(reportActivity(\""+id+"\"))'>Report</p>";
-		newElement += "<a href='#page-event-report' role='button' class='ui-custom-event-activityreport' data-transition='slideup' onclick='$(\"#send-comment-bar\").fadeOut();'>Report</a>";
-		newElement = newElement + "</div>";
-		newElement = newElement + "</div>";
-		newElement = newElement + "</div>";
 
-		$("#event-detail-content").prepend(newElement);
+		
 		$(".ui-custom-report").on("click",function(){
 			reportActivity(id);
 		});
@@ -532,6 +706,7 @@ function updateEventDetail(id){
 		$("#event-detail-content").append("<div id='event-commnets-list' class='ui-custom-comment-container'></div>")
 
 		for (var i=0; i<=objects.length-1; i++) {
+
 			var newElement = buildCommentInEventDetail(objects[i]);
 			$("#event-commnets-list").append(newElement);
 			var displayFunction = function(object, data) {
@@ -572,10 +747,53 @@ function sendComment(){
 		var eventId = object.id;
 		var commentNumber = object.get("commentNumber");
 		updateEventDetail(eventId);
-		$("#comment-statistics-"+eventId).html(commentNumber.toString()+" Comments");
+		$(".comment-statistics-"+eventId).each(function(){
+			$(this).html(commentNumber.toString()+" Comments");
+		});
 		$("#my-comment-statistics-"+eventId).html(commentNumber.toString()+" Comments");
 	};
 	ParseAddEventComment(eventId, owner, content, errorFunction, successFunction);
+}
+
+function buildMyUserEventElement(object){
+	var owner = object.get("owner");
+	var title = object.get("title");
+	var location = object.get("location");
+	var time = object.get("time");
+	var visibility = object.get("visibility");
+	var description = object.get("description");
+	var interestNumber = object.get("interestNumber");
+	var commentNumber = object.get("commentNumber");
+	var id = object.id;
+	var newElement = "";
+	newElement += "<div id='my-"+id+"'>";
+	newElement += "<div class='custom-corners custom-corners-public'>";
+	newElement += "<div class='ui-body ui-body-a' style='border-top-width: 0; margin-top: 0;'>";
+	newElement += "<p class='ui-custom-event-title'>" + title + "</p>";
+	if (location.length > 0) {
+		newElement += "<p class='ui-custom-event-location'>" + location + "</p>";
+	}
+	if (time.length > 0) {
+		newElement += "<p class='ui-custom-event-time'>" + time + "</p>";
+	}
+	if ((location.length == 0) && (time.length == 0)) {
+		newElement += "<p class='ui-custom-event-description-less-margin'>" + description.replace("\n","</br>") + "</p>";
+	} else {
+		newElement += "<p class='ui-custom-event-description'>" + description.replace("\n","</br>") + "</p>";
+	}
+	newElement += "<div id='my-comment-statistics-"+id+"' class='event-statistics'>" + commentNumber + " Comments</div><div id='my-interest-statistics-"+id+"' class='event-statistics'>" + interestNumber + " Interests</div>";
+	newElement += "</div>";
+	newElement += "<div class='ui-footer ui-bar-custom'>"
+	newElement += "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='my-comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Detail"+"</a></div>";
+	newElement += "<div class='ui-custom-float-left'><a href='#page-event-delete' data-transition='slideup' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-delete' id='my-comment-button-"+id+"' onclick=\"deleteMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Delete"+"</a></div>";
+	newElement += "<div class='ui-custom-float-left'><a href='#page-event-edit' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-edit' id='my-comment-button-"+id+"' onclick=\"editMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Edit"+"</a></div>";
+
+	//newElement = newElement + "<div class='ui-block-c'><a href='#' class='ui-btn ui-mini ui-btn-icon-left' id='my-delete-button-"+id+"' onclick=\"deleteMyEvent('"+id+"')\">"+'delete'+"</a></div>";
+	newElement += "</div>";
+	newElement += "</div>";
+	newElement += "</div>";
+
+	return newElement;
 }
 
 var selectedElement="";
@@ -587,43 +805,7 @@ function pullMyEvent(beforeAt){
 	var displayFunction = function(objects){
 		for (var i=objects.length-1; i >= 0; i--) {
 			if ($("#my-event-content > #my-"+objects[i].id).length == 0) {
-				var owner = objects[i].get("owner");
-				var title = objects[i].get("title");
-				var location = objects[i].get("location");
-				var time = objects[i].get("time");
-				var visibility = objects[i].get("visibility");
-				var description = objects[i].get("description");
-				var interestNumber = objects[i].get("interestNumber");
-				var commentNumber = objects[i].get("commentNumber");
-				var id = objects[i].id;
-				var newElement = "";
-				newElement = newElement + "<div id='my-"+id+"'>";
-				newElement = newElement + "<div class='custom-corners custom-corners-public'>";
-				newElement = newElement + "<div class='ui-body ui-body-a'>";
-				newElement = newElement + "<p class='ui-custom-event-title'>" + title + "</p>";
-				if (location.length > 0) {
-					newElement = newElement + "<p class='ui-custom-event-location'>" + location + "</p>";
-				}
-				if (time.length > 0) {
-					newElement = newElement + "<p class='ui-custom-event-time'>" + time + "</p>";
-				}
-				if ((location.length == 0) && (time.length == 0)) {
-					newElement = newElement + "<p class='ui-custom-event-description-less-margin'>" + description.replace("\n","</br>") + "</p>";
-				} else {
-					newElement = newElement + "<p class='ui-custom-event-description'>" + description.replace("\n","</br>") + "</p>";
-				}
-				newElement = newElement + "<div id='my-comment-statistics-"+id+"' class='event-statistics'>" + commentNumber + " Comments</div><div id='my-interest-statistics-"+id+"' class='event-statistics'>" + interestNumber + " Interests</div>";
-				newElement = newElement + "</div>";
-				newElement = newElement + "<div class='ui-footer ui-bar-custom'>"
-				newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='my-comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Detail"+"</a></div>";
-				newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-delete' data-transition='slideup' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-delete' id='my-comment-button-"+id+"' onclick=\"deleteMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Delete"+"</a></div>";
-				newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-update' data-transition='slideup' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-edit' id='my-comment-button-"+id+"' onclick=\"editMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Edit"+"</a></div>";
-
-				//newElement = newElement + "<div class='ui-block-c'><a href='#' class='ui-btn ui-mini ui-btn-icon-left' id='my-delete-button-"+id+"' onclick=\"deleteMyEvent('"+id+"')\">"+'delete'+"</a></div>";
-				newElement = newElement + "</div>";
-				newElement = newElement + "</div>";
-				newElement = newElement + "</div>";
-				$("#my-event-content").prepend(newElement);
+				$("#my-event-content").prepend(buildMyUserEventElement(objects[i]));
 			} else {
 				var commentNumber = objects[i].get("commentNumber");
 				var interestNumber = objects[i].get("interestNumber");
@@ -651,12 +833,14 @@ function addInterestEvent(eventId){
 	var displayFunction = function(object){
 		var eventId = object.id;
 		var interestNumber = object.get("interestNumber");
-		$("#interest-statistics-"+eventId).html(interestNumber.toString()+" Interests");
-		$("#interest-button-"+eventId).removeClass("ui-icon-custom-favor-false");
-		$("#interest-button-"+eventId).addClass("ui-icon-custom-favor-true");
-		$("#interest-button-"+eventId).unbind("click");
-		$("#interest-button-"+eventId).bind("click", function() {
-			removeInterestEvent(eventId);
+		$(".interest-statistics-"+eventId).each(function(){$(this).html(interestNumber.toString()+" Interests");});
+		$(".interest-button-"+eventId).each(function(){
+			$(this).removeClass("ui-icon-custom-favor-false");
+			$(this).addClass("ui-icon-custom-favor-true");
+			$(this).unbind("click");
+			$(this).bind("click", function() {
+				removeInterestEvent(eventId);
+			});
 		});
 	};
 	ParseAddInterest(owner, eventId, displayFunction);
@@ -672,15 +856,17 @@ function removeInterestEvent(eventId){
 			var displayFunction = function(object) {
 				var eventId = object.id;
 				var interestNumber = object.get("interestNumber");
-				$("#interest-statistics-"+eventId).html(interestNumber.toString()+" Interests");
-				$("#interest-button-"+eventId).removeClass("ui-icon-custom-favor-true");
-				$("#interest-button-"+eventId).addClass("ui-icon-custom-favor-false");
-				$("#interest-button-"+eventId).unbind("click");
-				$("#interest-button-"+eventId).bind("click", function() {
-					addInterestEvent(eventId); 
+				$(".interest-statistics-"+eventId).each(function(){$(this).html(interestNumber.toString()+" Interests");});
+				$(".interest-button-"+eventId).each(function(){
+					$(this).removeClass("ui-icon-custom-favor-true");
+					$(this).addClass("ui-icon-custom-favor-false");
+					$(this).unbind("click");
+					$(this).bind("click", function() {
+						addInterestEvent(eventId); 
+					});
 				});
 			};
-			ParseRemoveInterest(objectId, null, eventId, displayFunction)
+			ParseRemoveInterest(objectId, null, eventId, displayFunction);
 		}
 	};
 	ParseRemoveInterest(null, owner, eventId, displayFunction);
@@ -726,8 +912,6 @@ function editMyEvent(eventId){
 			$("#event-edit-visibility").val("Friends");
 		}
 		$("#event-edit-description").val(objs[0].get("description"));
-		setCurrLocationHash('#page-event-edit');
-		$.mobile.changePage("#page-event-edit"); // window.location.hash = "#page-event";
 		$('#event-editsave-button').on('click',function(){
 			editSaveUserEvent(eventId);
 		});
@@ -798,9 +982,10 @@ function editSaveUserEvent(eventId){
 
 	var visibility = $("#event-edit-visibility").val()=="on" ? true : false ;
 	var description = $("#event-edit-description").val();
-	var errorObject = $("#event-error");
+	var errorObject = $("#event-edit-error");
 	var destID = "#page-event-my-event";
 	var displayFunction = function(object){
+		// clear page-event-edit
 		$("#event-edit-title").val("");
 		$("#event-edit-location").val("");
 		$("#event-edit-start-time").val("");
@@ -808,10 +993,22 @@ function editSaveUserEvent(eventId){
 		$("#event-edit-description").val("");
 		$("#event-edit-visibility").val("on").flipswitch('refresh');
 		$("#event-edit-error").html("");
+		// rebuilt element in page-event-my-event
+		var id = object.id;
+		var newElement = buildMyUserEventElement(object);
+		var oldElement = $("#my-"+id);
+		oldElement.before(newElement);
+		oldElement.remove();
+		// rebuilt element in page-event
 		var id = object.id;
 		var holder = object.get("owner");
 		var newElement = buildUserEventElement(object);
-		$("#event-content").prepend(newElement);
+		var oldElement = $("#"+id);
+		oldElement.before(newElement);
+		oldElement.remove();
+		// display event holder's name | not the email one
+		pullUserEventHolderInfo(holder, id);
+
 	};
 	ParseEventEditSave(owner, title, location, time, visibility, description, errorObject, destID, displayFunction, eventId);
 }
@@ -1106,19 +1303,9 @@ function displayEventMoreOption(){
 	$('#ui-icon-custom-right-top-more').attr("id","ui-icon-custom-right-top-more-active");
 	$(window).unbind("scroll");
 	$('#event-page-right-top-option-1').on('click',function(){
-        var date = new Date();
-        var year = date.getFullYear();
-        var month = date.getMonth() + 1;
-        var day = date.getDate();
-        var hour = date.getHours();
-        var minute =  date.getMinutes();
-        var time = "";
-        time += year + "-";
-        time += (month < 10 ? "0" + month: month) + "-";
-        time += (day < 10 ? "0" + day : day) + "T";
-        time += (hour < 10 ? "0" + hour : hour) + ":";
-        time += (minute < 10 ? "0" + minute : minute);
-
+        var date = new Date().toISOString();
+        var timeRes = date.split(":");
+        time = timeRes[0]+":"+timeRes[1];
         $("#event-create-startTime").val(time);
         $("#event-create-endTime").val(time);
 
