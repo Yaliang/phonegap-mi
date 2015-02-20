@@ -286,13 +286,11 @@ function initialElementEventSetting(){
 			}
 			var canvas = document.getElementById('canvas-photo');
 			var context = canvas.getContext('2d');
-			var image = new Image();
+			var image = new Image;
+			image.onload = function(){
+				context.drawImage(image, 0, 0);
+			}
 			image.src = photo120;
-			alert('read image done');
-			alert(context);
-			alert(image.src);
-			context.drawImage(image, 0, 0);
-			alert('drawImage done');
 		}
 		CacheGetProfilePhoto(userId, displayFunction, {});
 	});
