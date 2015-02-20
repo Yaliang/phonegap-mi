@@ -1,6 +1,7 @@
 // instant variable to handle pushNotification
 var pushNotification;
 var pullNotificationEnable = true;
+var badgeNumber = 0;
 var app = {
     // Application Constructor
     initialize: function() {
@@ -75,6 +76,8 @@ function onNotificationAPN (event) {
         if (!pullNotificationRunning) {
             pullNotification();
         }
+        badgeNumber = 0;
+        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
         //navigator.notification.alert(event.alert);
     }
 
@@ -86,7 +89,8 @@ function onNotificationAPN (event) {
 
     if ( event.badge )
     {
-        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+        badgeNumber += parseInt(event.badge);
+        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, badgeNumber);
     }
 }
 
