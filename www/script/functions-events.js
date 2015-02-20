@@ -568,6 +568,11 @@ function buildMyUserEventElement(object){
     var description = object.get("description");
     var interestNumber = object.get("interestNumber");
     var commentNumber = object.get("commentNumber");
+    var goingId = object.get("goingId");
+    if (typeof(goingId) == "undefined"){
+        goingId = new Array;
+    }
+    var goingNumber = goingId.length;
     var id = object.id;
     var newElement = "";
     newElement += "<div id='my-"+id+"'>";
@@ -585,7 +590,7 @@ function buildMyUserEventElement(object){
     } else {
         newElement += "<p class='ui-custom-event-description'>" + description.replace("\n","</br>") + "</p>";
     }
-    newElement += "<div id='my-comment-statistics-"+id+"' class='event-statistics'>" + commentNumber + " Comments</div><div id='my-interest-statistics-"+id+"' class='event-statistics'>" + interestNumber + " Interests</div>";
+    newElement += "<div id='my-comment-statistics-"+id+"' class='event-statistics'>" + commentNumber + " Comments</div><div id='my-interest-statistics-"+id+"' class='event-statistics'>" + interestNumber + " Interests</div><div id='my-going-statistics-"+id+"' class='event-statistics'>" + goingNumber + " Goings</div>";
     newElement += "</div>";
     newElement += "<div class='ui-footer ui-bar-custom'>"
     newElement += "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='my-comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Detail"+"</a></div>";
@@ -613,9 +618,15 @@ function pullMyEvent(beforeAt){
             } else {
                 var commentNumber = objects[i].get("commentNumber");
                 var interestNumber = objects[i].get("interestNumber");
+                var goingId = objects[i].get("goingId");
+                if (typeof(goingId) == "undefined"){
+                    goingId = new Array;
+                }
+                var goingNumber = goingId.length;
                 var id = objects[i].id;
                 $("#my-comment-statistics-"+id).html(commentNumber.toString()+" Comments");
                 $("#my-interest-statistics-"+id).html(interestNumber.toString()+" Interests");
+                $("#my-going-statistics-"+id).html(goingNumber.toString()+" Goings");
             }
         };
     };
