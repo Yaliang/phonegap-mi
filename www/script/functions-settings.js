@@ -48,7 +48,9 @@ function getMyProfile(){
 		var context = canvas.getContext('2d');
 		var image = new Image();
 		image.src = photo120;
+		alert('read image done');
 		context.drawImage(image, 0, 0);
+		alert('drawImage done');
 	}
 	CacheGetProfilePhoto(userId, displayFunction, {});
 }
