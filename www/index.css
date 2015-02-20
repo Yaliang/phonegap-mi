@@ -142,7 +142,7 @@
 	font-weight: 300!important;
 }
 
-.ui-input-text textarea, .ui-input-text input, .ui-input-search input {
+textarea.ui-input-text, .ui-input-text input, .ui-input-search input {
 	font-family: 'Open Sans'!important;
 	font-weight: 400!important;
 }
