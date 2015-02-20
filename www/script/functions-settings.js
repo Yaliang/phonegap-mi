@@ -39,20 +39,6 @@ function getMyProfile(){
 		$("#profile-edit-location").val(location);
 	} 
 	ParseUpdateCurrentUser(displayFunction, function(){});
-	displayFunction = function(object, data){
-		var photo120 = object.get('profilePhoto120');
-		if (typeof(photo120) == "undefined") {
-			photo120 = "./content/png/Taylor-Swift.png";
-		}
-		var canvas = document.getElementById('canvas-photo');
-		var context = canvas.getContext('2d');
-		var image = new Image();
-		image.src = photo120;
-		alert('read image done');
-		context.drawImage(image, 0, 0);
-		alert('drawImage done');
-	}
-	CacheGetProfilePhoto(userId, displayFunction, {});
 }
 
 function saveProfile(){
