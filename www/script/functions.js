@@ -277,9 +277,9 @@ function initialElementEventSetting(){
 	});
 	// add function after page-edit-my-profile fired
 	$(document).on("pageshow","#page-edit-my-profile",function(){
+		var currentUser = Parse.User.current();
+		var userId = currentUser.id;
 		displayFunction = function(object, data){
-			var currentUser = Parse.User.current();
-			var userId = currentUser.id;
 			var photo120 = object.get('profilePhoto120');
 			if (typeof(photo120) == "undefined") {
 				photo120 = "./content/png/Taylor-Swift.png";
