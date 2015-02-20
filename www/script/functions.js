@@ -290,7 +290,7 @@ function initialElementEventSetting(){
 			image.src = photo120;
 			alert('read image done');
 			alert(context);
-			alert(image);
+			alert(image.src);
 			context.drawImage(image, 0, 0);
 			alert('drawImage done');
 		}
