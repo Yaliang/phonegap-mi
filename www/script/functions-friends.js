@@ -322,3 +322,63 @@ function pullMyFriendList() {
 
 	CachePullMyFriend(Parse.User.current().id, descendingOrderKey, displayFunction);
 }
+
+// #page-display-user-profile
+
+function buildUserProfileDetailElement(object){
+	var name = object.get('name');
+	var gender = object.get('gender');
+	var birthdate = object.get('birthdate');
+	var school = object.get('school');
+	var interest = object.get('interest');
+	var location = object.get('location');
+	var motto = object.get('motto');
+	var major = object.get('major');
+	// var latitude = object.get('latitude');
+	// var longitude = object.get('longitude');
+	var newElement = "";
+
+	newElement += "<div class='ui-user-profile-name'>"+name+"</div>";
+	newElement += "<div class='ui-icon-custom-gender ui-user-profile-gender' style='";
+	if (typeof(gender) == 'undefined') {
+		//$("#"+eventId+"-owner-gender").html(gender.toString());
+	} else if (gender) {
+		newElement += "background-image:url("+"./content/customicondesign-line-user-black/png/male-white-20.png"+");";
+		newElement += "background-color:"+"#8970f1"+";";
+	} else {
+		newElement += "background-image:url("+"./content/customicondesign-line-user-black/png/female1-white-20.png"+");";
+		newElement += "background-color:"+"#f46f75"+";";
+	}
+
+	newElement += "'></div>";
+	if ((typeof(birthdate) != "undefined") && (birthdate))
+		newElement += "<div class='ui-user-profile-list'><div class='ui-profile-label'>Birthday</div><div class='ui-profile-item'>"+birthdate+"</div></div>";	
+	if ((typeof(location) != "undefined") && (location))
+		newElement += "<div class='ui-user-profile-list'><div class='ui-profile-label'>Region</div><div class='ui-profile-item'>"+location+"</div></div>";
+	if ((typeof(school) != "undefined") && (school))
+		newElement += "<div class='ui-user-profile-list'><div class='ui-profile-label'>Education</div><div class='ui-profile-item'>"+school+"</div></div>";
+	if ((typeof(major) != "undefined") && (major))
+		newElement += "<div class='ui-user-profile-list'><div class='ui-profile-label'>Major</div><div class='ui-profile-item'>"+major+"</div></div>";
+	if ((typeof(interest) != "undefined") && (interest))
+		newElement += "<div class='ui-user-profile-list'><div class='ui-profile-label'>Interest</div><div class='ui-profile-item'>"+interest+"</div></div>";
+	if ((typeof(motto) != "undefined") && (motto))
+		newElement += "<div class='ui-user-profile-list'><div class='ui-profile-label'>Motto</div><div class='ui-profile-item'>"+motto+"</div></div>";
+
+	return newElement;
+}
+
+function displayUserProfile(userId){
+	$("#user-profile").html("<div id='user-photo-"+userId+"' class='ui-user-profile-photo'></div>")
+	var displayFunction= function(object, data){
+		$("#user-photo-"+data.userId).after(buildUserProfileDetailElement(object));
+	}
+	CacheGetProfileByUserId(userId, displayFunction, {userId: userId});
+	var displayFunction= function(object, data){
+		var photo120 = object.get("profilePhoto120");
+		if (typeof(photo120) == "undefined") {
+			photo120 = "./content/png/Taylor-Swift.png";
+		}
+		$("#user-photo-"+data.userId).html("<img src='"+photo120+"' height='100' width='100' style='border-radius: 3px;'>")
+	}
+	CacheGetProfilePhoto(userId, displayFunction, {userId: userId})
+}

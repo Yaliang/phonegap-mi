@@ -89,6 +89,9 @@ function pullUserEventHolderInfo(holder, elementIdBase){
         var userId = object.id;
         var elementIdBase = data.elementIdBase;
 
+        $("#"+data.elementIdBase+" > .custom-corners > .ui-bar").click(function(){
+            displayUserProfile(userId);
+        });
         $("#"+elementIdBase+"-owner-name").html(name);
         if (typeof(gender) == 'undefined') {
             //$("#"+eventId+"-owner-gender").html(gender.toString());
@@ -142,7 +145,7 @@ function buildUserEventElement(object){
     var newElement = "";
     newElement = newElement + "<div id=\'"+id+"\'>";
     newElement = newElement + "<div class='custom-corners-public custom-corners'>";
-    newElement = newElement + "<div class='ui-bar ui-bar-a'>";
+    newElement = newElement + "<div class='ui-bar ui-bar-a' style='cursor:pointer' onclick=\"$.mobile.changePage(\'#page-display-user-profile\');\">";
     newElement = newElement + "<div><strong id=\'"+id+"-owner-name\'></strong></div>";
     newElement = newElement + "<div id=\'"+id+"-owner-gender\' class=\'ui-icon-custom-gender\'></div>";
     newElement = newElement + "</div>";
@@ -421,7 +424,7 @@ function buildEventDetailElement(object){
     var newElement = "";
     newElement = newElement + "<div id=\'event-detail-"+id+"\'>";
     newElement = newElement + "<div class='custom-corners-public custom-corners'>";
-    newElement = newElement + "<div class='ui-bar ui-bar-a'>";
+    newElement = newElement + "<div class='ui-bar ui-bar-a' style='cursor:pointer' onclick=\"$.mobile.changePage(\'#page-display-user-profile\');\">";
     newElement = newElement + "<div><strong id=\'event-detail-"+id+"-owner-name\'></strong></div>";
     newElement = newElement + "<div id=\'event-detail-"+id+"-owner-gender\' class=\'ui-icon-custom-gender\'></div>";
     newElement = newElement + "</div>";

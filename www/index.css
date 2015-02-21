@@ -830,6 +830,43 @@ textarea {
 	display: block;
 }
 
+.ui-user-profile-list{
+	clear: both;
+	line-height: 2em;
+	font-family: "Open Sans";
+	padding-top: 0.6em;
+	padding-bottom: 0.6em;
+	padding-left: 1em;
+	background-color: #FFFFFF;
+}
+
+.ui-user-profile-gender{
+	float: left;
+}
+
+.ui-user-profile-photo{
+	margin-top: 1em;
+	margin-left: 1em;
+	float: left;
+	margin-right: 1em;
+	margin-bottom: 1em;
+}
+
+.ui-user-profile-name{
+	font-family: "Open Sans";
+	font-weight: 700;
+	line-height: 2em;
+	margin-top: 1em;
+}
+
+.ui-profile-label{
+	float: left;
+	width: 110px;
+	color: #979797;
+	font-weight: 300;
+	padding-left: 0.3em;
+}
+
  /*iPad retina portrait startup image */
 @media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) {
 	.loading-page-image {
