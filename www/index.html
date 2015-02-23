@@ -243,10 +243,18 @@
 		<div data-role="header">
 			<h1>Activity Detail</h1>
 			<a data-rel="back" href="#page-event" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="$('#send-comment-bar').fadeOut(); setCurrLocationHash('#page-event')">Back</a>
+			<a href="#" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" id="ui-icon-custom-right-top-more" onclick="displayEventDetailMoreOption()"></a>
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content" id="event-detail-content">
 		</div><!-- /content -->
+
+		<div id="page-event-detail-more-option" class="ui-page-detail-more-option-bottom">
+			<a href="#page-event-report" class='ui-btn report-btn' onclick="
+            $('#page-event-detail-more-option').hide();$('.ui-gray-cover').remove();">Report</a>
+			<div class='ui-btn ui-more-option-cancel-btn' onclick="
+            $('#page-event-detail-more-option').hide();$('.ui-gray-cover').remove();">Cancel</div>
+		</div>
 
 	</div><!-- /page -->
 

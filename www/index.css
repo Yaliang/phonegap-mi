@@ -867,6 +867,23 @@ textarea {
 	padding-left: 0.3em;
 }
 
+.ui-page-detail-more-option-bottom{
+	background-color:white;
+	z-index: 5;
+	display: none;
+	width: 100%;
+}
+
+.report-btn{
+	background-color: #F67E7E!important;
+	color: white!important;
+	margin-top: 0
+}
+
+.ui-more-option-cancel-btn {
+	margin-bottom: 0
+}
+
  /*iPad retina portrait startup image */
 @media (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) {
 	.loading-page-image {

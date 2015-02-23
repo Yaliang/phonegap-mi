@@ -475,7 +475,6 @@ function updateEventDetail(id){
                 });
             } else {
                 $(".interest-button-"+eventId).each(function(){
-                    console.log($(this));
                     $(this).removeClass("ui-icon-custom-favor-false");
                     $(this).addClass("ui-icon-custom-favor-true");
                     $(this).unbind("click");
@@ -488,9 +487,6 @@ function updateEventDetail(id){
         var currentUser = Parse.User.current();
         var owner = currentUser.getUsername();
         ParseCheckInterest(owner, id, successFunction);
-
-
-        
         $(".ui-custom-report").on("click",function(){
             reportActivity(id);
         });
@@ -515,6 +511,16 @@ function updateEventDetail(id){
         }
     }
     ParsePullEventComment(id, descendingOrderKey, displayFunction);
+}
+
+function displayEventDetailMoreOption(){
+    $("#page-event-detail-more-option").css('position',"fixed");
+    $("#page-event-detail-more-option").css('bottom',(-$("#page-event-detail-more-option").height()).toString()+"px");
+    $("#page-event-detail-more-option").show();
+    $("body").append("<div class='ui-gray-cover' style='position:fixed; width:100%; height:100%; opacity:0.3; background-color:#000; z-index:4'><div>")
+    $("#page-event-detail-more-option").animate({
+        bottom: "0px"
+    },100);
 }
 
 // send comment to database
