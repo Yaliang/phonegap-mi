@@ -76,8 +76,7 @@ function onNotificationAPN (event) {
         if (!pullNotificationRunning) {
             pullNotification();
         }
-        badgeNumber = 0;
-        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, 0);
         //navigator.notification.alert(event.alert);
         // check new version
         if (event.alert.localCompare("New version is available.") == 0) {
@@ -96,8 +95,8 @@ function onNotificationAPN (event) {
 
     if ( event.badge )
     {
-        badgeNumber += parseInt(event.badge);
-        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, badgeNumber);
+        //badgeNumber += parseInt(event.badge);
+        //pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, badgeNumber);
     }
 }
 
