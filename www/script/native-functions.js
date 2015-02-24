@@ -80,8 +80,8 @@ function onNotificationAPN (event) {
         pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
         //navigator.notification.alert(event.alert);
         // check new version
-        if (event.alert.localCompare("New version available") == 0) {
-            var install = confirm("Install new version");
+        if (event.alert.localCompare("New version available.") == 0) {
+            var install = confirm("Install new version? Or you can update anytime in Setting -> Update.");
             if (install == true) {
                 window.location.href = "https://build.phonegap.com/apps/1239477/install";
             }
