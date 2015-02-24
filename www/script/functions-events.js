@@ -231,7 +231,7 @@ function pullUserEvent(beforeAt){
                 $(".going-statistics-"+id).each(function(){
                     $(this).html(goingNumber.toString()+" Goings");
                 });
-                pullLastItem = pullLastItem - 1;
+                pullLastItem = pullLastItem - 2;
                 if (pullLastItem == 0) {
                     $("#event-content").removeClass("ui-hidden-accessible");
                     $.mobile.loading("hide");
