@@ -77,7 +77,7 @@ function onNotificationAPN (event) {
             pullNotification();
         }
         pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, 0);
-        //navigator.notification.alert(event.alert);
+        navigator.notification.alert(event.alert);
         // check new version
         if (event.alert.localCompare("New version is available.") == 0) {
             navigator.notification.confirm("Install new version? Or you can update anytime in Setting -> Update.", function(buttonIndex){
