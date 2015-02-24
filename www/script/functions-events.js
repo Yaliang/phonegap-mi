@@ -210,12 +210,12 @@ function pullUserEvent(beforeAt){
                 pullUserEventHolderInfo(holder, id);
             } else {
                 var commentNumber = objects[i].get("commentNumber");
-                var goingId = object.get("goingId");
+                var goingId = objects[i].get("goingId");
                 if (typeof(goingId) == "undefined") {
                     goingId = new Array;
                 }
                 var goingNumber = goingId.length;
-                var interestId = object.get("interestId");
+                var interestId = objects[i].get("interestId");
                 if (typeof(interestId) == "undefined") {
                     interestId = new Array;
                 }
