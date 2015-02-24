@@ -1,56 +1,48 @@
 // general functions
 function addInterestEvent(eventId){
-    var currentUser = Parse.User.current();
-    var owner = currentUser.getUsername();
     var displayFunction = function(object){
         var eventId = object.id;
-        var interestNumber = object.get("interestNumber");
+        var interestNumber = 0;
+        if (typeof(object.get("interestId")) != "undefined")
+            interestNumber = object.get("interestId").length;
         $(".interest-statistics-"+eventId).each(function(){$(this).html(interestNumber.toString()+" Interests");});
         $(".interest-button-"+eventId).each(function(){
-            $(this).removeClass("ui-icon-custom-favor-false");
-            $(this).addClass("ui-icon-custom-favor-true");
-            $(this).unbind("click");
-            $(this).bind("click", function() {
-                removeInterestEvent(eventId);
-            });
+            var id = eventId;
+            var oldElement = $(this);
+            var newElement = "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-true interest-button-"+id+"' onclick='removeInterestEvent(\""+id+"\")'>"+"Interest"+"</a></div>"
+            oldElement.before(newElement);
+            oldElement.remove();
         });
     };
-    ParseAddInterest(owner, eventId, displayFunction);
+    ParseAddInterest(eventId, displayFunction);
 }
 
 function removeInterestEvent(eventId){
-    var currentUser = Parse.User.current();
-    var owner = currentUser.getUsername();
-    var displayFunction = function(object,eventId){
-        if (object.length == 1) {
-            objectId = object[0].id;
-            var displayFunction = function(object) {
-                var eventId = object.id;
-                var interestNumber = object.get("interestNumber");
-                $(".interest-statistics-"+eventId).each(function(){$(this).html(interestNumber.toString()+" Interests");});
-                $(".interest-button-"+eventId).each(function(){
-                    $(this).removeClass("ui-icon-custom-favor-true");
-                    $(this).addClass("ui-icon-custom-favor-false");
-                    $(this).unbind("click");
-                    $(this).bind("click", function() {
-                        addInterestEvent(eventId); 
-                    });
-                });
-            };
-            ParseRemoveInterest(objectId, null, eventId, displayFunction);
-        }
+    var displayFunction = function(object) {
+        var eventId = object.id;
+        var interestNumber = 0;
+        if (typeof(object.get("interestId")) != "undefined")
+            interestNumber = object.get("interestId").length;
+        $(".interest-statistics-"+eventId).each(function(){$(this).html(interestNumber.toString()+" Interests");});
+        $(".interest-button-"+eventId).each(function(){
+            var id = eventId;
+            var oldElement = $(this);
+            var newElement = "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' onclick='addInterestEvent(\""+id+"\")'>"+"Interest"+"</a></div>"
+            oldElement.before(newElement);
+            oldElement.remove();
+        });
     };
-    ParseRemoveInterest(null, owner, eventId, displayFunction);
+    ParseRemoveInterest(eventId, displayFunction);
 }
 
 function addGoingEvent(eventId){
-    console.log("going fired: "+eventId);
     var currentUser = Parse.User.current();
     var displayFunction = function(object){
-        console.log("display fired");
         var eventId = object.id;
-        var goingNum = object.get("goingId").length;
-        $(".going-statistics-"+eventId).each(function(){$(this).html(goingNum.toString()+" Goings");});
+        var goingNumber = 0;
+        if (typeof(object.get("goingId")) != "undefined")
+            goingNumber = object.get("goingId").length;
+        $(".going-statistics-"+eventId).each(function(){$(this).html(goingNumber.toString()+" Goings");});
         $(".going-button-"+eventId).each(function(){
             var id = eventId;
             var oldElement = $(this);
@@ -66,8 +58,10 @@ function removeGoingEvent(eventId){
     var currentUser = Parse.User.current();
     var displayFunction = function(object){
         var eventId = object.id;
-        var goingNum = object.get("goingId").length;
-        $(".going-statistics-"+eventId).each(function(){$(this).html(goingNum.toString()+" Goings");});
+        var goingNumber = 0;
+        if (typeof(object.get("goingId")) != "undefined")
+            goingNumber = object.get("goingId").length;
+        $(".going-statistics-"+eventId).each(function(){$(this).html(goingNumber.toString()+" Goings");});
         $(".going-button-"+eventId).each(function(){
             var id = eventId;
             var oldElement = $(this);
@@ -133,7 +127,6 @@ function buildUserEventElement(object){
     var time = object.get("time");
     var visibility = object.get("visibility");
     var description = object.get("description");
-    var interestNumber = object.get("interestNumber");
     var commentNumber = object.get("commentNumber");
     var holder = object.get("owner");
     var id = object.id;
@@ -142,6 +135,11 @@ function buildUserEventElement(object){
         goingId = new Array;
     }
     var goingNumber = goingId.length;
+    var interestId = object.get("interestId");
+    if (typeof(interestId) == "undefined") {
+        interestId = new Array;
+    }
+    var interestNumber = interestId.length;
     var newElement = "";
     newElement = newElement + "<div id=\'"+id+"\'>";
     newElement = newElement + "<div class='custom-corners-public custom-corners'>";
@@ -162,7 +160,11 @@ function buildUserEventElement(object){
     newElement = newElement + "</div>";
     newElement = newElement + "<div class='ui-footer ui-bar-custom'>";
     newElement = newElement + "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"')\">"+"Detail"+"</a></div>";
-    newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' >"+"Interest"+"</a></div>";
+    if (interestId.indexOf(Parse.User.current().id) < 0) {
+        newElement += "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' onclick='addInterestEvent(\""+id+"\")'>"+"Interest"+"</a></div>"
+    } else {
+        newElement += "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-true interest-button-"+id+"' onclick='removeInterestEvent(\""+id+"\")'>"+"Interest"+"</a></div>"
+    }
     if (goingId.indexOf(Parse.User.current().id) < 0) {
         newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-false going-button-"+id+"' onclick='addGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>";
     } else {
@@ -193,7 +195,7 @@ function pullUserEvent(beforeAt){
     var displayFunction = function(objects){
         var currentUser = Parse.User.current();
         var owner = currentUser.getUsername();
-        pullLastItem = 3 * objects.length;
+        pullLastItem = 2 * objects.length;
         if (objects.length < limitNumber)
             $(".ui-load-more-activity").html("No More Activities");
         for (var i=0; i <= objects.length-1; i++) {
@@ -206,41 +208,29 @@ function pullUserEvent(beforeAt){
                 $(".ui-load-more-activity").before(newElement);
                 // display event holder's name | not the email one
                 pullUserEventHolderInfo(holder, id);
-                // check if owner has interested this event
-                var successFunction = function(eventId, interest){
-                    if (interest.length == 0){
-                        $(".interest-button-"+eventId).each(function(){
-                            $(this).unbind("click");
-                            $(this).bind("click", function() {
-                                addInterestEvent(eventId);
-                            });
-                        });
-                    } else {
-                        $(".interest-button-"+eventId).each(function(){
-                            $(this).removeClass("ui-icon-custom-favor-false");
-                            $(this).addClass("ui-icon-custom-favor-true");
-                            $(this).unbind("click");
-                            $(this).bind("click", function() {
-                                removeInterestEvent(eventId);
-                            });
-                        });
-                    };
-                    pullLastItem = pullLastItem - 1;
-                    if (pullLastItem == 0) {
-                        $("#event-content").removeClass("ui-hidden-accessible");
-                        $.mobile.loading("hide");
-                    }
-                };
-                ParseCheckInterest(owner, id, successFunction);
             } else {
                 var commentNumber = objects[i].get("commentNumber");
-                var interestNumber = objects[i].get("interestNumber");
+                var goingId = object.get("goingId");
+                if (typeof(goingId) == "undefined") {
+                    goingId = new Array;
+                }
+                var goingNumber = goingId.length;
+                var interestId = object.get("interestId");
+                if (typeof(interestId) == "undefined") {
+                    interestId = new Array;
+                }
+                var interestNumber = interestId.length;
                 var holder = objects[i].get("owner");
                 var id = objects[i].id;
                 $(".comment-statistics-"+id).each(function(){
                     $(this).html(commentNumber.toString()+" Comments");
                 });
-                $("#interest-statistics-"+id).html(interestNumber.toString()+" Interests");
+                $(".interest-statistics-"+id).each(function(){
+                    $(this).html(interestNumber.toString()+" Interests");
+                });
+                $(".going-statistics-"+id).each(function(){
+                    $(this).html(goingNumber.toString()+" Goings");
+                });
                 pullLastItem = pullLastItem - 1;
                 if (pullLastItem == 0) {
                     $("#event-content").removeClass("ui-hidden-accessible");
@@ -412,7 +402,6 @@ function buildEventDetailElement(object){
     var time = object.get("time");
     var visibility = object.get("visibility");
     var description = object.get("description");
-    var interestNumber = object.get("interestNumber");
     var commentNumber = object.get("commentNumber");
     var holder = object.get("owner");
     var goingId = object.get("goingId");
@@ -420,6 +409,11 @@ function buildEventDetailElement(object){
         goingId = new Array;
     }
     var goingNumber = goingId.length;
+    var interestId = object.get("interestId");
+    if (typeof(interestId) == "undefined") {
+        interestId = new Array;
+    }
+    var interestNumber = interestId.length;
     var id = object.id;
     var newElement = "";
     newElement = newElement + "<div id=\'event-detail-"+id+"\'>";
@@ -440,7 +434,11 @@ function buildEventDetailElement(object){
     newElement = newElement + "<div class='event-statistics comment-statistics-"+id+"' style='clear:both'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div><div class='event-statistics going-statistics-"+id+"'>" + goingNumber + " Goings</div>";
     newElement = newElement + "</div>";
     newElement = newElement + "<div class='ui-footer ui-bar-custom'>";
-    newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' >"+"Interest"+"</a></div>";
+    if (interestId.indexOf(Parse.User.current().id) < 0) {
+        newElement += "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-false interest-button-"+id+"' onclick='addInterestEvent(\""+id+"\")'>"+"Interest"+"</a></div>"
+    } else {
+        newElement += "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-favor-true interest-button-"+id+"' onclick='removeInterestEvent(\""+id+"\")'>"+"Interest"+"</a></div>"
+    }
     if (goingId.indexOf(Parse.User.current().id) < 0) {
         newElement = newElement + "<div class='ui-custom-float-left'><a href='#' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-going-false going-button-"+id+"' onclick='addGoingEvent(\""+id+"\")'>"+"Going"+"</a></div>";
     } else {
@@ -464,29 +462,6 @@ function updateEventDetail(id){
         $("#event-detail-content").prepend(buildEventDetailElement(object[0]));
         // display event holder's name | not the email one
         pullUserEventHolderInfo(holder, 'event-detail-'+id);
-        // check if currentUser has interested this event
-        var successFunction = function(eventId, interest){
-            if (interest.length == 0){
-                $(".interest-button-"+eventId).each(function(){
-                    $( this ).unbind("click");
-                    $( this ).bind("click", function() {
-                        addInterestEvent(eventId);
-                    });
-                });
-            } else {
-                $(".interest-button-"+eventId).each(function(){
-                    $(this).removeClass("ui-icon-custom-favor-false");
-                    $(this).addClass("ui-icon-custom-favor-true");
-                    $(this).unbind("click");
-                    $(this).bind("click", function() {
-                        removeInterestEvent(eventId);
-                    });
-                });
-            };
-        };
-        var currentUser = Parse.User.current();
-        var owner = currentUser.getUsername();
-        ParseCheckInterest(owner, id, successFunction);
         $(".ui-custom-report").on("click",function(){
             reportActivity(id);
         });
@@ -517,10 +492,26 @@ function displayEventDetailMoreOption(){
     $("#page-event-detail-more-option").css('position',"fixed");
     $("#page-event-detail-more-option").css('bottom',(-$("#page-event-detail-more-option").height()).toString()+"px");
     $("#page-event-detail-more-option").show();
-    $("body").append("<div class='ui-gray-cover' style='position:fixed; width:100%; height:100%; opacity:0.3; background-color:#000; z-index:4'><div>")
+    $("body").append("<div class='ui-gray-cover' style='position:fixed; width:100%; height:100%; opacity:0; background-color:#000; z-index:4' onclick='hideEventDetailMoreOption()'><div>")
     $("#page-event-detail-more-option").animate({
         bottom: "0px"
-    },100);
+    },300);
+    $(".ui-gray-cover").animate({
+        opacity: 0.3
+    },300);
+}
+
+function hideEventDetailMoreOption(){
+    $('#page-event-detail-more-option').animate({
+        bottom: (-$("#page-event-detail-more-option").height()).toString()+"px"
+    },300,function(){
+        $('#page-event-detail-more-option').hide();
+    });
+    $(".ui-gray-cover").animate({
+        opacity: 0
+    },300, function(){
+        $('.ui-gray-cover').remove();
+    });
 }
 
 // send comment to database
@@ -575,7 +566,9 @@ function buildMyUserEventElement(object){
     var time = object.get("time");
     var visibility = object.get("visibility");
     var description = object.get("description");
-    var interestNumber = object.get("interestNumber");
+    var interestNumber = 0;
+    if (typeof(object.get("interestId")) != "undefined")
+        interestNumber = object.get("interestId").length;
     var commentNumber = object.get("commentNumber");
     var goingId = object.get("goingId");
     if (typeof(goingId) == "undefined"){
@@ -599,14 +592,12 @@ function buildMyUserEventElement(object){
     } else {
         newElement += "<p class='ui-custom-event-description'>" + description.replace("\n","</br>") + "</p>";
     }
-    newElement += "<div id='my-comment-statistics-"+id+"' class='event-statistics'>" + commentNumber + " Comments</div><div id='my-interest-statistics-"+id+"' class='event-statistics'>" + interestNumber + " Interests</div><div id='my-going-statistics-"+id+"' class='event-statistics'>" + goingNumber + " Goings</div>";
+    newElement += "<div class='event-statistics comment-statistics-"+id+"'>" + commentNumber + " Comments</div><div class='event-statistics interest-statistics-"+id+"'>" + interestNumber + " Interests</div><div class='event-statistics going-statistics-"+id+"'>" + goingNumber + " Goings</div>";
     newElement += "</div>";
     newElement += "<div class='ui-footer ui-bar-custom'>"
     newElement += "<div class='ui-custom-float-left'><a href='#page-event-detail' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-comment' id='my-comment-button-"+id+"' onclick=\"updateEventDetail('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Detail"+"</a></div>";
     newElement += "<div class='ui-custom-float-left'><a href='#page-event-delete' data-transition='slideup' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-delete' id='my-comment-button-"+id+"' onclick=\"deleteMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Delete"+"</a></div>";
     newElement += "<div class='ui-custom-float-left'><a href='#page-event-edit' data-transition='slide' class='ui-btn ui-bar-btn-custom ui-mini ui-icon-custom-edit' id='my-comment-button-"+id+"' onclick=\"editMyEvent('"+id+"'); setCurrLocationHash('#page-event-delete')\">"+"Edit"+"</a></div>";
-
-    //newElement = newElement + "<div class='ui-block-c'><a href='#' class='ui-btn ui-mini ui-btn-icon-left' id='my-delete-button-"+id+"' onclick=\"deleteMyEvent('"+id+"')\">"+'delete'+"</a></div>";
     newElement += "</div>";
     newElement += "</div>";
     newElement += "</div>";
@@ -626,29 +617,27 @@ function pullMyEvent(beforeAt){
                 $("#my-event-content").prepend(buildMyUserEventElement(objects[i]));
             } else {
                 var commentNumber = objects[i].get("commentNumber");
-                var interestNumber = objects[i].get("interestNumber");
+                var interestNumber = 0;
+                if (typeof(object.get("interestId")) != "undefined")
+                    interestNumber = object.get("interestId").length;
                 var goingId = objects[i].get("goingId");
                 if (typeof(goingId) == "undefined"){
                     goingId = new Array;
                 }
                 var goingNumber = goingId.length;
                 var id = objects[i].id;
-                $("#my-comment-statistics-"+id).html(commentNumber.toString()+" Comments");
-                $("#my-interest-statistics-"+id).html(interestNumber.toString()+" Interests");
-                $("#my-going-statistics-"+id).html(goingNumber.toString()+" Goings");
+                $(".comment-statistics-"+id).each(function(){html(commentNumber.toString()+" Comments");});
+                $(".interest-statistics-"+id).each(function(){html(interestNumber.toString()+" Interests");});
+                $(".going-statistics-"+id).each(function(){html(goingNumber.toString()+" Goings");});
             }
         };
     };
     ParsePullEvent({
         owner: owner,
-        // limitNumber: null,
         descendingOrderKey:descendingOrderKey,
-        // accessibility: null,
         beforeAt: beforeAt,
         displayFunction: displayFunction
-        // eventId: null
     });
-    // ParsePullEvent(owner, null, descendingOrderKey, null, beforeAt, displayFunction);
 }
 
 function deleteMyEvent(eventId){

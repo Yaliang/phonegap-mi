@@ -268,7 +268,7 @@ function initialElementEventSetting(){
 	        }
 	    });
 	});
-	$(document).on("pagehide","#page-chat-messages",function(){
+	$(document).on("pagebeforehide","#page-chat-messages",function(){
 		$("#send-message-bar").hide();
 	});
 	// add function when the page #page-event-detail completed.
@@ -282,7 +282,7 @@ function initialElementEventSetting(){
 			$(window).unbind("swiperight");
 		})
 	});
-	$(document).on("pagehide","#page-event-detail",function(){
+	$(document).on("pagebeforehide","#page-event-detail",function(){
 		$("#send-comment-bar").hide();
 	});
 }

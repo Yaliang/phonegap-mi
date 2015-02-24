@@ -250,10 +250,9 @@
 		</div><!-- /content -->
 
 		<div id="page-event-detail-more-option" class="ui-page-detail-more-option-bottom">
-			<a href="#page-event-report" class='ui-btn report-btn' onclick="
-            $('#page-event-detail-more-option').hide();$('.ui-gray-cover').remove();">Report</a>
+			<a href="#page-event-report" data-transition="slideup" class='ui-btn report-btn' onclick="hideEventDetailMoreOption()">Report</a>
 			<div class='ui-btn ui-more-option-cancel-btn' onclick="
-            $('#page-event-detail-more-option').hide();$('.ui-gray-cover').remove();">Cancel</div>
+            hideEventDetailMoreOption()">Cancel</div>
 		</div>
 
 	</div><!-- /page -->
