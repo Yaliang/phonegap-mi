@@ -80,10 +80,10 @@ function onNotificationAPN (event) {
         //navigator.notification.alert(event.alert);
         // check new version
         if (event.alert.localCompare("New version is available.") == 0) {
-            var install = confirm("Install new version? Or you can update anytime in Setting -> Update.");
-            if (install == true) {
-                window.location.href = "https://build.phonegap.com/apps/1239477/install";
-            }
+            navigator.notification.confirm("Install new version? Or you can update anytime in Setting -> Update.", function(buttonIndex){
+                if (buttonIndex == 1)
+                    window.location.href = "https://build.phonegap.com/apps/1239477/install";
+            });
         }
     }
 
