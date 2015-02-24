@@ -231,11 +231,6 @@ function pullUserEvent(beforeAt){
                 $(".going-statistics-"+id).each(function(){
                     $(this).html(goingNumber.toString()+" Goings");
                 });
-                pullLastItem = pullLastItem - 2;
-                if (pullLastItem == 0) {
-                    $("#event-content").removeClass("ui-hidden-accessible");
-                    $.mobile.loading("hide");
-                }
                 // display event holder's name | not the email one
                 pullUserEventHolderInfo(holder, id);
             }
