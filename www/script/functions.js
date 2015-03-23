@@ -218,7 +218,17 @@ function initialElementEventSetting(){
 
 	$('#profile-edit-photo').on('blur change',function(){
 		profilePhotoCrop();
-	})
+	});
+
+	$('#setting-confirm-password').submit(function(event) {
+		event.preventDefault();
+		changePassword('old',$('#setting-old-password').val(),null);
+	});
+
+	$('#setting-set-new-password').submit(function(event) {
+		event.preventDefault();
+		changePassword('new',$('#setting-new-password').val(),$('#setting-new-password-confirm').val());
+	});
 
 
     $('#event-create-form').submit(function(event) {
@@ -284,6 +294,20 @@ function initialElementEventSetting(){
 	});
 	$(document).on("pagebeforehide","#page-event-detail",function(){
 		$("#send-comment-bar").hide();
+	});
+
+	$(document).on("pagebeforeshow","#page-change-my-password",function(){
+		$('#setting-confirm-password').show();
+		$('#setting-set-new-password').hide();
+		$('#setting-confirm-password-btn').show();
+		$('#setting-save-new-btn').hide();
+		$('#setting-old-password').val("");
+		$('#setting-new-password').val("");
+		$('#setting-new-password-confirm').val("");
+		$('#setting-confirmpassword-error').html("");
+		$('#setting-setnewpassword-error').html("");
+		$('#setting-confirm-password-native-btn').parent().hide();
+		$('#setting-save-password-native-btn').parent().hide();
 	});
 }
 

@@ -161,3 +161,65 @@ function profilePhotoCrop(){
 		}
 	},{});
 }
+
+function changePassword(type, password, confirmPassword){
+	// check current password
+	$.mobile.loading("show");
+	if (type.localeCompare('old') == 0) {
+		var successFunction = function(){
+			$('#setting-confirm-password').hide();
+			$('#setting-set-new-password').show();
+			$('#setting-confirm-password-btn').hide();
+			$('#setting-save-new-btn').show();
+			$('#setting-old-password').val("");
+			$('#setting-new-password').val("");
+			$('#setting-new-password-confirm').val("");
+			$('#setting-confirmpassword-error').html("");
+			$('#setting-setnewpassword-error').html("");
+			$.mobile.loading("hide");
+		};
+		var errorFunction = function(error){
+			var errorMessage = "";
+			if (error.code == 101){
+				errorMessage = "Password does not match your account."
+			} else {
+				errorMessage = "Failed to connect server, please try again.";
+			}
+			$('#setting-old-password').val("");
+			$('#setting-confirmpassword-error').html(errorMessage);
+			$.mobile.loading("hide");
+		};
+		ParseConfirmPassword(password, successFunction, errorFunction);
+	}
+	// update new password
+	if (type.localeCompare('new') == 0) {
+		// conpare new password with new password confirm
+		if (password.localeCompare(confirmPassword) != 0) {
+			var errorMessage = "Password does not match. Please reenter password.";
+			$('#setting-setnewpassword-error').html(errorMessage);
+			$.mobile.loading("hide");
+			return;
+		}
+		// save to server
+		var successFunction = function() {
+			$('#setting-confirm-password').show();
+			$('#setting-set-new-password').hide();
+			$('#setting-confirm-password-btn').show();
+			$('#setting-save-new-btn').hide();
+			$('#setting-old-password').val("");
+			$('#setting-new-password').val("");
+			$('#setting-new-password-confirm').val("");
+			$('#setting-confirmpassword-error').html("");
+			$('#setting-setnewpassword-error').html("");
+			setCurrLocationHash('#page-setting');
+			$.mobile.changePage("#page-setting");
+			$.mobile.loading("hide");
+		}
+		var errorFunction = function() {
+			var errorMessage = "Failed to save password, please try again.";
+			$('#setting-setnewpassword-error').html(errorMessage);
+			$.mobile.loading("hide");
+		}
+		ParseChangePassword(password, successFunction, errorFunction);
+	}
+}

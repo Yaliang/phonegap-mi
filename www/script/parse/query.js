@@ -67,13 +67,27 @@ function ParseLogin(username, password, errorObject, destID, customFunction) {
 	});
 }
 
-function queryCredentials(username) {
-    var query = new Parse.Query(Parse.User);
-    query.equalTo("username", username);  
-	query.find({
-  		success: function() {
-   			errorObject.html("Wrong password");
-  		}
+function ParseConfirmPassword(password, successFunction, errorFunction) {
+	Parse.User.logIn(Parse.User.current().getUsername(), password, {
+		success: function(user){
+			successFunction();
+		},
+		error: function(user, error){
+			errorFunction(error);
+		}
+	});
+}
+
+function ParseChangePassword(newpassword, successFunction, errorFunction) {
+	var currentUser = Parse.User.current();
+	currentUser.set('password',newpassword);
+	currentUser.save(null, {
+		success: function(user){
+			successFunction();
+		},
+		error: function(user, error){
+			errorFunction(error);
+		}
 	});
 }
 
