@@ -428,7 +428,7 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 					}
 				});
 			}, function(error) {
-				
+				alert("parseFile save error: code:"+error.code+"messsage: "+error.message);
 			});
 		}
 	})
