@@ -66,10 +66,12 @@ function saveProfile(){
 		var canvas = document.getElementById('canvas-photo');
 		var photo120 = canvas.toDataURL();
 		var photo = fileUploadControl.files[0];
+		alert(photo);
 	}
 	else {
 		var photo120 = null;
 		var photo = null;
+		alert("no photo");
 	};
 	var name = $("#profile-edit-name").val();
 	var gender = $("#profile-edit-gender").val()=="on" ? true : false ;
