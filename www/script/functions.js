@@ -227,9 +227,15 @@ function initialElementEventSetting(){
 
 	$('#setting-set-new-password').submit(function(event) {
 		event.preventDefault();
-		changePassword('new',$('#setting-new-password').val(),$('#setting-new-password-confirm').val());
+		changePassword('new',$('#setting-new-password').val(),$('#setting-new-password-confirmation').val());
 	});
 
+	$('#setting-new-password').focusout(function(){
+		if ($(this).val().length < 6){
+			var errorMessage = "Password should be at least 6 characters. Please reenter password.";
+			$('#setting-set-new-password-error').html(errorMessage);
+		}
+	});
 
     $('#event-create-form').submit(function(event) {
         event.preventDefault();
@@ -300,14 +306,16 @@ function initialElementEventSetting(){
 		$('#setting-confirm-password').show();
 		$('#setting-set-new-password').hide();
 		$('#setting-confirm-password-btn').show();
-		$('#setting-save-new-btn').hide();
+		$('#setting-set-new-password-btn').hide();
 		$('#setting-old-password').val("");
 		$('#setting-new-password').val("");
-		$('#setting-new-password-confirm').val("");
-		$('#setting-confirmpassword-error').html("");
-		$('#setting-setnewpassword-error').html("");
-		$('#setting-confirm-password-native-btn').parent().hide();
-		$('#setting-save-password-native-btn').parent().hide();
+		$('#setting-new-password-confirmation').val("");
+		$('#setting-confirm-password-error').html("");
+		$('#setting-set-new-password-error').html("");
+	});
+
+	$(document).on("pageshow","#page-change-my-password", function(){
+		$('#setting-old-password').focus();
 	});
 }
 
