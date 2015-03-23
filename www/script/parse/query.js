@@ -423,6 +423,7 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 			alert(photo.size);
 			alert(photo.type);
 			parseFile.save().then(function(object) {
+				alert(object.url());
 				photoObject.set("profilePhoto",object.url());
 				photoObject.save(null,{
 					success: function(object){
@@ -431,7 +432,7 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 					}
 				});
 			}, function(error) {
-				
+				alert("error");
 			});
 		}
 	})
