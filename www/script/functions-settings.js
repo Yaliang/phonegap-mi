@@ -66,12 +66,10 @@ function saveProfile(){
 		var canvas = document.getElementById('canvas-photo');
 		var photo120 = canvas.toDataURL();
 		var photo = fileUploadControl.files[0];
-		alert(photo);
 	}
 	else {
 		var photo120 = null;
 		var photo = null;
-		alert("no photo");
 	};
 	var name = $("#profile-edit-name").val();
 	var gender = $("#profile-edit-gender").val()=="on" ? true : false ;
@@ -85,7 +83,9 @@ function saveProfile(){
 		ParseUpdateCurrentUser(function(){}, function(){});
 	}
 	ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction);
-	ParseSaveProfilePhoto(id, photo, photo120, function(object){});
+	ParseSaveProfilePhoto(id, photo, photo120, function(object){
+		alert("photo update finished");
+	});
 }
 
 function profilePhotoCrop(){
