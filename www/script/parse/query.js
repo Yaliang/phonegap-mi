@@ -405,6 +405,7 @@ function ParseSaveProfile(name, gender, birthdate, motto, major, school, interes
 
 function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 	var Photo = Parse.Object.extend("Photo");
+	var parseFile = new Parse.File(photo.name, photo);
 	var query = new Parse.Query(Photo);
 
 	if (photo == null)
@@ -413,29 +414,45 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 	alert(photo.name);
 	alert(photo.size);
 	alert(photo.type);
-	query.equalTo("userId",id);
-	query.first({
-		success: function(photoObject) {
-			photoObject.set('profilePhoto120',photo120);
-			var parseFile = new Parse.File('image.jpg', photo, 'image/jpeg');
-			alert(photo);
-			alert(photo.name);
-			alert(photo.size);
-			alert(photo.type);
-			parseFile.save().then(function(object) {
-				alert(object.url());
-				photoObject.set("profilePhoto",object.url());
-				photoObject.save(null,{
-					success: function(object){
+	parseFile.save().then(function(object){
+		imageURL = object.url();
+		alert(imageURL);
+		query.equalTo("userId",id);
+		query.first({
+			success:function(photoObject) {
+				photoObject.set('profilePhoto120',photo120);
+				photoObject.set('profilePhoto',imageURL);
+				photoObject.save(null, {
+					success: function(object) {
 						displayFunction(object);
 						CacheUpdatePhoto(object);
 					}
-				});
-			}, function(error) {
-				alert("error");
-			});
-		}
+				})
+			}
+		})
 	})
+	// query.equalTo("userId",id);
+	// query.first({
+	// 	success: function(photoObject) {
+	// 		photoObject.set('profilePhoto120',photo120);
+	// 		alert(photo);
+	// 		alert(photo.name);
+	// 		alert(photo.size);
+	// 		alert(photo.type);
+	// 		parseFile.save().then(function(object) {
+	// 			alert(object.url());
+	// 			photoObject.set("profilePhoto",object.url());
+	// 			photoObject.save(null,{
+	// 				success: function(object){
+	// 					displayFunction(object);
+	// 					CacheUpdatePhoto(object);
+	// 				}
+	// 			});
+	// 		}, function(error) {
+	// 			alert("error");
+	// 		});
+	// 	}
+	// })
 }
 
 function ParseGetProfilePhoto(userId, displayFunction, data) {

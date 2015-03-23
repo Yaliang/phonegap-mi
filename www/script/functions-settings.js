@@ -55,6 +55,7 @@ function getMyProfile(){
 	CacheGetProfilePhoto(userId, displayFunction, {});
 }
 
+var imageURL;
 function saveProfile(){
 	$.mobile.loading("show");
 	refreshPreviewPhoto = false;
