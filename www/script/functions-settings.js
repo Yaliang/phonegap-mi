@@ -56,6 +56,7 @@ function getMyProfile(){
 }
 
 function saveProfile(){
+	$.mobile.loading("show");
 	refreshPreviewPhoto = false;
 	$("#profile-save-btn").unbind("click");
 	var currentUser = Parse.User.current();
@@ -83,7 +84,10 @@ function saveProfile(){
 		ParseUpdateCurrentUser(function(){}, function(){});
 	}
 	ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction);
-	ParseSaveProfilePhoto(id, photo, photo120, function(object){});
+	ParseSaveProfilePhoto(id, photo, photo120, function(object){
+		setCurrLocationHash('#page-setting');
+		$.mobile.changePage('#page-setting');
+	});
 }
 
 function profilePhotoCrop(){
