@@ -409,29 +409,25 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 
 	if (photo == null)
 		return;
-	alert("photo got");
+	alert(photo);
+	alert(photo.name);
+	alert(photo.size);
+	alert(photo.)
 	query.equalTo("userId",id);
 	query.first({
 		success: function(photoObject) {
-			alert("photoObject got");
 			photoObject.set('profilePhoto120',photo120);
 			var parseFile = new Parse.File(photo.name, photo);
-			alert("parseFile created"+photo.name);
-			parseFile.save(null,{
-				success: function(object) {
-					alert("parseFile saved");
-					alert(photoObject);
-					photoObject.set("profilePhoto",object.url());
-					photoObject.save(null,{
-						success: function(object){
-							displayFunction(object);
-							CacheUpdatePhoto(object);
-						}
-					});
-				}, 
-				error: function(error) {
-					alert("parseFile save error");
-				}
+			parseFile.save().then(function(object) {
+				photoObject.set("profilePhoto",object.url());
+				photoObject.save(null,{
+					success: function(object){
+						displayFunction(object);
+						CacheUpdatePhoto(object);
+					}
+				});
+			}, function(error) {
+				
 			});
 		}
 	})

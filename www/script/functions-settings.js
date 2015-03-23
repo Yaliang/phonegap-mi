@@ -66,6 +66,7 @@ function saveProfile(){
 		var canvas = document.getElementById('canvas-photo');
 		var photo120 = canvas.toDataURL();
 		var photo = fileUploadControl.files[0];
+		alert(photo.name);
 	}
 	else {
 		var photo120 = null;
@@ -83,9 +84,7 @@ function saveProfile(){
 		ParseUpdateCurrentUser(function(){}, function(){});
 	}
 	ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction);
-	ParseSaveProfilePhoto(id, photo, photo120, function(object){
-		alert("photo update finished");
-	});
+	ParseSaveProfilePhoto(id, photo, photo120, function(object){});
 }
 
 function profilePhotoCrop(){
