@@ -55,9 +55,7 @@ function getMyProfile(){
 	CacheGetProfilePhoto(userId, displayFunction, {});
 }
 
-var imageURL;
 function saveProfile(){
-	$.mobile.loading("show");
 	refreshPreviewPhoto = false;
 	$("#profile-save-btn").unbind("click");
 	var currentUser = Parse.User.current();
@@ -85,16 +83,7 @@ function saveProfile(){
 		ParseUpdateCurrentUser(function(){}, function(){});
 	}
 	ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction);
-	var reader = new FileReader();
-	reader.onload = function(e) {
-		var dataURL = e.target.result;
-		ParseSaveProfilePhoto(id, dataURL, photo120, function(object){
-			setCurrLocationHash('#page-setting');
-			$.mobile.changePage('#page-setting');
-		});
-	}
-	reader.readAsDataURL(photo);
-	
+	ParseSaveProfilePhoto(id, photo, photo120, function(object){});
 }
 
 function profilePhotoCrop(){
