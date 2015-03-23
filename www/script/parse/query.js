@@ -403,17 +403,13 @@ function ParseSaveProfile(name, gender, birthdate, motto, major, school, interes
 	});
 }
 
-function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
+function ParseSaveProfilePhoto(id, dataURL, photo120, displayFunction) {
 	var Photo = Parse.Object.extend("Photo");
-	var parseFile = new Parse.File(photo.name, photo);
+	var parseFile = new Parse.File('imageData.txt', {base64:dataURL});
 	var query = new Parse.Query(Photo);
 
-	if (photo == null)
+	if (dataURL == null)
 		return;
-	alert(photo);
-	alert(photo.name);
-	alert(photo.size);
-	alert(photo.type);
 	parseFile.save().then(function(object){
 		imageURL = object.url();
 		alert(imageURL);

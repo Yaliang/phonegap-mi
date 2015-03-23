@@ -87,10 +87,18 @@ function saveProfile(){
 		ParseUpdateCurrentUser(function(){}, function(){});
 	}
 	ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction);
-	ParseSaveProfilePhoto(id, photo, photo120, function(object){
-		setCurrLocationHash('#page-setting');
-		$.mobile.changePage('#page-setting');
-	});
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		var dataURL = e.target.result;
+		ParseSaveProfilePhoto(id, dataURL, photo120, function(object){
+			setCurrLocationHash('#page-setting');
+			$.mobile.changePage('#page-setting');
+		});
+	};
+	if (photo != null) {
+		reader.toDataURL(photo);
+	};
+	
 }
 
 function profilePhotoCrop(){
