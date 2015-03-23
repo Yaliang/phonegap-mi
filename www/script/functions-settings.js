@@ -64,14 +64,16 @@ function saveProfile(){
 	var owner = currentUser.getUsername();
 	var id = currentUser.id;
 	var fileUploadControl = $("#profile-edit-photo")[0];
+	var photo120;
+	var photo;
 	if (fileUploadControl.files.length > 0) {
 		var canvas = document.getElementById('canvas-photo');
-		var photo120 = canvas.toDataURL();
-		var photo = fileUploadControl.files[0];
+		photo120 = canvas.toDataURL();
+		photo = fileUploadControl.files[0];
 	}
 	else {
-		var photo120 = null;
-		var photo = null;
+		photo120 = null;
+		photo = null;
 	};
 	var name = $("#profile-edit-name").val();
 	var gender = $("#profile-edit-gender").val()=="on" ? true : false ;
