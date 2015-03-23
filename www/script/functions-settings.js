@@ -64,16 +64,14 @@ function saveProfile(){
 	var owner = currentUser.getUsername();
 	var id = currentUser.id;
 	var fileUploadControl = $("#profile-edit-photo")[0];
-	var photo120;
-	var photo;
 	if (fileUploadControl.files.length > 0) {
 		var canvas = document.getElementById('canvas-photo');
-		photo120 = canvas.toDataURL();
-		photo = fileUploadControl.files[0];
+		var photo120 = canvas.toDataURL();
+		var photo = fileUploadControl.files[0];
 	}
 	else {
-		photo120 = null;
-		photo = null;
+		var photo120 = null;
+		var photo = null;
 	};
 	var name = $("#profile-edit-name").val();
 	var gender = $("#profile-edit-gender").val()=="on" ? true : false ;
@@ -87,10 +85,16 @@ function saveProfile(){
 		ParseUpdateCurrentUser(function(){}, function(){});
 	}
 	ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction);
-	ParseSaveProfilePhoto(id, photo, photo120, function(object){
-		setCurrLocationHash('#page-setting');
-		$.mobile.changePage('#page-setting');
-	});
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		var dataURL = e.target.result;
+		ParseSaveProfilePhoto(id, dataURL, photo120, function(object){
+			setCurrLocationHash('#page-setting');
+			$.mobile.changePage('#page-setting');
+		});
+	}
+	reader.readAsDataURL(photo);
+	
 }
 
 function profilePhotoCrop(){
