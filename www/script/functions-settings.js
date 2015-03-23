@@ -66,7 +66,6 @@ function saveProfile(){
 		var canvas = document.getElementById('canvas-photo');
 		var photo120 = canvas.toDataURL();
 		var photo = fileUploadControl.files[0];
-		alert(photo.name);
 	}
 	else {
 		var photo120 = null;
