@@ -2,6 +2,7 @@
 function addInterestEvent(eventId){
     var displayFunction = function(object){
         var eventId = object.id;
+        var ownerUsername = object.get('owner');
         var interestNumber = 0;
         if (typeof(object.get("interestId")) != "undefined")
             interestNumber = object.get("interestId").length;
@@ -13,6 +14,13 @@ function addInterestEvent(eventId){
             oldElement.before(newElement);
             oldElement.remove();
         });
+
+        // push notification to owner
+        var title = object.get('title');
+        if (title.length>10) {
+            title = title.slice(0,6) + "...";
+        }
+        pushNotificationToDeviceByUsername(ownerUsername, Parse.User.current().get('name')+" interested in your activity \""+title+"\".");
     };
     ParseAddInterest(eventId, displayFunction);
 }
@@ -39,6 +47,7 @@ function addGoingEvent(eventId){
     var currentUser = Parse.User.current();
     var displayFunction = function(object){
         var eventId = object.id;
+        var ownerUsername = object.get('owner');
         var goingNumber = 0;
         if (typeof(object.get("goingId")) != "undefined")
             goingNumber = object.get("goingId").length;
@@ -50,6 +59,13 @@ function addGoingEvent(eventId){
             oldElement.before(newElement);
             oldElement.remove();
         });
+
+        // push notification to owner
+        var title = object.get('title');
+        if (title.length>10) {
+            title = title.slice(0,6) + "...";
+        }
+        pushNotificationToDeviceByUsername(ownerUsername, Parse.User.current().get('name')+" wanna go with you in activity \""+title+"\"!");
     };
     ParseAddGoing(eventId, displayFunction);
 }
@@ -532,12 +548,20 @@ function sendComment(){
     };
     var successFunction = function(object){
         var eventId = object.id;
+        var ownerUsername = object.get('owner');
         var commentNumber = object.get("commentNumber");
         updateEventDetail(eventId);
         $(".comment-statistics-"+eventId).each(function(){
             $(this).html(commentNumber.toString()+" Comments");
         });
         $("#my-comment-statistics-"+eventId).html(commentNumber.toString()+" Comments");
+
+        // push notification to owner
+        var title = object.get('title');
+        if (title.length>10) {
+            title = title.slice(0,6) + "...";
+        }
+        pushNotificationToDeviceByUsername(ownerUsername, Parse.User.current().get('name')+" commented on your activity \""+title+"\".");
     };
     ParseAddEventComment(eventId, owner, content, errorFunction, successFunction);
 }
@@ -755,6 +779,20 @@ function editSaveUserEvent(eventId){
         // display event holder's name | not the email one
         pullUserEventHolderInfo(holder, id);
 
+        // push notification to users who are on the going list
+        var goingId = object.get('goingId');
+        if (typeof(goingId) == "undefined") {
+            goingId == new Array;
+        }
+        var goingUsrId;
+        var title = object.get('title');
+        if (title.length>10) {
+            title = title.slice(0,6) + "...";
+        }
+        for (var i=0; i< goingId.length; i++) {
+            goingUsrId = goingId[i];
+            pushNotificationToDeviceByUserId(goingUsrId, Parse.User.current().get('name')+" updated the activity \"" +title+ "\".");
+        }
     };
     ParseEventEditSave(owner, title, location, time, visibility, description, errorObject, destID, displayFunction, eventId);
 }

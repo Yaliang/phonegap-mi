@@ -167,6 +167,7 @@ function login(){
 
     $.mobile.loading("show");
 	ParseLogin(email, password, errorObject, destID, customFunction);
+	//$("#login-password").val("");
 }
 
 function logout(){
@@ -284,6 +285,7 @@ function initialElementEventSetting(){
 	        }
 	    });
 	});
+
 	$(document).on("pagebeforehide","#page-chat-messages",function(){
 		$("#send-message-bar").hide();
 	});
@@ -312,6 +314,7 @@ function initialElementEventSetting(){
 		$('#setting-new-password-confirmation').val("");
 		$('#setting-confirm-password-error').html("");
 		$('#setting-set-new-password-error').html("");
+		$('#setting-change-my-password-title').html("Password");
 	});
 
 	$(document).on("pageshow","#page-change-my-password", function(){
@@ -384,4 +387,36 @@ function pushNotificationToDevice(platform,regId,message) {
 		.done(function(data) {
 			//console.log(data);
 		});
+}
+
+function pushNotificationToDeviceByUsername(username, message) {
+	// fetch user information
+	CacheGetProfileByUsername(username, function(obj,data){
+		// push notification
+		var regId;
+		if (typeof(obj.get('GCMId')) != "undefined") {
+			regId = obj.get('GCMId');
+			pushNotificationToDevice('gcm',regId, data.message);
+		}
+		if (typeof(obj.get('APNId')) != "undefined") {
+			regId = obj.get('APNId');
+			pushNotificationToDevice('apn',regId, data.message);
+		}
+	}, {message: message});
+}
+
+function pushNotificationToDeviceByUserId(userid, message) {
+	// fetch user information
+	CacheGetProfileByUserId(userid, function(obj,data){
+		// push notification
+		var regId;
+		if (typeof(obj.get('GCMId')) != "undefined") {
+			regId = obj.get('GCMId');
+			pushNotificationToDevice('gcm',regId, data.message);
+		}
+		if (typeof(obj.get('APNId')) != "undefined") {
+			regId = obj.get('APNId');
+			pushNotificationToDevice('apn',regId, data.message);
+		}
+	}, {message: message});
 }

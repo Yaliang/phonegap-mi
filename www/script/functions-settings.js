@@ -177,6 +177,7 @@ function changePassword(type, password, confirmPassword){
 			$('#setting-confirm-password-error').html("");
 			$('#setting-set-new-password-error').html("");
 			$('#setting-new-password').focus();
+			$('#setting-change-my-password-title').html("Set Password");
 			$.mobile.loading("hide");
 		};
 		var errorFunction = function(error){
@@ -218,6 +219,7 @@ function changePassword(type, password, confirmPassword){
 			$('#setting-new-password-confirm').val("");
 			$('#setting-confirm-password-error').html("");
 			$('#setting-set-new-password-error').html("");
+			$('#setting-change-my-password-title').html("Password");
 			setCurrLocationHash('#page-setting');
 			$.mobile.changePage("#page-setting");
 			$.mobile.loading("hide");

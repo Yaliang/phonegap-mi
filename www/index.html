@@ -189,7 +189,7 @@
 	</div><!-- /page -->
 
 
-	<!-- edit event -->
+	<!-- Page for edit event -->
 	<div data-role="page" id="page-event-edit" data-title="Yueme">
 
 		<div data-role="header">
@@ -198,7 +198,7 @@
 		</div><!-- /header -->
 
 		<div role="main" class="ui-content">
-			<form id="event-create-form" style='padding: 1em '>
+			<form id="event-edit-form" style='padding: 1em '>
 				<label for="event-edit-title">Title:</label>
 				<input type="text" data-clear-btn="true" name="eventtitle" id="event-edit-title" value="">
 				<label for="event-edit-location">Location:</label>
@@ -482,7 +482,7 @@
 	<div data-role="page" id="page-change-my-password" data-title="Yueme">
 
 		<div data-role="header">
-			<h1>Set Password</h1>
+			<h1 id='setting-change-my-password-title'>Password</h1>
 			<a data-rel="back" href="#page-setting" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" onclick="setCurrLocationHash('#page-setting')">Back</a>
 		</div><!-- /header -->
 
@@ -536,6 +536,5 @@
 	<script type="text/javascript">
         app.initialize();
     </script>
-
 </body>
 </html>
