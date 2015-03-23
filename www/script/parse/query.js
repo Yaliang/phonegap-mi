@@ -409,12 +409,16 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 
 	if (photo == null)
 		return;
+	alert(photo);
 	query.equalTo("userId",id);
 	query.first({
 		success: function(photoObject) {
+			alert(photoObject);
 			photoObject.set('profilePhoto120',photo120);
 			var parseFile = new Parse.File(photo.name, photo);
 			parseFile.save().then(function(object) {
+				alert(object.url());
+				alert(photoObject);
 				photoObject.set("profilePhoto",object.url());
 				photoObject.save(null,{
 					success: function(object){
