@@ -412,7 +412,7 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 	alert(photo);
 	alert(photo.name);
 	alert(photo.size);
-	alert(photo.)
+	alert(photo.type);
 	query.equalTo("userId",id);
 	query.first({
 		success: function(photoObject) {
