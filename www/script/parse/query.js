@@ -417,7 +417,7 @@ function ParseSaveProfilePhoto(id, photo, photo120, displayFunction) {
 	query.first({
 		success: function(photoObject) {
 			photoObject.set('profilePhoto120',photo120);
-			var parseFile = new Parse.File('image.jpg', photo, 'image/jpg');
+			var parseFile = new Parse.File('image.jpg', photo, 'image/jpeg');
 			alert(photo);
 			alert(photo.name);
 			alert(photo.size);
