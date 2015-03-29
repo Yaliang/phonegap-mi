@@ -259,6 +259,10 @@ function initialElementEventSetting(){
         insertDescriptionPreviewPhoto();
     })
 
+    $("#body-form-set-group-name").submit(function(event){
+        event.preventDefault();
+    })
+
     // check if the user has been logged in or not
     $(window).hashchange(function(){
         var preHash = currLocationHash;
@@ -352,23 +356,32 @@ function convertTime(rawTime){
     var m = Math.floor(time / minutes);
     var showtime;
     if (y > 1) {
-        showtime = y.toString()+" years ago";
+        //showtime = y.toString()+" years ago";
+        showtime = y.toString()+"y";
     } else if (y > 0) {
-        showtime = y.toString()+" year ago";
+        //showtime = y.toString()+" year ago";
+        showtime = y.toString()+"y";
     } else if (d > 1) {
-        showtime = d.toString()+" days ago";
+        //showtime = d.toString()+" days ago";
+        showtime = d.toString()+"d";
     } else if (d > 0) {
-        showtime = d.toString()+" day ago";
+        //showtime = d.toString()+" day ago";
+        showtime = d.toString()+"d";
     } else if (h > 1) {
-        showtime = h.toString()+" hours ago";
+        //showtime = h.toString()+" hours ago";
+        showtime = h.toString()+"h";
     } else if (h > 0) {
-        showtime = h.toString()+" hour ago";
+        //showtime = h.toString()+" hour ago";
+        showtime = h.toString()+"h";
     } else if (m > 1) {
-        showtime = m.toString()+" minutes ago";
+        //showtime = m.toString()+" minutes ago";
+        showtime = m.toString()+"m";
     } else if (m > 0) {
-        showtime = m.toString()+" minute ago";
+        //showtime = m.toString()+" minute ago";
+        showtime = m.toString()+"m";
     } else {
-        showtime = "just now";
+        //showtime = "just now";
+        showtime = "now";
     }
     return showtime;
 }

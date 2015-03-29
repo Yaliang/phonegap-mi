@@ -407,3 +407,34 @@ function pullFriendListForAddingParticipants(){
     CachePullMyFriend(Parse.User.current().id, descendingOrderKey, displayFunction);
 }
 
+function pullParticipantsListInGroup(){
+    $("#body-group-participants-list").html("");
+    var groupId = $("#footer-bar-group-id-label").html();
+
+    // get the current users in chat
+    var groupId = $("#footer-bar-group-id-label").html();
+    var successFunction = function(object, data){
+        var memberId = object.get("memberId");
+        for (var i=0; i<memberId.length; i++) {
+            $("#body-group-participants-list").append("<li id='body-group-participants-list-"+memberId[i]+"'></li>");
+            $("#body-group-participants-list-"+memberId[i]).click({id: memberId[i]},function(e){
+                displayUserProfile(e.data.id);
+            });
+            var displayFunction = function(userObject) {
+                var newElement = buildUserListElement(userObject, "body-group-participants-people-", null, null, "group-participant-list");
+                $("#body-group-participants-list-"+userObject.id).append(newElement);
+                var displayFunction = function(object, data){
+                    var photo120 = object.get("profilePhoto120");
+                    if (typeof(photo120) == "undefined") {
+                        photo120 = "./content/png/Taylor-Swift.png";
+                    }
+                    $("#body-group-participants-people-"+data.userId+">.custom-people-in-friend-list").css("backgroundImage","url('"+photo120+"')");
+                };
+                CacheGetProfilePhotoByUserId(userObject.id, displayFunction, {userId : userObject.id});
+            }
+            CacheGetProfileByUserId(memberId[i],displayFunction);
+        }
+    }
+    CacheGetGroupMember(groupId, successFunction, {});
+}
+

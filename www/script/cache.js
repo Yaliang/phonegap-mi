@@ -277,6 +277,18 @@ function CachePullMyChat(ownerId,displayFunction) {
     displayFunction(chats);
 }
 
+function CacheGetChatByGroupId(ownerId,groupId,displayFunction, data) {
+    var chat;
+    for (var i = 0;  i<cacheChat.length; i++) {
+        if ((cacheChat[i].get("ownerId") == ownerId) && (cacheChat[i].get("groupId") == groupId) && (cacheChat[i].get("hidden") == false)) {
+            chat = cacheChat[i];
+            break;
+        }
+    }
+
+    displayFunction(chat, data);
+}
+
 function CacheUpdateChat(object){
     if (typeof(object) == "undefined")
         return;

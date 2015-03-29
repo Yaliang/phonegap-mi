@@ -49,8 +49,13 @@ function startGroupChat(groupId){
     // build new chat
     var successFunction = function(object){
         var memberId = object.get("memberId");
-        for (var i=0; i<memberId.length; i++) {
-            updateChatTitle(memberId[i], "header-chat-message-title");
+        var groupName = object.get("groupName");
+        if (typeof(groupName) == "undefined") {
+            for (var i=0; i<memberId.length; i++) {
+                updateChatTitle(memberId[i], "header-chat-message-title");
+            }
+        } else {
+            $("#header-chat-message-title").html(groupName);
         }
         var groupId = object.id;
         var currentId = Parse.User.current().id;
@@ -142,6 +147,7 @@ function pullMyChat(){
                 var successFunction = function(object, data){
                     var memberId = object.get("memberId");
                     var groupId = object.id;
+                    var groupName = object.get("groupName");
                     if (memberId.length == 2) {
                         // this is a private chat
                         for (var i=0; i<memberId.length; i++) {
@@ -164,8 +170,12 @@ function pullMyChat(){
                         }
                     } else {
                         // this is a group chat
-                        for (var i=0; i<memberId.length; i++) {
-                            updateChatTitle(memberId[i], "body-chat-"+data.chatId+"> .chat-list-title");
+                        if (typeof(groupName) == "undefined") {
+                            for (var i=0; i<memberId.length; i++) {
+                                updateChatTitle(memberId[i], "body-chat-"+data.chatId+"> .chat-list-title");
+                            }
+                        } else {
+                            $("#body-chat-"+data.chatId+"> .chat-list-title").html(groupName);
                         }
                         $("#body-chat-"+data.chatId).css("backgroundImage", "url(./content/png/groupchat.png)")
                         $("#body-chat-"+data.chatId).unbind("click");
@@ -360,9 +370,6 @@ function updateChatTitle(friendId, id, option){
                         } else {
                             titleString += user.get("name");
                         }
-                        if (titleString.length > 15) {
-                            titleString = titleString.substring(0,13)+"...";
-                        }
                         $("#"+id).html(titleString);
                     }
                 };
@@ -512,4 +519,54 @@ function removeANewPariticipant(event) {
     $("#body-add-participants-list-"+id).children(".ui-add-participant-checked").removeClass("ui-add-participant-checked").addClass("ui-add-participant-unchecked");
     $("#body-add-participants-list-"+id).unbind("click");
     $("#body-add-participants-list-"+id).click({id: id},selectANewPariticipant);
+}
+
+function pullGroupPrifle(){
+    var groupId = $("#footer-bar-group-id-label").html();
+    $("#body-group-participants-list-toggle").html("Collapse List");
+    $("#body-group-participants-list").show();
+    pullParticipantsListInGroup();
+    var displayFunction = function(object) {
+        var groupName = object.get("groupName");
+        if (typeof(groupName) == "undefined") {
+            groupName = "Not Set";
+        } else {
+            $("#body-input-set-group-name").val(groupName);
+        }
+        $("#body-group-name").html("<font style='padding-right:1em'>Group Name:</font><font style='color:#AAA'>"+groupName+"</font>");
+    }
+    CacheGetGroupMember(groupId,displayFunction)
+}
+
+function groupParticipantsListToggle(){
+    var htmlString = $("#body-group-participants-list-toggle").html();
+    if (htmlString.localeCompare("Collapse List") == 0) {
+        $("#body-group-participants-list-toggle").html("Expand List");
+        $("#body-group-participants-list").slideUp();
+    } else {
+        $("#body-group-participants-list-toggle").html("Collapse List");
+        $("#body-group-participants-list").slideDown();
+    }
+}
+
+function saveGroupName(){
+    var groupName = $("#body-input-set-group-name").val();
+    if (groupName.length == 0) {
+        $.mobile.back();
+        return
+    }
+    var groupId = $("#footer-bar-group-id-label").html();
+    var displayFunction = function(object) {
+        var groupId = object.id;
+        var groupName = object.get("groupName");
+        $("#body-input-set-group-name").val(groupName);
+        $("#body-group-name").html("<font style='padding-right:1em'>Group Name:</font><font style='color:#AAA'>"+groupName+"</font>");
+        $("#header-chat-message-title").html(groupName);
+        var displayFunction = function(object, data){
+            $("#body-chat-"+object.id+" > .chat-list-title").html(data.groupName);
+        }
+        CacheGetChatByGroupId(Parse.User.current().id, groupId, displayFunction, {groupName: groupName})
+    }
+    ParseSetGroupName(groupId, groupName, displayFunction);
+    $.mobile.back();
 }

@@ -746,6 +746,23 @@ function ParseGetGroupMember(groupId, successFunction, data){
     });
 }
 
+function ParseSetGroupName(groupId, groupName, displayFunction){
+    var Group = Parse.Object.extend("Group");
+    var query = new Parse.Query(Group);
+
+    query.get(groupId,{
+        success: function(object){
+            object.set("groupName", groupName);
+            object.save(null,{
+                success: function(object){
+                    displayFunction(object);
+                    CacheUpdateGroup(object);
+                }
+            })
+        }
+    })
+}
+
 function ParseSetChatObjectAsRead(ownerId, groupId, count, successFunction){
     var Chat = Parse.Object.extend("Chat");
     var query = new Parse.Query(Chat);
