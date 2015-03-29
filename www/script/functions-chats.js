@@ -530,6 +530,7 @@ function pullGroupPrifle(){
         var groupName = object.get("groupName");
         if (typeof(groupName) == "undefined") {
             groupName = "Not Set";
+            $("#body-input-set-group-name").val("");
         } else {
             $("#body-input-set-group-name").val(groupName);
         }
