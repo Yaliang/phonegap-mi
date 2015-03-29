@@ -235,7 +235,7 @@ function buildUserProfileDetailElement(object){
 
     newElement += "<br>";
     newElement += "<div class='ui-btn' id='body-bottom-button-send-request' style='clear: both'></div>";
-    newElement += "<div class='ui-btn' id='body-bottom-button-report-abuse' style='clear: both'></div>";
+    // newElement += "<div class='ui-btn' id='body-bottom-button-report-abuse' style='clear: both'></div>";
     newElement += "<br>";
 
     return newElement;
@@ -245,6 +245,47 @@ function displayUserProfile(userId){
     $("#body-user-profile").html("<div id='body-user-photo-"+userId+"' class='ui-user-profile-photo'></div>");
     var displayFunction= function(object, data){
         $("#body-user-photo-"+data.userId).after(buildUserProfileDetailElement(object));
+        var displayFunction1 = function(ownerId, friendId, cacheFriendObject) {
+            if (ownerId !== friendId) {
+                if (typeof(cacheFriendObject) == "undefined") {
+                    var displayFunction2 = function(ownerId, friendId, cacheFriendObject) {
+                        if (typeof(cacheFriendObject) == "undefined") {
+                            $("#body-bottom-button-send-request").html("Send Friend Request").on("click", function(){
+                                sendFriendRequest(ownerId);
+                            });
+                        } else {
+                            $("#body-bottom-button-send-request").html("Friend Request Received").on("click", function(){
+                                pullMyFriendRequests();
+                                $.mobile.changePage("#page-my-friend-requests");
+                                setCurrLocationHash("#page-my-friend-requests");
+                            });
+                        }
+                    };
+                    CacheCheckFriend(ownerId, friendId, displayFunction2);
+
+                } else {
+                    var valid = cacheFriendObject.get("valid");
+
+                    if (valid) {
+                        $("#body-bottom-button-send-request").html("Start Chat").on("click", function(){
+                            startPrivateChat(friendId);
+                        });
+                    } else {
+                        $("#body-bottom-button-send-request").html("Friend Request Sent");
+                    }
+                }
+
+                // this report for activity not for user
+                // $("#body-bottom-button-report-abuse").html("Report Abuse").on("click", function(){
+                //     $.mobile.changePage("#page-event-report");
+                // });
+
+            } else {
+                $("#body-bottom-button-send-request").hide();
+                $("#body-bottom-button-report-abuse").hide();
+            }
+        };
+        CacheCheckFriend(userId, Parse.User.current().id, displayFunction1);
     };
     CacheGetProfileByUserId(userId, displayFunction, {userId: userId});
 
@@ -257,46 +298,7 @@ function displayUserProfile(userId){
     };
     CacheGetProfilePhotoByUserId(userId, displayFunction, {userId: userId});
 
-    displayFunction = function(ownerId, friendId, cacheFriendObject) {
-        if (ownerId !== friendId) {
-            if (typeof(cacheFriendObject) == "undefined") {
-                var displayFunction1 = function(ownerId, friendId, cacheFriendObject) {
-                    if (typeof(cacheFriendObject) == "undefined") {
-                        $("#body-bottom-button-send-request").html("Send Friend Request").on("click", function(){
-                            sendFriendRequest(ownerId);
-                        });
-                    } else {
-                        $("#body-bottom-button-send-request").html("Friend Request Received").on("click", function(){
-                            pullMyFriendRequests();
-                            $.mobile.changePage("#page-my-friend-requests");
-                            setCurrLocationHash("#page-my-friend-requests");
-                        });
-                    }
-                };
-                CacheCheckFriend(ownerId, friendId, displayFunction1);
 
-            } else {
-                var valid = cacheFriendObject.get("valid");
-
-                if (valid) {
-                    $("#body-bottom-button-send-request").html("Start Chat").on("click", function(){
-                        startPrivateChat(friendId);
-                    });
-                } else {
-                    $("#body-bottom-button-send-request").html("Friend Request Sent");
-                }
-            }
-
-            $("#body-bottom-button-report-abuse").html("Report Abuse").on("click", function(){
-                $.mobile.changePage("#page-event-report");
-            });
-
-        } else {
-            $("#body-bottom-button-send-request").hide();
-            $("#body-bottom-button-report-abuse").hide();
-        }
-    };
-    CacheCheckFriend(userId, Parse.User.current().id, displayFunction);
 }
 
 var currentLastEvent;

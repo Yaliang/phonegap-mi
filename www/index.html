@@ -271,7 +271,7 @@
             <br>
 
             <div align = "center" style="font-family: 'Open Sans';">
-                Are you sure to report this user? You might not be able to cancel this action.
+                Are you sure to report this activity? You might not be able to cancel this action.
             </div>
 
             <br>
@@ -383,8 +383,6 @@
             <ul id="body-list-search-user" data-role="listview" data-inset="true" data-filter="true" data-input="#body-input-user-autocomplete"></ul>
         </div><!-- /content -->
 
-        <div data-role="footer" data-position="fixed" data-tap-toggle="false"></div><!-- /footer -->
-
     </div><!-- /page -->
 
     <!-- Page for displaying all new friend requests -->
@@ -442,9 +440,17 @@
 
         <div class="ui-content" style="margin-bottom:100px" role="main"></div><!-- /content -->
 
-        <div class="ui-page-more-option-bottom" id="body-bottom-chat-message-more-option">
+        <div class="ui-page-more-option-bottom" id="body-bottom-private-chat-message-more-option">
             <a class="ui-btn" data-transition="slideup" href="#page-add-participants"
                onclick="hideChatMessageMoreOption();pullFriendListForAddingParticipants();">Add Participants</a>
+            <div class="ui-btn ui-more-option-cancel-btn" onclick="hideChatMessageMoreOption()">Cancel</div>
+        </div>
+
+        <div class="ui-page-more-option-bottom" id="body-bottom-group-chat-message-more-option">
+            <a class="ui-btn" data-transition="slideup" href="#page-add-participants"
+               onclick="hideChatMessageMoreOption();pullFriendListForAddingParticipants();">Add Participants</a>
+            <a class="ui-btn" data-transition="slideup" href="#page-add-participants"
+               onclick="hideChatMessageMoreOption();pullFriendListForAddingParticipants();">Group Profile</a>
             <div class="ui-btn ui-more-option-cancel-btn" onclick="hideChatMessageMoreOption()">Cancel</div>
         </div>
 

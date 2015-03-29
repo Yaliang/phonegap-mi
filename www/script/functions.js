@@ -1,9 +1,3 @@
-$(document).ready(function (){
-    initialElementEventSetting();
-    cacheInitialization();
-    loginByLocalStorage();
-});
-
 var currLocationHash = "#page-loading"; // the location hash for current page
 
 function setCurrLocationHash(locationHash){

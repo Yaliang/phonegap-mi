@@ -105,14 +105,16 @@ function buildUserListElement(object, liIdPrefix, lat, lng, type) {
         newElement += "<li id='"+liIdPrefix+userId+"'";
         if (type.localeCompare("add-participant-list") == 0) {
             newElement += " class='ui-add-participant-unchecked'";
+        } else {
+            newElement += " class='ui-friend-list-line' onclick=\"$.mobile.changePage('#page-display-user-profile'); displayUserProfile('"+userId+"');\"";
         }
         newElement += ">";
     }
-    if (type.localeCompare("friend-list") == 0 || type.localeCompare("add-participant-list") == 0){
+    //if (type.localeCompare("friend-list") == 0 || type.localeCompare("add-participant-list") == 0){
         newElement += "<div class='custom-people-in-friend-list custom-corners'>"
-    } else {//if (type.localeCompare("people-near-by-list") == 0) {
-        newElement += "<div class='custom-corners-people-near-by custom-corners'>"
-    }
+    //} else {//if (type.localeCompare("people-near-by-list") == 0) {
+    //    newElement += "<div class='custom-corners-people-near-by custom-corners'>"
+    //}
     newElement += "<div class='ui-bar ui-bar-a'>";
     newElement += "<div><strong>"+name+"</strong></div>";
     newElement += "<div class='ui-icon-custom-gender' style='";
@@ -189,7 +191,7 @@ function showPeopleNearByList(position){
                     if (typeof(photo120) == "undefined") {
                         photo120 = "./content/png/Taylor-Swift.png";
                     }
-                    $("#body-near-by-"+object.get("userId")+" > .custom-corners-people-near-by").css("backgroundImage","url('"+photo120+"')");
+                    $("#body-near-by-"+object.get("userId")+" > .custom-people-in-friend-list").css("backgroundImage","url('"+photo120+"')");
                 };
                 CacheGetProfilePhotoByUserId(userId, displayFunction);
                 prefixForGetFriendOptionsButton="body-near-by-";
@@ -197,7 +199,7 @@ function showPeopleNearByList(position){
             } else {
                 var latitude = objects[i].get("latitude");
                 var longitude = objects[i].get("longitude");
-                $("#body-near-by-"+objects[i].id+" > .custom-corners-people-near-by > .ui-bar-a > .people-near-by-list-distance").html(getDistance(latitude, longitude, lat, lng) + "km, "+convertTime(objects[i].updatedAt));
+                $("#body-near-by-"+objects[i].id+" > .custom-people-in-friend-list > .ui-bar-a > .people-near-by-list-distance").html(getDistance(latitude, longitude, lat, lng) + "km, "+convertTime(objects[i].updatedAt));
             }
         }
     };
@@ -241,11 +243,11 @@ function bindSearchAutocomplete(){
                         if (typeof(photo120) == "undefined") {
                             photo120 = "./content/png/Taylor-Swift.png";
                         }
-                        $("#body-people-search-"+object.get("userId")+" > .custom-corners-people-near-by").css("backgroundImage","url('"+photo120+"')");
+                        $("#body-people-search-"+object.get("userId")+" > .custom-people-in-friend-list").css("backgroundImage","url('"+photo120+"')");
                     };
                     CacheGetProfilePhotoByUserId(userId, displayFunction);
                     prefixForGetFriendOptionsButton="body-people-search-";
-                    getFriendOptionsButton(userId);
+                    //getFriendOptionsButton(userId);
                 }
             };
             ParseSearchUserByEmailAndName(value, limitNumber, "updatedAt", displayFunction);
@@ -288,7 +290,7 @@ function pullMyFriendRequests() {
                 };
                 CacheGetProfilePhotoByUserId(friendId, displayFunction, {friendId: friendId});
                 prefixForGetFriendOptionsButton="body-new-friend-request-";
-                getFriendOptionsButton(friendId);
+                //getFriendOptionsButton(friendId);
             };
             CacheGetProfileByUserId(friendId, displayFunction, {friendObject:objects[i]});
             ParseSetRequestRead(objectId);
@@ -321,7 +323,7 @@ function pullMyFriendList() {
         for (var i=0; i<objects.length; i++) {
             var friendId = objects[i].get("friend");
             var objectId = objects[i].id;
-            $("#body-friend-list").append("<li id='body-friend-list-"+friendId+"' class='ui-friend-list-line' onclick=\"startPrivateChat('"+friendId+"');\"></li>");
+            $("#body-friend-list").append("<li id='body-friend-list-"+friendId+"' class='ui-friend-list-line' onclick=\"setCurrLocationHash('#page-friend'); $.mobile.changePage('#page-display-user-profile'); displayUserProfile('"+friendId+"');\"></li>");
             var displayFunction = function(userObject, data) {
                 var newElement = buildUserListElement(userObject, null, null, null, "friend-list");
                 var objectId = data.friendObject.id;

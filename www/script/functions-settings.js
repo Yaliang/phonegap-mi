@@ -53,7 +53,7 @@ function getMyProfile(){
         };
         image.src = photo120;        
     };
-    CacheGetProfilePhoto(userId, displayFunction, {});
+    CacheGetProfilePhotoByUserId(userId, displayFunction, {});
 }
 
 function saveProfile(){
