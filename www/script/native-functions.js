@@ -20,7 +20,6 @@ var app = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         initialElementEventSetting();
-
         cacheInitialization();
         loginByLocalStorage();
         // set up push notification

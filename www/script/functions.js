@@ -17,6 +17,8 @@ function setCurrLocationHash(locationHash){
  * preventing default events, showing default display, etc.
  */
 function initialElementEventSetting(){
+    // instantiate the FastClick object for removing the 300ms delay in jQuery mobile
+    FastClick.attach(document.body);
 
     // set comment and message send bar disable
     var $footerBarInputCommentContent = $("#footer-bar-input-comment-content");
@@ -75,6 +77,15 @@ function initialElementEventSetting(){
 
     $("#body-form-signup").submit(function(event){
         event.preventDefault();
+    });
+
+    $("#body-input-insert-description-photo").on("change",function(){
+        insertDescriptionPreviewPhoto();
+    });
+
+    $("#body-input-create-event-description").on("keyup keypress",function(e){
+        if(listenKeyup)
+            deleteDescriptionPreviewPhoto(e);
     });
 
     $("#body-form-set-group-name").submit(function(event){
