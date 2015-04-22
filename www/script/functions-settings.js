@@ -1,6 +1,9 @@
-// edit and update my profile
+/* This variable ...
+ */
 var refreshPreviewPhoto = false;
 
+/* This function is designed to refresh the preview of user's profile photo every 1.5 seconds.
+ */
 function refreshPreviewCanvas(){
     profilePhotoCrop();
     if (refreshPreviewPhoto) {
@@ -10,10 +13,13 @@ function refreshPreviewCanvas(){
     }
 }
 
+/* This function is designed to get my profile.
+ */
 function getMyProfile(){
     var currentUser = Parse.User.current();
     var owner = currentUser.getUsername();
     var userId = currentUser.id;
+
     var displayFunction = function(){
         var currentUser = Parse.User.current();
         var name = currentUser.get("name");
@@ -26,11 +32,12 @@ function getMyProfile(){
         var location = currentUser.get("location");
 
         $("#body-input-edit-profile-name").val(name);
-        $("#body-select-edit-profile-gender").val(gender ? "on" : "off");
+        var $bodySelectEditProfileGender = $("#body-select-edit-profile-gender");
+        $bodySelectEditProfileGender.val(gender ? "on" : "off");
         if (!gender) {
-            $("#body-select-edit-profile-gender").parent().removeClass("ui-flipswitch-active");
+            $bodySelectEditProfileGender.parent().removeClass("ui-flipswitch-active");
         } else {
-            $("#body-select-edit-profile-gender").parent().addClass("ui-flipswitch-active");
+            $bodySelectEditProfileGender.parent().addClass("ui-flipswitch-active");
         }
         $("#body-input-edit-profile-birthdate").val(birthdate);
         $("#body-input-edit-profile-motto").val(motto);
@@ -40,7 +47,8 @@ function getMyProfile(){
         $("#body-input-edit-profile-location").val(location);
     };
     ParseUpdateCurrentUser(displayFunction, function(){});
-    displayFunction = function(object, data){
+
+    displayFunction = function(object, data){ // object: single cachePhoto[i] object
         var photo120 = object.get("profilePhoto120");
         if (typeof(photo120) == "undefined") {
             photo120 = "./content/png/Taylor-Swift.png";
@@ -56,42 +64,51 @@ function getMyProfile(){
     CacheGetProfilePhotoByUserId(userId, displayFunction, {});
 }
 
+/* This function is designed to save my profile.
+ */
 function saveProfile(){
     refreshPreviewPhoto = false;
     $("#body-bottom-profile-save-btn").unbind("click");
     var currentUser = Parse.User.current();
     var owner = currentUser.getUsername();
     var id = currentUser.id;
+
     var fileUploadControl = $("#body-input-edit-profile-photo")[0];
     if (fileUploadControl.files.length > 0) {
         var canvas = document.getElementById("body-profile-photo-preview-canvas");
         var photo120 = canvas.toDataURL();
         var photo = fileUploadControl.files[0];
+    } else {
+        photo120 = null;
+        photo = null;
     }
-    else {
-        var photo120 = null;
-        var photo = null;
-    }
+
     var name = $("#body-input-edit-profile-name").val();
-    var gender = $("#body-select-edit-profile-gender").val()=="on" ? true : false ;
+    var gender = $("#body-select-edit-profile-gender").val()=="on";
     var birthdate = $("#body-input-edit-profile-birthdate").val();
     var motto = $("#body-input-edit-profile-motto").val();
     var major = $("#body-input-edit-profile-major").val();
     var school = $("#body-input-edit-profile-school").val();
     var interest = $("#body-input-edit-profile-interest").val();
     var location = $("#body-input-edit-profile-location").val();
+
     var displayFunction = function(){
         ParseUpdateCurrentUser(function(){}, function(){});
     };
+
     ParseSaveProfile(name, gender, birthdate, motto, major, school, interest, location, displayFunction);
     ParseSaveProfilePhoto(id, photo, photo120, function(object){});
 }
 
+/* This function is designed to crop my profile photo.
+ */
 function profilePhotoCrop(){
     var fileUploadControl = $("#body-input-edit-profile-photo")[0];
     var file = fileUploadControl.files[0];
-    if (typeof(file) == "undefined")
+    if (typeof(file) == "undefined") {
         return;
+    }
+
     var reader = new FileReader();
     reader.onload = function(e) {
         var image = new Image();
@@ -135,6 +152,7 @@ function profilePhotoCrop(){
                 context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
         }
     };
+
     loadImage.parseMetaData(file,function (data) {
         if (typeof(data.exif) != "undefined"){
             var orientation = data.exif.get("Orientation");
@@ -163,8 +181,10 @@ function profilePhotoCrop(){
     },{});
 }
 
+/* This function is designed to change my account password.
+ */
 function changePassword(type, password, confirmPassword){
-    console.log("check");
+    //console.log("check");
     // check current password
     $.mobile.loading("show");
     if (type.localeCompare("old") == 0) {
@@ -181,6 +201,7 @@ function changePassword(type, password, confirmPassword){
             $("#body-input-set-new-password").focus();
             $.mobile.loading("hide");
         };
+
         var errorFunction = function(error){
             var errorMessage = "";
             if (error.code == 101){
@@ -203,14 +224,15 @@ function changePassword(type, password, confirmPassword){
             $.mobile.loading("hide");
             return;
         }
+
         if (password.length < 6){
-            var errorMessage = "Password should be at least 6 characters. Please reenter password.";
+            errorMessage = "Password should be at least 6 characters. Please reenter password.";
             $("#body-set-new-password-error").html(errorMessage);
             $.mobile.loading("hide");
             return;
         }
         // save to server
-        var successFunction = function() {
+        successFunction = function() {
             $("#body-form-confirm-password").show();
             $("#body-form-set-new-password").hide();
             $("#body-confirm-password-btn").show();
@@ -224,7 +246,7 @@ function changePassword(type, password, confirmPassword){
             $.mobile.changePage("#page-setting");
             $.mobile.loading("hide");
         };
-        var errorFunction = function() {
+        errorFunction = function() {
             var errorMessage = "Failed to save password, please try again.";
             $("#body-set-new-password-error").html(errorMessage);
             $.mobile.loading("hide");

@@ -99,9 +99,16 @@
 
         <div data-role="header" data-position="fixed" data-tap-toggle="false" >
             <h1>Activities</h1>
-            <a class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-header-event-more-option" id="header-event-more-option" href="#"
+            <a class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-header-more-option" id="header-event-more-option" href="#"
                onclick="displayEventMoreOption();"></a>
+            <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" id="header-event-filter-option" href="#"
+               onclick="displayEventFilterModeMoreOption();">Filter Mode</a>
         </div><!-- /header -->
+
+        <form id="body-event-search-from" class="ui-filterable" style="margin-bottom: -1em;">
+            <label for="body-input-event-search"></label>
+            <input id="body-input-event-search" type="search" placeholder="Search for events..."/>
+        </form>
 
         <div  class="ui-content" id="body-event-content-list" role="main">
             <div class="ui-load-more-activity" onclick="pullUserEvent(currentLastEvent)">More Activities</div>
@@ -125,15 +132,22 @@
             </div>
         </div><!-- /footer -->
 
-        <ul class="event-page-right-top-options" style="display: none;">
+        <ul class="page-right-top-options" style="display: none;">
             <li><a id="header-create-new-event-option" href="#page-event-create"
                    onclick="setCurrLocationHash('#page-event-create')">Create</a></li>
 
-            <li><a id="header-list-my-event" href="#page-event-my-event"
+            <li><a id="header-list-my-event-option" href="#page-event-my-event"
                    onclick="setCurrLocationHash('#page-event-my-event')">My Activities</a></li>
         </ul>
 
         <div class="options-hidden-cover-layer" style="display: none;"></div>
+
+        <div class="ui-page-more-option-bottom" id="body-bottom-hiding-event-filter-more-option">
+            <a class="ui-btn share-btn ui-more-option-first-btn" id="body-bottom-hiding-event-filter-time" data-transition="slideup" href="">Filter By Time</a>
+            <a class="ui-btn share-btn ui-more-option-first-btn" id="body-bottom-hiding-event-filter-location" data-transition="slideup" href="">Filter By Location Based</a>
+            <a class="ui-btn share-btn ui-more-option-first-btn" id="body-bottom-hiding-event-filter-custom" data-transition="slideup" href="">Customized Filter</a>
+            <div class="ui-btn ui-more-option-cancel-btn" id="body-bottom-hiding-event-filter-cancel" onclick="hiddenEventFilterModeMoreOption()">Cancel</div>
+        </div>
 
     </div><!-- /page -->
 
@@ -162,7 +176,7 @@
         <div class="ui-content" role="main" >
             <form id="body-form-create-event" style="padding: 1em">
                 <label for="body-input-create-event-title">Title:</label>
-                <input id="body-input-create-event-title" data-clear-btn="true" type="text" name="eventtitle" value="">
+                <input id="body-input-create-event-title" data-clear-btn="true" type="text" name="eventtitle" value="" placeholder='e.g. "Weekend Moive", "New Year Party"...'>
                 <label for="body-input-create-event-location">Location:</label>
                 <input id="body-input-create-event-location" data-clear-btn="ture" type="text" name="eventlocation" value="">
                 <label for="body-input-create-event-startTime">Start Time:</label>
@@ -171,13 +185,13 @@
                 <input id="body-input-create-event-endTime" data-clear-btn="ture" type="datetime-local" name="eventendtime" value="">
                 <label for="body-input-create-event-visibility">Visibility:</label>
                 <select id="body-input-create-event-visibility" name="eventvisibility"
-                        data-role="flipswitch" data-wrapper-class="custom-size-flipswitch-body-input-create-event-visibility" checked="">
+                        data-role="flipswitch" data-wrapper-class="custom-size-flipswitch-body-input-create-event-visibility">
                     <option value="off">Friends</option>
                     <option value="on" selected="">Public</option>
                 </select>
                 <label for="body-input-create-event-description">Description:</label>
                 <textarea id="body-input-create-event-description" name="eventdescription"></textarea>
-                <div class="ui-btn" id="body-create-event-description-insert-image"></div>
+                <div class="ui-btn ui-icon-custom-add-image" id="body-create-event-description-insert-image"></div>
                 <input id="body-input-insert-description-photo" name="descriptionphoto" data-clear-btn="false" type="file"
                        onclick="insertDescriptionPreviewPhoto();" value="">
             </form>
@@ -245,14 +259,14 @@
             <h1>Activity Detail</h1>
             <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" data-rel="back" href="#page-event"
                onclick="$('#footer-bar-send-comment').fadeOut(); setCurrLocationHash('#page-event')">Back</a>
-
-            <a class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-header-event-more-option" id="header-event-detail-more-option" href="#"
+            <a class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-header-more-option" id="header-event-detail-more-option" href="#"
                onclick="displayEventDetailMoreOption()"></a>
         </div><!-- /header -->
 
         <div class="ui-content" id="body-content-event-detail" role="main"></div><!-- /content -->
 
         <div class="ui-page-more-option-bottom" id="body-bottom-event-detail-more-option">
+            <a class="ui-btn share-btn ui-more-option-first-btn" href="" onclick = "hideEventDetailMoreOption()">Share via Email</a>
             <a class="ui-btn report-btn" data-transition="slideup" href="#page-event-report"
                onclick="hideEventDetailMoreOption()">Report Abuse</a>
             <div class="ui-btn ui-more-option-cancel-btn" onclick="hideEventDetailMoreOption()">Cancel</div>
@@ -314,9 +328,7 @@
 
         <div role="main" class="ui-content">
             <a class="ui-btn" id="body-new-friend-requests-btn" href="#page-my-friend-requests"
-               onclick="pullMyFriendRequests();setCurrLocationHash('#page-my-friend-requests')">
-               New Friend Requests
-               <span class="ui-li-count" id="body-new-friend-requests-number"></span>
+               onclick="pullMyFriendRequests();setCurrLocationHash('#page-my-friend-requests')">New Friend Requests
             </a>
 
             <ul class="ui-custom-listview ui-listview ui-listview-inset ui-corner-all ui-shadow" id="body-friend-list"></ul>
@@ -343,7 +355,7 @@
     </div><!-- /page -->
 
     <!-- Page for displaying other user's profile -->
-    <div data-role="page" id="page-display-user-profile" data-title="Yueme">
+    <div id="page-display-user-profile" data-role="page" data-title="Yueme">
 
         <div data-role="header">
             <h1>Profile</h1>
@@ -351,6 +363,8 @@
         </div><!-- /header -->
 
         <div class="ui-content" id="body-user-profile" role="main"></div><!-- /content -->
+
+        <div class="ui-full-screen-photo" id="body-user-profile-full-screen-photo" style="display:none; z-index:1002; position:fixed; max-width: 100vw; max-height:100vh; margin:auto;top:-50%; bottom:-50%; left:-50%; right:-50%;"></div>
 
     </div><!-- /page -->
 
@@ -401,8 +415,10 @@
     <!-- Page for displaying the chat list -->
     <div id="page-chat" data-role="page" data-title="Yueme">
 
-        <div data-role="header" data-position="fixed" data-tap-toggle="false" >
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1>Chats</h1>
+            <a class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-header-more-option" id="header-chat-more-option" href="#"
+               onclick="displayChatMoreOption();"></a>
         </div><!-- /header -->
 
         <div class="ui-content" role="main"></div><!-- /content -->
@@ -425,12 +441,23 @@
             </div>
         </div><!-- /footer -->
 
+        <div class="ui-page-more-option-bottom" id="body-bottom-hiding-chat-more-option">
+            <a class="ui-btn report-btn ui-more-option-first-btn" id="body-bottom-hiding-chat-confirm" data-transition="slideup" href="">Delete</a>
+            <div class="ui-btn ui-more-option-cancel-btn" id="body-bottom-hiding-chat-cancel">Cancel</div>
+        </div>
+
+        <ul class="page-right-top-options" style="display: none;">
+            <li><a id="header-start-group-chat-option" href="#page-add-participants">New Group</a></li>
+        </ul>
+
+        <div class="options-hidden-cover-layer" style="display: none;"></div>
+
     </div><!-- /page -->
 
     <!-- Page for displaying the messages of a chat -->
     <div id="page-chat-messages" data-role="page" data-title="Yueme" data-add-back-btn="true">
 
-        <div data-role="header" data-position="fixed" data-tap-toggle="false" >
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1 id="header-chat-message-title"></h1>
             <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" data-rel="back" href="#page-chat"
                onclick="pullMyChat(); $('#footer-bar-send-message').fadeOut();setCurrLocationHash('#page-chat')">Back</a>
@@ -441,16 +468,16 @@
         <div class="ui-content" style="margin-bottom:100px" role="main"></div><!-- /content -->
 
         <div class="ui-page-more-option-bottom" id="body-bottom-private-chat-message-more-option">
-            <a class="ui-btn" data-transition="slideup" href="#page-add-participants"
+            <a class="ui-btn ui-more-option-first-btn" data-transition="slideup" href="#page-add-participants"
                onclick="hideChatMessageMoreOption();pullFriendListForAddingParticipants();">Add Participants</a>
             <div class="ui-btn ui-more-option-cancel-btn" onclick="hideChatMessageMoreOption()">Cancel</div>
         </div>
 
         <div class="ui-page-more-option-bottom" id="body-bottom-group-chat-message-more-option">
-            <a class="ui-btn" data-transition="slideup" href="#page-add-participants"
+            <a class="ui-btn ui-more-option-first-btn" data-transition="slideup" href="#page-add-participants"
                onclick="hideChatMessageMoreOption();pullFriendListForAddingParticipants();">Add Participants</a>
             <a class="ui-btn" data-transition="slideup" href="#page-group-profile"
-               onclick="hideChatMessageMoreOption();pullGroupPrifle();">Group Profile</a>
+               onclick="hideChatMessageMoreOption();pullGroupProfile();">Group Profile</a>
             <div class="ui-btn ui-more-option-cancel-btn" onclick="hideChatMessageMoreOption()">Cancel</div>
         </div>
 
@@ -459,7 +486,7 @@
     <!-- Page for adding participant to the group chat -->
     <div id="page-add-participants" data-role="page" data-title="Yueme">
 
-        <div data-role="header" data-position="fixed" data-tap-toggle="false" >
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1>Friends</h1>
             <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" data-rel="back" href="#page-chat-messages"
                onclick="">Back</a>
@@ -476,7 +503,7 @@
     <!-- Page for group profile of a group chat -->
     <div id="page-group-profile" data-role="page" data-title="Yueme">
 
-        <div data-role="header" data-position="fixed" data-tap-toggle="false" >
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1>Group</h1>
             <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" data-rel="back" href="#page-chat-messages"
                onclick="">Back</a>
@@ -484,9 +511,9 @@
 
         <div role="main" class="ui-content">
             <a class="ui-btn" id="body-group-participants-list-toggle" style="margin-bottom:0" onclick="groupParticipantsListToggle()">Collapse List</a>
-            <ul class="ui-custom-listview ui-listview ui-listview-inset ui-corner-all ui-shadow" id="body-group-participants-list" style="margin-top:0" ></ul>
-            <a data-transition="slideup" href="#page-set-group-name" class="ui-btn" id="body-group-name"></a>
-            <a data-transition="slideup" href="#" class="ui-btn" >Leave Group</a>
+            <ul class="ui-custom-listview ui-listview ui-listview-inset ui-corner-all ui-shadow" id="body-group-participants-list" style="margin-top:0"></ul>
+            <a class="ui-btn" id="body-group-name" style="color:#AAA" data-transition="slideup" href="#page-set-group-name"></a>
+            <a class="ui-btn ui-custom-log-out" data-transition="slideup" href="#page-chat" onclick="leaveGroup()">Delete and Leave</a>
         </div><!-- /content -->
 
     </div>
@@ -494,7 +521,7 @@
     <!-- Page for setting group name-->
     <div id="page-set-group-name" data-role="page" data-title="Yueme">
 
-        <div data-role="header" data-position="fixed" data-tap-toggle="false" >
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1>Group</h1>
             <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" data-rel="back" href="#page-group-profile"
                onclick="">Back</a>
@@ -628,6 +655,7 @@
 
     </div><!-- /page -->
 
+    <!-- Toolbar for sending comments -->
     <div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" id="footer-bar-send-comment"
          style="z-index:3; display:none; position:absolute; background-color: #e9e9e9; border-color: #ddd;">
 
@@ -637,7 +665,7 @@
             <div class="custom-block-a"
                  onclick="sendToolbarActiveKeyboard({id:'#footer-bar-input-comment-content',bar:'#footer-bar-send-comment',base:'#page-event-detail',bias:2});">
                 <div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
-                    <input id="footer-bar-input-comment-content" type="text" name="commentcontent" value="">
+                    <input id="footer-bar-input-comment-content" type="text" name="commentContent" value="" placeholder="comment...">
                 </div>
             </div>
 
@@ -648,6 +676,7 @@
 
     </div>
 
+    <!-- Toolbar for sending messages -->
     <div class="rwd-example ui-footer ui-bar-inherit ui-footer-fixed slideup ui-page-theme-a" id="footer-bar-send-message"
          style="z-index:3; display:none; position:absolute; background-color: #e9e9e9; border-color: #ddd;">
 
@@ -657,7 +686,7 @@
             <div class="custom-block-a"
                  onclick="sendToolbarActiveKeyboard({id:'#footer-bar-input-message-content',bar:'#footer-bar-send-message',base:'#page-chat-messages',bias:-44});">
                 <div class="ui-input-text ui-shadow-inset ui-focus ui-body-inherit ui-corner-all">
-                    <input id="footer-bar-input-message-content" type="text" name="messagecontent" value="">
+                    <input id="footer-bar-input-message-content" type="text" name="messagecontent" value="" placeholder="send message...">
                 </div>
             </div>
 
