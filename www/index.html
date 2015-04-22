@@ -101,14 +101,14 @@
             <h1>Activities</h1>
             <a class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-header-more-option" id="header-event-more-option" href="#"
                onclick="displayEventMoreOption();"></a>
-            <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" id="header-event-filter-option" href="#"
-               onclick="displayEventFilterModeMoreOption();">Filter Mode</a>
+           <!--  <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" id="header-event-filter-option" href="#"
+               onclick="displayEventFilterModeMoreOption();">Filter Mode</a> -->
         </div><!-- /header -->
 
-        <form id="body-event-search-from" class="ui-filterable" style="margin-bottom: -1em;">
+        <!-- <form id="body-event-search-from" class="ui-filterable" style="margin-bottom: -1em;">
             <label for="body-input-event-search"></label>
             <input id="body-input-event-search" type="search" placeholder="Search for events..."/>
-        </form>
+        </form> -->
 
         <div  class="ui-content" id="body-event-content-list" role="main">
             <div class="ui-load-more-activity" onclick="pullUserEvent(currentLastEvent)">More Activities</div>
@@ -191,9 +191,9 @@
                 </select>
                 <label for="body-input-create-event-description">Description:</label>
                 <textarea id="body-input-create-event-description" name="eventdescription"></textarea>
-                <div class="ui-btn ui-icon-custom-add-image" id="body-create-event-description-insert-image"></div>
+                <!-- <div class="ui-btn ui-icon-custom-add-image" id="body-create-event-description-insert-image"></div>
                 <input id="body-input-insert-description-photo" name="descriptionphoto" data-clear-btn="false" type="file"
-                       onclick="insertDescriptionPreviewPhoto();" value="">
+                       onclick="insertDescriptionPreviewPhoto();" value=""> -->
             </form>
 
             <div id="body-create-event-preview"></div>
@@ -696,6 +696,8 @@
         </form>
 
     </div>
+
+    <div class="ui-hidden-accessible" id="photo-orientation"></div>
 
     <div class="ui-hidden-accessible" id="photo-orientation"></div>
 
