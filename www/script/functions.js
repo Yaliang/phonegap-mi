@@ -17,10 +17,12 @@ function setCurrLocationHash(locationHash){
  * preventing default events, showing default display, etc.
  */
 function initialElementEventSetting(){
+    alert("start initializing");
+
     // instantiate the FastClick object for removing the 300ms delay in jQuery mobile
     FastClick.attach(document.body);
 
-    alert("FastClick initialized")
+    alert("FastClick initialized");
 
     // set comment and message send bar disable
     var $footerBarInputCommentContent = $("#footer-bar-input-comment-content");
@@ -33,7 +35,7 @@ function initialElementEventSetting(){
         }
     });
 
-    alert("comment bar initialized")
+    alert("comment bar initialized");
 
     var $footerBarInputMessageContent = $("#footer-bar-input-message-content");
     $footerBarInputMessageContent.on("blur",function(){
@@ -44,7 +46,7 @@ function initialElementEventSetting(){
     $footerBarInputCommentContent.prop("disabled", true);
     $footerBarInputMessageContent.prop("disabled", true);
 
-    alert("message bar initialized")
+    alert("message bar initialized");
 
     $("#footer-bar-form-message-chat").submit(function(event){
         event.preventDefault();
@@ -98,7 +100,7 @@ function initialElementEventSetting(){
         event.preventDefault();
     });
 
-    alert("submit initialized")
+    alert("submit initialized");
 
     // check if the user has been logged in or not
     $(window).hashchange(function(){
@@ -118,7 +120,7 @@ function initialElementEventSetting(){
         }
     });
 
-    alert("hashchange initialized")
+    alert("hashchange initialized");
 
     // add function when the page #page-chat-messages completed.
     $(document).on("pageshow","#page-chat-messages",function(){
@@ -170,7 +172,7 @@ function initialElementEventSetting(){
         $("#body-input-old-password").focus();
     });
 
-    alert("pageshow and pagehide initialized")
+    alert("pageshow and pagehide initialized");
 }
 
 /* This function tries to log into user session by local storage
