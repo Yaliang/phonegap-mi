@@ -524,12 +524,8 @@ function sendToolbarActiveKeyboard(object){
             $(object.bar).css("position","absolute");
             $(object.bar).css("bottom",($("body").height() - $(object.base).height()+object.bias).toString()+"px");
             $(object.id).trigger("focus");
-            if (cordova.plugins.Keyboard.isVisible) {
-                alert("cool");
-            } else {
-                setTimeout(function(){
-                    $(object.id).trigger("focus");
-                }, 500);
+            if (!cordova.plugins.Keyboard.isVisible) {
+                sendToolbarActiveKeyboard(object);
             }
         }
     });
