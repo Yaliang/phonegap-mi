@@ -520,13 +520,10 @@ function sendToolbarActiveKeyboard(object){
     $("html body").animate({ scrollTop: $(document).height().toString()+"px" }, {
         duration: 300,
         complete : function(){
-            $(object.id).prop("disabled", false);
             $(object.bar).css("position","absolute");
             $(object.bar).css("bottom",($("body").height() - $(object.base).height()+object.bias).toString()+"px");
+            $(object.id).prop("disabled", false);
             $(object.id).trigger("focus");
-            if (!cordova.plugins.Keyboard.isVisible) {
-                sendToolbarActiveKeyboard(object);
-            }
         }
     });
 }
