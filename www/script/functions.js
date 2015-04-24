@@ -523,7 +523,7 @@ function sendToolbarActiveKeyboard(object){
             $(object.id).prop("disabled", false);
             $(object.bar).css("position","absolute");
             $(object.bar).css("bottom",($("body").height() - $(object.base).height()+object.bias).toString()+"px");
-            $(object.id).trigger("focus");
+            alert("ready to trigger focus");
             $(object.id).trigger("focus");
         }
     });
