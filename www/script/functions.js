@@ -159,6 +159,9 @@ function initialElementEventSetting(){
     $(document).on("pageshow","#page-change-my-password", function(){
         $("#body-input-old-password").focus();
     });
+    $( document ).on("pageinit", "#page-change-my-password", function() {
+        $("#body-input-old-password").focus();
+    });
 
 }
 
