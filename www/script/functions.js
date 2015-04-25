@@ -18,12 +18,12 @@ function setCurrLocationHash(locationHash){
  */
 function initialElementEventSetting(){
     // instantiate the FastClick object for removing the 300ms delay in jQuery mobile
-    // FastClick.attach(document.body);
+    FastClick.attach(document.body);
 
     // set comment and message send bar disable
     var $footerBarInputCommentContent = $("#footer-bar-input-comment-content");
     $footerBarInputCommentContent.on("blur",function(){
-        $footerBarInputCommentContent.prop("disabled", true);
+        // $footerBarInputCommentContent.prop("disabled", true);
         $("#footer-bar-send-comment").css("position","fixed").css("bottom","0");
         if ($footerBarInputCommentContent.val().length == 0) {
             $("#footer-bar-input-comment-content").attr("placeholder","comment...");
@@ -33,12 +33,12 @@ function initialElementEventSetting(){
 
     var $footerBarInputMessageContent = $("#footer-bar-input-message-content");
     $footerBarInputMessageContent.on("blur",function(){
-        $footerBarInputMessageContent.prop("disabled", true);
+        // $footerBarInputMessageContent.prop("disabled", true);
         $("#footer-bar-send-message").css("position","fixed").css("bottom","0");
     });
 
-    $footerBarInputCommentContent.prop("disabled", true);
-    $footerBarInputMessageContent.prop("disabled", true);
+    // $footerBarInputCommentContent.prop("disabled", true);
+    // $footerBarInputMessageContent.prop("disabled", true);
 
     $("#footer-bar-form-message-chat").submit(function(event){
         event.preventDefault();
@@ -522,7 +522,7 @@ function sendToolbarActiveKeyboard(object){
         complete : function(){
             $(object.bar).css("position","absolute");
             $(object.bar).css("bottom",($("body").height() - $(object.base).height()+object.bias).toString()+"px");
-            $(object.id).prop("disabled", false);
+            // $(object.id).prop("disabled", false);
             $(object.id).trigger("focus");
         }
     });
