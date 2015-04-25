@@ -18,7 +18,7 @@ function setCurrLocationHash(locationHash){
  */
 function initialElementEventSetting(){
     // instantiate the FastClick object for removing the 300ms delay in jQuery mobile
-    FastClick.attach(document.body);
+    // FastClick.attach(document.body);
 
     // set comment and message send bar disable
     var $footerBarInputCommentContent = $("#footer-bar-input-comment-content");
