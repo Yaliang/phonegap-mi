@@ -633,9 +633,9 @@
         </div><!-- /header -->
 
         <div class="ui-content" role="main">
-            <form id="body-form-confirm-password" style="padding: 1em;">
+            <form class="needsclick" id="body-form-confirm-password" style="padding: 1em;">
                 <label for="body-input-old-password">Current Password:</label>
-                <input id="body-input-old-password" type="password" data-clear-btn="true" value="">
+                <input class="needsclick" id="body-input-old-password" type="password" data-clear-btn="true" value="">
                 <div class="error-message" id="body-confirm-password-error"></div>
                 <button class="ui-btn" id="body-confirm-password-btn"
                         onclick="changePassword('old',$('#body-input-old-password').val(),null)">Next
