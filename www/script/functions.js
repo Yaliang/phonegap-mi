@@ -157,7 +157,7 @@ function initialElementEventSetting(){
     });
 
     $(document).on("pageshow","#page-change-my-password", function(){
-        $("#body-input-old-password").focus();
+        $("#body-input-old-password").click();
     });
 
 }
