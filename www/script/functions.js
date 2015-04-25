@@ -117,6 +117,7 @@ function initialElementEventSetting(){
             duration: 500,
             complete : function(){
                 $(window).on("swiperight",function(){
+                    pullMyChat();
                     window.history.back();
                     setCurrLocationHash("#page-event");
                     $(window).unbind("swiperight");
