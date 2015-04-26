@@ -22,6 +22,7 @@ var app = {
         initialElementEventSetting();
         cacheInitialization();
         loginByLocalStorage();
+        getDeviceInfo();
         // set up push notification
         pushNotification = window.plugins.pushNotification;
         // add update button
