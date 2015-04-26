@@ -498,7 +498,7 @@ function sendMessage(){
 
         var $footerBarSendMessage = $("#footer-bar-send-message");
         if ($footerBarSendMessage.css("position") == "absolute") {
-            $footerBarSendMessage.css("bottom", ($("body").height()-$("#page-chat-messages").height()-44).toString()+"px");
+            $footerBarSendMessage.css("bottom", ($("body").height()-$("#page-chat-messages").height()-43).toString()+"px");
         }
     };
 

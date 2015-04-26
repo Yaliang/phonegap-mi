@@ -699,7 +699,17 @@ textarea {
     color: #f2f1dc!important; 
     margin-top: 40px;
     text-shadow: 0 0 0!important;
-    border-color: #F67E7E!important;    
+    border-color: #F67E7E!important;
+}
+
+.ui-custom-earlier-comment-btn {
+    margin: 0;
+    font-size: 12px;
+    background-color: white!important;
+    border: 0;
+    color: #9C9C9C;
+    text-shadow: 0 0 0;
+    text-align: left;
 }
 
 .event-statistics {

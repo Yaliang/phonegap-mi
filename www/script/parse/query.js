@@ -308,17 +308,25 @@ function ParseSelectEvent(id, displayFunction) {
 
 /* This function is designed to pull up comments for user activities by calling Parse API "find" (instance method
  * of Parse.Query object, which is performed on Comment object. Comment is a customer-defined subclass of Parse.Object)
+ * modified by Yaliang 4/26/2015
  */
-function ParsePullEventComment(eventId, descendingOrderKey, displayFunction) {
+function ParsePullEventComment(obj) {
+    // obj = {eventId, descendingOrderKey, beforeAt, displayFunction}
     var comment = Parse.Object.extend("Comment");
     var query = new Parse.Query(comment);
-    query.equalTo("eventId",eventId);
-    query.ascending(descendingOrderKey);
+    query.equalTo("eventId",obj.eventId);
+    query.descending(obj.descendingOrderKey);
+    if (("limitNumber" in obj) && (obj.limitNumber != null)) {
+        query.limit(obj.limitNumber);
+    }
+    if (("beforeAt" in obj) && obj.beforeAt != null) {
+        query.lessThan("createdAt",obj.beforeAt);
+    }
 
     // query.find method will return an array of Comment objects to be found
     query.find({
         success: function(comments) {
-            displayFunction(comments);
+            obj.displayFunction(comments);
         }
     });
 }
@@ -339,6 +347,7 @@ function ParseAddEventComment(eventId, owner, content, option) {
     }
     comment.save(null, {
         success: function(comment) {
+            option.displayNewComment(comment);
             ParseUpdateEventCommentNumber(1, eventId, option);
         },
         error: function(comment, error){

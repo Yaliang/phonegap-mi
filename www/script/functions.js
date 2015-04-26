@@ -160,7 +160,6 @@ function initialElementEventSetting(){
     $(document).on("pageshow","#page-change-my-password", function(){
         $("#body-input-old-password").focus();
     });
-
 }
 
 /* This function tries to log into user session by local storage
