@@ -144,9 +144,9 @@
         <div class="options-hidden-cover-layer" style="display: none;"></div>
 
         <div class="ui-page-more-option-bottom" id="body-bottom-hiding-event-filter-more-option">
-            <a class="ui-btn share-btn ui-more-option-first-btn" id="body-bottom-hiding-event-filter-time" data-transition="slideup" href="">Filter By Time</a>
-            <a class="ui-btn share-btn ui-more-option-first-btn" id="body-bottom-hiding-event-filter-location" data-transition="slideup" href="">Filter By Location Based</a>
-            <a class="ui-btn share-btn ui-more-option-first-btn" id="body-bottom-hiding-event-filter-custom" data-transition="slideup" href="">Customized Filter</a>
+            <a class="ui-btn ui-more-option-first-btn" id="body-bottom-hiding-event-filter-time" data-transition="slideup" href="">Filter By Time</a>
+            <a class="ui-btn" id="body-bottom-hiding-event-filter-location" data-transition="slideup" href="">Filter By Location Based</a>
+            <a class="ui-btn" id="body-bottom-hiding-event-filter-custom" data-transition="slideup" href="">Customized Filter</a>
             <div class="ui-btn ui-more-option-cancel-btn" id="body-bottom-hiding-event-filter-cancel" onclick="hiddenEventFilterModeMoreOption()">Cancel</div>
         </div>
 
@@ -174,7 +174,7 @@
                onclick="setCurrLocationHash('#page-event')">Cancel</a>
         </div><!-- /header -->
 
-        <div class="ui-content" role="main">
+        <div class="ui-content" role="main" >
             <form id="body-form-create-event" style="padding: 1em">
                 <label for="body-input-create-event-title">Title:</label>
                 <input id="body-input-create-event-title" data-clear-btn="true" type="text" name="eventtitle" value="" placeholder='e.g. "Weekend Moive", "New Year Party"...'>
@@ -267,7 +267,8 @@
         <div class="ui-content" id="body-content-event-detail" role="main"></div><!-- /content -->
 
         <div class="ui-page-more-option-bottom" id="body-bottom-event-detail-more-option">
-            <a class="ui-btn share-btn ui-more-option-first-btn" href="" onclick = "hideEventDetailMoreOption()">Share via Email</a>
+            <a class="ui-btn share-btn share-via-mail ui-more-option-first-btn" href="" onclick = "hideEventDetailMoreOption()">Share via Email</a>
+            <a class="ui-btn share-btn share-via-sms" href="" onclick = "hideEventDetailMoreOption()">Share via SMS</a>
             <a class="ui-btn report-btn" data-transition="slideup" href="#page-event-report"
                onclick="hideEventDetailMoreOption()">Report Abuse</a>
             <div class="ui-btn ui-more-option-cancel-btn" onclick="hideEventDetailMoreOption()">Cancel</div>
@@ -318,7 +319,7 @@
     <!-- Page for displaying the friend list -->
     <div id="page-friend" data-role="page" data-title="Yueme">
 
-        <div data-role="header" data-position="fixed" data-tap-toggle="false" >
+        <div data-role="header"  data-position="fixed" data-tap-toggle="false">
             <h1>Friends</h1>
             <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" href="#page-people-near-by"
                onclick="listPeopleNearBy();setCurrLocationHash('#page-people-near-by')">Near By</a>

@@ -130,3 +130,28 @@ function unregisterNotificationId(){
         //alert("unregister fault");
     });
 }
+
+/*****************************************************
+ * get the system version and device platform
+ * created by Yaliang 4/25/2015
+ ****************************************************
+ */
+function getDeviceInfo(){
+    devicePlatform = device.platform;
+    deviceVersion = device.version;
+    deviceIsIOS = (devicePlatform == "iOS");
+    deviceIsAndroid = (devicePlatform == "android") || (devicePlatform == "Android") || (devicePlatform == "amazon-fireos")
+    if (deviceIsIOS) {
+        if (deviceVersion.indexOf("8") == 0) {
+            deviceIOSVersion = 8
+        } else if (deviceVersion.indexOf("7") == 0) {
+            deviceIOSVersion = 7
+        } else if (deviceVersion.indexOf("6") == 0) {
+            deviceIOSVersion = 6
+        } else if (deviceVersion.indexOf("5") == 0) {
+            deviceIOSVersion = 5
+        } else {
+            deviceIOSVersion = 4 // iOS version <= 4
+        }
+    }
+}
