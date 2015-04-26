@@ -694,6 +694,14 @@ textarea {
     border-color: #F67E7E!important;
 }
 
+.ui-custom-btn-red-large-gap-top {
+    background-color: #cd8964!important;
+    color: #f2f1dc!important; 
+    margin-top: 40px;
+    text-shadow: 0 0 0!important;
+    border-color: #F67E7E!important;    
+}
+
 .event-statistics {
     font-family: "Open Sans";
     font-weight: 300;
