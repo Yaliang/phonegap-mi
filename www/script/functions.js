@@ -34,6 +34,7 @@ touch = {
     },
     touchStartEventHandler: function(event) {
         $(this.selector).stop();
+        $(this.selector).scroll();
         this.stop = true;
         this.currentY = event.originalEvent.touches[0].clientY;
         this.moveStartY = this.currentY;
@@ -42,6 +43,7 @@ touch = {
     },
     touchMoveEventHandler: function(event) {
         event.preventDefault();
+        $(this.selector).scroll();
         this.lastY = this.currentY;
         this.currentY = event.originalEvent.touches[0].clientY;
         this.moveRate = (1+Math.round(Math.abs(this.currentY-this.lastY) / 10));
@@ -64,6 +66,7 @@ touch = {
         this.touchEndAnimate();
     },
     touchEndAnimate: function() {
+        $(this.selector).scroll();
         this.moveRate = this.moveRate * 29/30;
         if (Math.abs(this.moveRate) <= 0.1) {
             return;
