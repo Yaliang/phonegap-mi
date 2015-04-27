@@ -56,7 +56,7 @@ touch = {
             return;
         }
         this.moveEndTime = new Date;
-        this.moveRate = (this.currentY-this.moveStartY) / (this.moveEndTime-this.moveStartTime) * 40;
+        this.moveRate = (this.currentY-this.moveStartY) / (this.moveEndTime-this.moveStartTime) * 30;
         this.decresingRate = this.moveRate / 100;
         this.stop = false;
         this.touchEndAnimate();
