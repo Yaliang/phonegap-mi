@@ -162,7 +162,7 @@ function initialElementEventSetting(){
     });
 
     // fix the content height(page-event)
-    $(document).on("pageshow", "#page-event", function(){
+    $(document).on("pagebeforehide", "#page-event", function(){
         var window_height = $(window).height();
         var head_height = $("#page-event > .ui-header").outerHeight();
         var foot_height = $("#page-event > .ui-footer").outerHeight();
@@ -170,7 +170,7 @@ function initialElementEventSetting(){
     });
 
     // fix the content height(page-firend)
-    $(document).on("pageshow", "#page-friend", function(){
+    $(document).on("pagebeforehide", "#page-friend", function(){
         var window_height = $(window).height();
         var head_height = $("#page-friend > .ui-header").outerHeight();
         var foot_height = $("#page-friend > .ui-footer").outerHeight();
@@ -178,21 +178,21 @@ function initialElementEventSetting(){
     });
 
     // fix the content height(page-people-near-by)
-    $(document).on("pageshow", "#page-people-near-by", function(){
+    $(document).on("pagebeforehide", "#page-people-near-by", function(){
         var window_height = $(window).height();
         var head_height = $("#page-people-near-by > .ui-header").outerHeight();
         $("#page-people-near-by > .ui-content").css("height",(window_height - head_height).toString() + "px");
     });
 
     // fix the content height(page-people-search)
-    $(document).on("pageshow", "#page-people-search", function(){
+    $(document).on("pagebeforehide", "#page-people-search", function(){
         var window_height = $(window).height();
         var head_height = $("#page-people-search > .ui-header").outerHeight();
         $("#page-people-search > .ui-content").css("height",(window_height - head_height).toString() + "px");
     });
 
     // fix the content height(page-chat)
-    $(document).on("pageshow", "#page-chat", function(){
+    $(document).on("pagebeforehide", "#page-chat", function(){
         var window_height = $(window).height();
         var head_height = $("#page-chat > .ui-header").outerHeight();
         var foot_height = $("#page-chat > .ui-footer").outerHeight();
@@ -200,7 +200,7 @@ function initialElementEventSetting(){
     });
 
     // fix the content height(page-setting)
-    $(document).on("pageshow", "#page-setting", function(){
+    $(document).on("pagebeforehide", "#page-setting", function(){
         var window_height = $(window).height();
         var head_height = $("#page-setting > .ui-header").outerHeight();
         var foot_height = $("#page-setting > .ui-footer").outerHeight();
