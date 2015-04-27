@@ -48,31 +48,27 @@ touch = {
         }
         var newTop = $(this.selector).scrollTop() - (this.currentY-this.lastY);
         $(this.selector).scrollTop(newTop);
-        console.log(this.moveRate);
+        // console.log(this.moveRate);
     },
     touchEndEventHandler: function(event) {
-        if (this.moveSlowCircle > 10) {
+        if (this.moveSlowCircle > 5) {
             return;
         }
         this.moveEndTime = new Date;
         this.moveRate = (this.currentY-this.moveStartY) / (this.moveEndTime-this.moveStartTime) * 40;
         this.decresingRate = this.moveRate / 100;
-        $(this.selector).animate({
-            opacity: 100
-        },{
-            duration: 1500,
-            step: function(now, fx) {
-                touch.lastRate = touch.moveRate;
-                touch.moveRate -= touch.decresingRate;
-                if ((touch.lastRate < 0 && touch.moveRate > 0) || (touch.lastRate > 0 && touch.moveRate < 0)) {
-                    touch.moveRate = touch.lastRate;
-                    return;
-                }
-                console.log(touch.moveRate);
-                $(touch.selector).scrollTop($(touch.selector).scrollTop() - touch.moveRate);
-            }
-        })
-        console.log(this.moveRate);
+        this.touchEndAnimate();
+    },
+    touchEndAnimate: function() {
+        this.moveRate = this.moveRate - this.decresingRate;
+        if (this.decresingRate*this.moveRate <= 0) {
+            return;
+        }
+        $(this.selector).scrollTop($(this.selector).scrollTop() - this.moveRate);
+        setTimeout(function(){
+            touch.touchEndAnimate();
+        }, 20);
+        // console.log(this.moveRate);
     }
 }
 
