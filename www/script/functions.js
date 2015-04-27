@@ -31,6 +31,7 @@ touch = {
     },
     touchStartEventHandler: function(event) {
         $(this.selector).stop();
+        this.stop = true;
         this.currentY = event.originalEvent.touches[0].clientY;
         this.moveStartY = this.currentY;
         this.moveStartTime = new Date;
@@ -57,6 +58,7 @@ touch = {
         this.moveEndTime = new Date;
         this.moveRate = (this.currentY-this.moveStartY) / (this.moveEndTime-this.moveStartTime) * 40;
         this.decresingRate = this.moveRate / 100;
+        this.stop = false;
         this.touchEndAnimate();
     },
     touchEndAnimate: function() {
@@ -66,7 +68,9 @@ touch = {
         }
         $(this.selector).scrollTop($(this.selector).scrollTop() - this.moveRate);
         setTimeout(function(){
-            touch.touchEndAnimate();
+            if (!touch.stop) {
+                touch.touchEndAnimate();
+            }
         }, 20);
         // console.log(this.moveRate);
     }
