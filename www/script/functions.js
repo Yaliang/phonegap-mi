@@ -56,14 +56,13 @@ touch = {
             return;
         }
         this.moveEndTime = new Date;
-        this.moveRate = (this.currentY-this.moveStartY) / (this.moveEndTime-this.moveStartTime) * 30;
-        this.decresingRate = this.moveRate / 100;
+        this.moveRate = (this.currentY-this.moveStartY) / (this.moveEndTime-this.moveStartTime) * 50;
         this.stop = false;
         this.touchEndAnimate();
     },
     touchEndAnimate: function() {
-        this.moveRate = this.moveRate - this.decresingRate;
-        if (this.decresingRate*this.moveRate <= 0) {
+        this.moveRate = this.moveRate * 29/30;
+        if (Math.abs(this.moveRate) <= 0.1) {
             return;
         }
         $(this.selector).scrollTop($(this.selector).scrollTop() - this.moveRate);
@@ -71,7 +70,7 @@ touch = {
             if (!touch.stop) {
                 touch.touchEndAnimate();
             }
-        }, 20);
+        }, 13);
         // console.log(this.moveRate);
     }
 }
