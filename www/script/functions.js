@@ -19,7 +19,7 @@ function setCurrLocationHash(locationHash){
 touch = {
     touchInitialize: function(selector) {
         this.selector = selector;
-        $(this.selector).stop();
+        $(this.selector).stop().css("overflow","scroll");
         this.stop = true;
         $(this.selector).unbind("touchstart").bind("touchstart", function(event){
             touch.touchStartEventHandler(event);
