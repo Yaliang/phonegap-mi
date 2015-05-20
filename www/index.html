@@ -21,17 +21,19 @@
     </script>
 	<script src="./script/jquery/jquery-1.11.1.min.js"></script>
 	<script src="./script/jquery/mobile/jquery.mobile-1.4.5.min.js"></script>
-	<script src="./script/exif/load-image.all.min.js"></script>
-	<script src="./script/parse/parse-1.3.2.min.js"></script>
-	<script src="./script/parse/query.js"></script>
-	<script src="./script/cache.js"></script>
-	<script src="./script/functions.js"></script>
-	<script src="./script/functions-events.js"></script>
-	<script src="./script/functions-friends.js"></script>
-	<script src="./script/functions-chats.js"></script>
-	<script src="./script/functions-settings.js"></script>
+	<script src="./script/exif/exif-custom.min.js"></script>
+    <script src="./script/exif/load-image.all.min.js"></script>
+    <script src="./script/classes/loadedImage.min.js"></script>
+    <script src="./script/classes/touch.min.js"></script>
+    <script src="./script/parse/parse-1.3.2.min.js"></script>
+    <script src="./script/parse/query.min.js"></script>
+    <script src="./script/cache.min.js"></script>
+    <script src="./script/functions.min.js"></script>
+    <script src="./script/functions-events.min.js"></script>
+    <script src="./script/functions-friends.min.js"></script>
+    <script src="./script/functions-chats.min.js"></script>
+    <script src="./script/functions-settings.min.js"></script>
 	<script src="./script/native-functions.js"></script>
-	<script src="./script/textarea-helper-master/textarea-helper.js"></script>
     <script src="./script/fastclick-master/lib/fastclick.js"></script>
 </head>
 
@@ -112,7 +114,8 @@
         </form> -->
 
         <div  class="ui-content" id="body-event-content-list" role="main">
-            <div class="ui-load-more-activity" onclick="pullUserEvent(currentLastEvent)">More Activities</div>
+            <div class="ui-load-event-head"></div>
+            <div class="ui-load-more-activity" onclick="pullUserEvent({beforeAt:currentLastEvent})">More Activities</div>
         </div><!-- /content -->
 
         <div class="nav-glyphish-example" data-role="footer" data-position="fixed" data-tap-toggle="false">
@@ -191,7 +194,8 @@
                     <option value="on" selected="">Public</option>
                 </select>
                 <label for="body-input-create-event-description">Description:</label>
-                <textarea id="body-input-create-event-description" name="eventdescription"></textarea>
+                <input id="body-input-create-event-insert-photo" name="descriptionphoto" data-clear-btn="false" type="file" value="">
+                <div style="min-height: 200px; padding: .4em; line-height: 1.4em" class="ui-input-text ui-shadow-inset ui-body-inherit ui-corner-all ui-textinput-autogrow" id="body-input-create-event-description"  name="eventdescription" contenteditable="true"></div>
                 <!-- <div class="ui-btn ui-icon-custom-add-image" id="body-create-event-description-insert-image"></div>
                 <input id="body-input-insert-description-photo" name="descriptionphoto" data-clear-btn="false" type="file"
                        onclick="insertDescriptionPreviewPhoto();" value=""> -->
@@ -203,9 +207,6 @@
             <button class="ui-btn" id="body-bottom-create-event-btn">Create</button>
 
         </div><!-- /content -->
-
-        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-        </div><!-- /footer -->
     </div><!-- /page -->
 
     <!-- Page for edit event -->
@@ -582,7 +583,7 @@
         <div data-role="header">
             <h1>My Profile</h1>
             <a class="ui-btn-left ui-btn ui-btn-inline ui-corner-all" data-rel="back" href="#page-setting"
-               onclick="refreshPreviewPhoto = false; setCurrLocationHash('#page-setting')">Back
+               onclick="setCurrLocationHash('#page-setting')">Back
             </a>
 
             <a class="ui-btn-right ui-btn ui-btn-inline ui-corner-all" id="body-bottom-profile-save-btn" data-rel="back" href="#page-setting"
@@ -594,8 +595,7 @@
             <div class="profile-photo-bar">
                 <label style="padding-left: 1em;" for="body-input-edit-profile-photo">Photo:</label>
                 <canvas class="profile-photo-preview" id="body-profile-photo-preview-canvas" width="120px" height="120px"></canvas>
-                <input id="body-input-edit-profile-photo" name="profilephoto" data-clear-btn="false" type="file"
-                       onclick="refreshPreviewPhoto = true; refreshPreviewCanvas();" value="">
+                <input id="body-input-edit-profile-photo" name="profilephoto" data-clear-btn="false" type="file" value="">
             </div>
 
             <form style="padding: 1em;">
